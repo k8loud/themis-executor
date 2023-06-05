@@ -13,7 +13,10 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>executor</name>
     <description>executor</description>
+
     <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <java.version>17</java.version>
         <spring.version>3.1.0</spring.version>
     </properties>
