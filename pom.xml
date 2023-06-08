@@ -12,6 +12,7 @@
     <artifactId>themis-executor</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>executor</name>
+    <packaging>pom</packaging>
 
     <modules>
         <module>executor</module>
