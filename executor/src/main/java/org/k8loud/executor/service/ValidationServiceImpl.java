@@ -1,7 +1,7 @@
 package org.k8loud.executor.service;
 
 
-import data.ActionRequest;
+import data.ExecutionRQ;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ public class ValidationServiceImpl implements ValidationService {
 
 
     @Override
-    public boolean validate(ActionRequest request) {
+    public boolean validate(ExecutionRQ request) {
         return false;
     }
 

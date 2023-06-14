@@ -1,9 +1,8 @@
 package org.k8loud.executor.service;
 
-import data.ActionRequest;
-import org.springframework.http.ResponseEntity;
+import org.k8loud.executor.action.Action;
 
 public interface ExecutionService {
 
-    ResponseEntity<String> execute(ActionRequest request);
+    void execute(Action action);
 }
