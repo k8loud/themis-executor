@@ -1,10 +1,10 @@
 package org.k8loud.executor.service;
 
 
-import data.ActionRequest;
+import data.ExecutionRQ;
 
 public interface ValidationService {
 
-    boolean validate(ActionRequest request);
+    boolean validate(ExecutionRQ request);
 
 }

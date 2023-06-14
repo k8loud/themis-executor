@@ -1,8 +1,8 @@
 package org.k8loud.executor.controller;
 
 
-import data.ActionRequest;
-import org.k8loud.executor.service.ExecutionService;
+import data.ExecutionRQ;
+import org.k8loud.executor.service.ExecutionWrapperService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExecutionController {
 
 
-    private final ExecutionService executionService;
+    private final ExecutionWrapperService executionWrapperService;
 
-    public ExecutionController(ExecutionService executionService) {
-        this.executionService = executionService;
+    public ExecutionController(ExecutionWrapperService executionWrapperService) {
+        this.executionWrapperService = executionWrapperService;
     }
 
     @PostMapping("/roman")
-    public ResponseEntity<String> action(@RequestBody ActionRequest actionRQ) {
-        return executionService.execute(actionRQ);
+    public ResponseEntity<String> action(@RequestBody ExecutionRQ actionRQ) {
+        return executionWrapperService.execute(actionRQ);
     }
 }
