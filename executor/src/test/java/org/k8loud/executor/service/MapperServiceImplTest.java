@@ -26,13 +26,6 @@ class MapperServiceImplTest {
     @Autowired
     private MapperServiceImpl mapperService;
 
-    private static Stream<ExecutionRQ> provideValidExecutionRQs() {
-        return Stream.of(
-                VALID_EXECUTION_RQ,
-                VALID_EXECUTION_RQ.withParams(new HashMap<>()) // emptyParams
-        );
-    }
-
     @ParameterizedTest
     @MethodSource("provideValidExecutionRQs")
     void testValidMapping(ExecutionRQ executionRQ) {
@@ -45,13 +38,6 @@ class MapperServiceImplTest {
         Assertions.assertEquals(executionRQ.getParams(), action.getParams());
     }
 
-    private static Stream<ExecutionRQ> provideInvalidExecutionRQs() {
-        return Stream.of(
-                VALID_EXECUTION_RQ.withCollectionName("XYZ"), // badCollectionName
-                VALID_EXECUTION_RQ.withActionName("XYZ") // badActionName
-        );
-    }
-
     @ParameterizedTest
     @MethodSource("provideInvalidExecutionRQs")
     void testInvalidMapping(ExecutionRQ executionRQ) {
@@ -60,5 +46,28 @@ class MapperServiceImplTest {
 
         // then
         Assertions.assertNull(action);
+    }
+
+    private static ExecutionRQ createExecutionRQ(String collectionName, String actionName, Map<String, String> params) {
+        return ExecutionRQ.builder()
+                .collectionName(collectionName)
+                .actionName(actionName)
+                .params(params)
+                .build();
+    }
+
+    private static Stream<ExecutionRQ> provideValidExecutionRQs() {
+        return Stream.of(
+                createExecutionRQ("kubernetes", "DeletePodAction", Map.of("param1", "val1")),
+                VALID_EXECUTION_RQ,
+                VALID_EXECUTION_RQ.withParams(new HashMap<>()) // emptyParams
+        );
+    }
+
+    private static Stream<ExecutionRQ> provideInvalidExecutionRQs() {
+        return Stream.of(
+                VALID_EXECUTION_RQ.withCollectionName("XYZ"), // badCollectionName
+                VALID_EXECUTION_RQ.withActionName("XYZ") // badActionName
+        );
     }
 }
