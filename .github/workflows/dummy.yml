@@ -1,0 +1,11 @@
+name: Dummy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Hello World
+        run: echo "Hello World"
