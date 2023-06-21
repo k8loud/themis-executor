@@ -3,32 +3,30 @@ package org.k8loud.executor.service;
 import data.ExecutionRQ;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.Action;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Stream;
 
 @SpringBootTest
 class MapperServiceImplTest {
-    private static final ExecutionRQ VALID_EXECUTION_RQ = ExecutionRQ.builder()
-            .collectionName("kubernetes")
-            .actionName("DeletePodAction")
-            .params(Map.of(
-                    "param1", "val1",
-                    "param2", "val2",
-                    "param3", "val3"
-            ))
-            .build();
+    private static final String INVALID = "invalidName";
+    private static final Map<String, String> VALID_PARAMS = Map.of("param1", "val1");
+
     @Autowired
     private MapperServiceImpl mapperService;
 
     @ParameterizedTest
     @MethodSource("provideValidExecutionRQs")
-    void testValidMapping(ExecutionRQ executionRQ) {
+    void testValidMapping(String collectionName, String actionName, Map<String, String> params) {
+        // given
+        ExecutionRQ executionRQ = createExecutionRQ(collectionName, actionName, params);
+
         // when
         Action action = mapperService.map(executionRQ);
 
@@ -40,7 +38,10 @@ class MapperServiceImplTest {
 
     @ParameterizedTest
     @MethodSource("provideInvalidExecutionRQs")
-    void testInvalidMapping(ExecutionRQ executionRQ) {
+    void testInvalidMapping(String collectionName, String actionName, Map<String, String> params) {
+        // given
+        ExecutionRQ executionRQ = createExecutionRQ(collectionName, actionName, params);
+
         // when
         Action action = mapperService.map(executionRQ);
 
@@ -56,18 +57,20 @@ class MapperServiceImplTest {
                 .build();
     }
 
-    private static Stream<ExecutionRQ> provideValidExecutionRQs() {
+    private static Stream<Arguments> provideValidExecutionRQs() {
         return Stream.of(
-                createExecutionRQ("kubernetes", "DeletePodAction", Map.of("param1", "val1")),
-                VALID_EXECUTION_RQ,
-                VALID_EXECUTION_RQ.withParams(new HashMap<>()) // emptyParams
+                Arguments.of("kubernetes", "DeletePodAction", VALID_PARAMS),
+                Arguments.of("kubernetes", "DeletePodAction", Collections.emptyMap())
         );
     }
 
-    private static Stream<ExecutionRQ> provideInvalidExecutionRQs() {
+    private static Stream<Arguments> provideInvalidExecutionRQs() {
         return Stream.of(
-                VALID_EXECUTION_RQ.withCollectionName("XYZ"), // badCollectionName
-                VALID_EXECUTION_RQ.withActionName("XYZ") // badActionName
+                Arguments.of("kubernetes", INVALID, VALID_PARAMS),
+                Arguments.of(INVALID, "DeletePodAction", VALID_PARAMS),
+                Arguments.of("kubernetes", null, VALID_PARAMS),
+                Arguments.of(null, "DeletePodAction", VALID_PARAMS),
+                Arguments.of("kubernetes", "DeletePodAction", null)
         );
     }
 }
