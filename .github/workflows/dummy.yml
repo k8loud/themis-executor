@@ -12,11 +12,21 @@ name: Dummy
 # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
 
 on:
-  workflow_dispatch:
+  pull_request:
 
 jobs:
-  test:
+  build:
+    name: Build and Run Tests
     runs-on: ubuntu-latest
+    # Permissions block is optional, useful for dependabot checks
+    permissions:
+      checks: write
+      contents: read
     steps:
-      - name: Hello World
-        run: echo "Hello World"
+      - name: Checkout Code
+        uses: actions/checkout@v1
+      - name: Build and Run Tests
+        run: mvn test --batch-mode --fail-at-end
+      - name: Publish Test Report
+        if: success() || failure()
+        uses: scacap/action-surefire-report@v1
