@@ -24,11 +24,11 @@ public class MapperServiceImpl implements MapperService {
         Action action = null;
         try {
             Map<String, String> params = executionRQ.getParams();
-            if (actionClass != null & params != null)
-                action = (Action) actionClass.getConstructor(Map.class).newInstance(params);
+            action = (Action) actionClass.getConstructor(Map.class).newInstance(params);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException |
                  NullPointerException e) {
             log.error("Failed to map `{}` to Action object, details: `{}`", executionRQ, e.getMessage());
+            //TODO define kind of MapException and throw it
         }
         return action;
     }

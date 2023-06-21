@@ -60,7 +60,8 @@ class MapperServiceImplTest {
     private static Stream<Arguments> provideValidExecutionRQs() {
         return Stream.of(
                 Arguments.of("kubernetes", "DeletePodAction", VALID_PARAMS),
-                Arguments.of("kubernetes", "DeletePodAction", Collections.emptyMap())
+                Arguments.of("kubernetes", "DeletePodAction", Collections.emptyMap()),
+                Arguments.of("kubernetes", "DeletePodAction", null) //FIXME for now it is valid. Back to this after some Actions coded
         );
     }
 
@@ -69,8 +70,7 @@ class MapperServiceImplTest {
                 Arguments.of("kubernetes", INVALID, VALID_PARAMS),
                 Arguments.of(INVALID, "DeletePodAction", VALID_PARAMS),
                 Arguments.of("kubernetes", null, VALID_PARAMS),
-                Arguments.of(null, "DeletePodAction", VALID_PARAMS),
-                Arguments.of("kubernetes", "DeletePodAction", null)
+                Arguments.of(null, "DeletePodAction", VALID_PARAMS)
         );
     }
 }
