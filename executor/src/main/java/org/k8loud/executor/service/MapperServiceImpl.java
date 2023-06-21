@@ -2,6 +2,7 @@ package org.k8loud.executor.service;
 
 import data.ExecutionRQ;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 import org.k8loud.executor.action.Action;
 import org.k8loud.executor.action.ActionHelper;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.Map;
 public class MapperServiceImpl implements MapperService {
     private final ActionHelper actionHelper = new ActionHelper();
 
+    @Nullable
     @Override
     public Action map(ExecutionRQ executionRQ) {
         String collectionName = executionRQ.getCollectionName();

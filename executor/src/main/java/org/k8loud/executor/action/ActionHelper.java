@@ -1,7 +1,7 @@
 package org.k8loud.executor.action;
 
-import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 
 @Slf4j
 public class ActionHelper {
