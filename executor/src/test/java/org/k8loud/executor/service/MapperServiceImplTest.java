@@ -5,17 +5,20 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.k8loud.executor.action.Action;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapperServiceImplTest {
+@SpringBootTest
+class MapperServiceImplTest {
+    @Autowired
     private MapperServiceImpl mapperService;
     private ExecutionRQ executionRQ;
 
     @BeforeEach
     public void beforeEach() {
-        mapperService = new MapperServiceImpl();
         // valid executionRQ
         executionRQ = ExecutionRQ.builder()
                 .collectionName("kubernetes")
