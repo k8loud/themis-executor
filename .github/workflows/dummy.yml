@@ -11,28 +11,13 @@ name: Dummy
 # The known cause is an unsupported image, the list of the supported ones is here:
 # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
 
+# The workflow_dispatch option is required to trigger a workflow by hand.
 on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build and Run Tests
+  test:
     runs-on: ubuntu-latest
-    # Permissions block is optional, useful for dependabot checks
-    permissions:
-      checks: write
-      contents: read
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v1
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'zulu'
-          cache: maven
-      - name: Build and Run Tests
-        run: mvn test --batch-mode --fail-at-end
-      - name: Publish Test Report
-        if: success() || failure()
-        uses: scacap/action-surefire-report@v1
+      - name: Hello World
+        run: echo "Hello World"
