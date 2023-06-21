@@ -12,7 +12,7 @@ name: Dummy
 # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
 
 on:
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
