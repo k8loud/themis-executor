@@ -1,6 +1,7 @@
 package org.k8loud.executor.action;
 
 
+import data.ExecutionRS;
 import lombok.Data;
 
 import java.util.Map;
@@ -9,5 +10,5 @@ import java.util.Map;
 public abstract class Action {
     private final Map<String, String> params;
 
-    public abstract void perform();
+    public abstract ExecutionRS perform();
 }

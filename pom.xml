@@ -12,7 +12,7 @@
     <groupId>org.k8loud</groupId>
     <artifactId>themis-executor</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>executor</name>
+    <name>themis-executor-all</name>
     <packaging>pom</packaging>
 
     <modules>

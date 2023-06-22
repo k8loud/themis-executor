@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class ExecutorController {
+public class ExecutionController {
     private final ExecutionWrapperService executionWrapperService;
 
-    public ExecutorController(ExecutionWrapperService executionWrapperService) {
+    public ExecutionController(ExecutionWrapperService executionWrapperService) {
         this.executionWrapperService = executionWrapperService;
     }
 
