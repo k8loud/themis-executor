@@ -1,6 +1,7 @@
 package org.k8loud.executor.service;
 
 import data.ExecutionRQ;
+import data.ExecutionRS;
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.action.Action;
 import org.springframework.http.HttpStatus;
@@ -24,10 +25,9 @@ public class ExecutionWrapperServiceImpl implements ExecutionWrapperService {
         //TODO interceptor
         Action action = mapperService.map(request);
         if (action == null) {
-            executionService.execute(action);
-        } else {
             return new ResponseEntity<>("dupa", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("Jest git", HttpStatus.OK);
+        ExecutionRS response = executionService.execute(action);
+        return new ResponseEntity<>(response.toString(), HttpStatus.OK);
     }
 }

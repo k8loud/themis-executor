@@ -10,15 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ExecutionController {
-
-
     private final ExecutionWrapperService executionWrapperService;
 
     public ExecutionController(ExecutionWrapperService executionWrapperService) {
         this.executionWrapperService = executionWrapperService;
     }
 
-    @PostMapping("/roman")
+    @PostMapping(value = "/execute", consumes = "application/json")
     public ResponseEntity<String> action(@RequestBody ExecutionRQ actionRQ) {
         return executionWrapperService.execute(actionRQ);
     }
