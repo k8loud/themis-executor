@@ -13,7 +13,7 @@ name: Dummy
 
 # The workflow_dispatch option is required to trigger a workflow by hand.
 on:
-  workflow_dispatch:
+  pull_request:
 
 jobs:
   branch-naming-rules:
