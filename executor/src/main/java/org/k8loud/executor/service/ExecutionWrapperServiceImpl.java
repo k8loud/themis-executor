@@ -28,6 +28,6 @@ public class ExecutionWrapperServiceImpl implements ExecutionWrapperService {
             return new ResponseEntity<>("dupa", HttpStatus.BAD_REQUEST);
         }
         ExecutionRS response = executionService.execute(action);
-        return new ResponseEntity<>("Action response: " + response, HttpStatus.OK);
+        return new ResponseEntity<>(response.toString(), HttpStatus.OK);
     }
 }
