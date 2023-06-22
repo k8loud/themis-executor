@@ -11,6 +11,7 @@ name: Dummy
 # The known cause is an unsupported image, the list of the supported ones is here:
 # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
 
+# The workflow_dispatch option is required to trigger a workflow by hand.
 on:
   workflow_dispatch:
 
