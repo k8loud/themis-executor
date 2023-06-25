@@ -99,11 +99,29 @@
             <groupId>org.k8loud</groupId>
             <artifactId>executor-shared</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-client</artifactId>
+            <version>6.6.2</version>
+        </dependency>
 
         <!--    TEST DEPENDENCIES    -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-server-mock</artifactId>
+            <version>6.5.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>mockwebserver</artifactId>
+            <version>0.2.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

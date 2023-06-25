@@ -27,6 +27,11 @@ public class HorizontalScalingAction extends Action {
     }
 
     @Override
+    public void unpackParams(Map<String, String> params) {
+        // TODO: implement
+    }
+
+    @Override
     public ExecutionRS perform() {
         ServerApi serverApi = novaApi.getServerApi(REGION);
         FlavorApi flavorApi = novaApi.getFlavorApi(REGION);
