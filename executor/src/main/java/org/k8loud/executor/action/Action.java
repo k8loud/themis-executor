@@ -8,7 +8,11 @@ import java.util.Map;
 
 @Data
 public abstract class Action {
-    protected final Map<String, String> params;
+    protected Action(Map<String, String> params) {
+        unpackParams(params);
+    }
 
+    // TODO: Add parse exception
+    public abstract void unpackParams(Map<String, String> params);
     public abstract ExecutionRS perform();
 }
