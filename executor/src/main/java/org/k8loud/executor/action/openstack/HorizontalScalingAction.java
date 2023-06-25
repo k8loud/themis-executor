@@ -13,20 +13,19 @@ import org.k8loud.executor.action.Action;
 import java.util.Map;
 
 public class HorizontalScalingAction extends Action {
-    private final String region;
-    public final String serverId;
+    private String region;
+    private String serverId;
     private final NovaApi novaApi;
 
     public HorizontalScalingAction(Map<String, String> params) {
         super(params);
-        region = params.get("region");
-        serverId = params.get("serverId");
         novaApi = OpenstackHelper.getNovaApi("openstack-nova", "demo:demo", "devstack", "http://xxx.xxx.xxx.xxx:5000/v2.0/");
     }
 
     @Override
     public void unpackParams(Map<String, String> params) {
-        // TODO: implement
+        region = params.get("region");
+        serverId = params.get("serverId");
     }
 
     @Override

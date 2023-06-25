@@ -10,16 +10,26 @@ import org.k8loud.executor.action.Action;
 
 import java.util.Map;
 
-public class VertivalScalingAction extends Action {
-    private final String region;
-    public final String serverId;
+public class VerticalScalingAction extends Action {
+    private String region;
+    private String serverId;
+    private double diskResizeValue;
+    private double ramResizeValue;
+    private double vcpusResizeValue;
     private final NovaApi novaApi;
 
-    public VertivalScalingAction(Map<String, String> params) {
+    public VerticalScalingAction(Map<String, String> params) {
         super(params);
+        novaApi = OpenstackHelper.getNovaApi("openstack-nova", "demo:demo", "devstack", "http://xxx.xxx.xxx.xxx:5000/v2.0/");
+    }
+
+    @Override
+    public void unpackParams(Map<String, String> params) {
         region = params.get("region");
         serverId = params.get("serverId");
-        novaApi = OpenstackHelper.getNovaApi("openstack-nova", "demo:demo", "devstack", "http://xxx.xxx.xxx.xxx:5000/v2.0/");
+        diskResizeValue = Double.parseDouble(params.get("diskResizeValue"));
+        ramResizeValue = Double.parseDouble(params.get("ramResizeValue"));
+        vcpusResizeValue = Double.parseDouble(params.get("vcpusResizeValue"));
     }
 
     @Override
@@ -30,11 +40,10 @@ public class VertivalScalingAction extends Action {
         Flavor currentFlavor = (Flavor) server.getFlavor();
         Flavor newFlavor = Flavor.builder()
                 .fromFlavor(currentFlavor)
-                .disk((int) (currentFlavor.getDisk() * Double.parseDouble(params.get("diskResizeValue"))))
-                .ram((int) (currentFlavor.getRam() * Double.parseDouble(params.get("ramResizeValue"))))
-                .vcpus((int) (currentFlavor.getVcpus() * Double.parseDouble(params.get("vcpusResizeValue"))))
+                .disk((int) (currentFlavor.getDisk() * diskResizeValue))
+                .ram((int) (currentFlavor.getRam() * ramResizeValue))
+                .vcpus((int) (currentFlavor.getVcpus() * vcpusResizeValue))
                 .build();
-
 
         serverApi.resize(serverId, newFlavor.getId());
         serverApi.confirmResize(serverId);
