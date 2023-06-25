@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Data
 public abstract class Action {
-    private final Map<String, String> params;
+    protected final Map<String, String> params;
 
     public abstract ExecutionRS perform();
 }

@@ -5,19 +5,17 @@ import data.ExecutionRS;
 import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.domain.Flavor;
 import org.jclouds.openstack.nova.v2_0.domain.Server;
-import org.jclouds.openstack.nova.v2_0.features.FlavorApi;
 import org.jclouds.openstack.nova.v2_0.features.ServerApi;
-import org.jclouds.openstack.v2_0.domain.Resource;
 import org.k8loud.executor.action.Action;
 
 import java.util.Map;
 
-public class HorizontalScalingAction extends Action {
+public class VertivalScalingAction extends Action {
     private final String region;
     public final String serverId;
     private final NovaApi novaApi;
 
-    public HorizontalScalingAction(Map<String, String> params) {
+    public VertivalScalingAction(Map<String, String> params) {
         super(params);
         region = params.get("region");
         serverId = params.get("serverId");
@@ -27,14 +25,19 @@ public class HorizontalScalingAction extends Action {
     @Override
     public ExecutionRS perform() {
         ServerApi serverApi = novaApi.getServerApi(region);
-        FlavorApi flavorApi = novaApi.getFlavorApi(region);
-
         Server server = serverApi.get(serverId);
-        Resource resource = server.getFlavor();
-        Flavor newFlavor = flavorApi.create((Flavor) resource);
 
-        String newOrUpdatedImageName = serverApi.createImageFromServer("newImageName", serverId);
-        serverApi.create("ServerNameToCreate", newOrUpdatedImageName, newFlavor.getId());
+        Flavor currentFlavor = (Flavor) server.getFlavor();
+        Flavor newFlavor = Flavor.builder()
+                .fromFlavor(currentFlavor)
+                .disk((int) (currentFlavor.getDisk() * Double.parseDouble(params.get("diskResizeValue"))))
+                .ram((int) (currentFlavor.getRam() * Double.parseDouble(params.get("ramResizeValue"))))
+                .vcpus((int) (currentFlavor.getVcpus() * Double.parseDouble(params.get("vcpusResizeValue"))))
+                .build();
+
+
+        serverApi.resize(serverId, newFlavor.getId());
+        serverApi.confirmResize(serverId);
         return ExecutionRS.builder()
                 .result("Success")
                 .exitCode(ExecutionExitCode.OK)
