@@ -2,44 +2,23 @@ package org.k8loud.executor.action.kubernetes;
 
 import data.ExecutionExitCode;
 import data.ExecutionRS;
-import io.fabric8.kubernetes.api.model.HasMetadata;
-import io.fabric8.kubernetes.api.model.KubernetesListBuilder;
 import io.fabric8.kubernetes.api.model.apps.*;
-import io.fabric8.kubernetes.api.model.autoscaling.v1.ScaleBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.server.mock.EnableKubernetesMockClient;
-import io.fabric8.kubernetes.client.server.mock.KubernetesMockServer;
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.Action;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 @EnableKubernetesMockClient(crud = true)
 class HorizontalKubernetesScalingActionTest {
-
-    @Rule
-    public KubernetesServer server = new KubernetesServer(true, true);
     KubernetesClient client;
-
-
-    @BeforeEach
-    public void setUp() {
-
-    }
 
     public static Stream<Map<String, String>> provideStatefulSetScalingParams() {
         return Stream.of(
@@ -48,7 +27,6 @@ class HorizontalKubernetesScalingActionTest {
                 Map.of("resource-type", "StatefulSet", "resource-name", "depl1", "namespace", "test", "replicas", "2")
         );
     }
-
 
     @ParameterizedTest
     @MethodSource("provideStatefulSetScalingParams")
@@ -81,6 +59,7 @@ class HorizontalKubernetesScalingActionTest {
         assertNotNull(sts1.getStatus());
         assertEquals(Integer.parseInt(params.get("replicas")), sts1.getSpec().getReplicas().intValue());
     }
+
     public static Stream<Map<String, String>> provideDeploymentScalingParams() {
         return Stream.of(
                 Map.of("resource-type", "Deployment", "resource-name", "depl1", "namespace", "test", "replicas", "3"),
@@ -88,7 +67,6 @@ class HorizontalKubernetesScalingActionTest {
                 Map.of("resource-type", "Deployment", "resource-name", "depl1", "namespace", "test", "replicas", "2")
         );
     }
-
 
     @ParameterizedTest
     @MethodSource("provideDeploymentScalingParams")
@@ -162,5 +140,4 @@ class HorizontalKubernetesScalingActionTest {
         assertNotNull(repl.getStatus());
         assertEquals(Integer.parseInt(params.get("replicas")), repl.getSpec().getReplicas().intValue());
     }
-
 }

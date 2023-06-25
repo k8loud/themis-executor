@@ -6,19 +6,16 @@ import org.k8loud.executor.action.Action;
 
 import java.util.Map;
 
-public abstract class K8SAction extends Action {
-
-
+public abstract class KubernetesAction extends Action {
     KubernetesClient client;
 
-
-    public K8SAction(Map<String, String> params) {
+    public KubernetesAction(Map<String, String> params) {
         super(params);
         //TODO how to configure??
         this.client = new KubernetesClientBuilder().build();
     }
 
-    public K8SAction(Map<String, String> params, KubernetesClient client) {
+    public KubernetesAction(Map<String, String> params, KubernetesClient client) {
         super(params);
         this.client = client;
     }
