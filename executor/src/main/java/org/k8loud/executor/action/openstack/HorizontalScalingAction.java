@@ -15,7 +15,6 @@ import java.util.Map;
 public class HorizontalScalingAction extends Action {
     private String region;
     private String serverId;
-    // params ----------------------------------------------------------------------------------------------------------
     private final NovaApi novaApi;
 
     public HorizontalScalingAction(Map<String, String> params) {

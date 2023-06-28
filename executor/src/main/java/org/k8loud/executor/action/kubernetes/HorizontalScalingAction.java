@@ -8,18 +8,17 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Map;
 
 @Slf4j
-public class HorizontalKubernetesScalingAction extends KubernetesAction {
+public class HorizontalScalingAction extends KubernetesAction {
     private String resourceName;
     private String resourceType;
     private String namespace;
     private int replicas;
-    // params ----------------------------------------------------------------------------------------------------------
 
-    public HorizontalKubernetesScalingAction(Map<String, String> params) {
+    public HorizontalScalingAction(Map<String, String> params) {
         super(params);
     }
 
-    public HorizontalKubernetesScalingAction(Map<String, String> params, KubernetesClient client) {
+    public HorizontalScalingAction(Map<String, String> params, KubernetesClient client) {
         super(params, client);
     }
 

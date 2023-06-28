@@ -7,5 +7,3 @@ public class MapperException extends CustomException {
         super(e, errorCode);
     }
 }
-
-

@@ -12,7 +12,6 @@ public class UpdateConfigMapAction extends KubernetesAction {
     private String namespace;
     private String resourceName;
     private Map<String, String> replacements;
-    // params ----------------------------------------------------------------------------------------------------------
 
     public UpdateConfigMapAction(Map<String, String> params) {
         super(params);

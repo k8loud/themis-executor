@@ -3,6 +3,7 @@ package org.k8loud.executor.service;
 import data.ExecutionRQ;
 import data.ExecutionRS;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.action.Action;
 import org.k8loud.executor.exception.MapperException;
 import org.k8loud.executor.exception.ValidationException;
@@ -24,7 +25,7 @@ public class ExecutionWrapperServiceImpl implements ExecutionWrapperService {
     }
 
     @Override
-    public ResponseEntity<String> execute(ExecutionRQ request) {
+    public ResponseEntity<String> execute(@NotNull ExecutionRQ request) {
         try {
             validationService.validate(request);
             Action action = mapperService.map(request);

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.k8loud.executor.exception.CustomException;
 import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.exception.code.ValidationExceptionCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static data.ExecutionRQ.createExecutionRQ;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @SpringBootTest
 public class ValidationServiceTest {
@@ -38,18 +39,17 @@ public class ValidationServiceTest {
 
     @ParameterizedTest
     @MethodSource("provideInvalidExecutionRQs")
-    void testInvalidMapping(String collectionName, String actionName, Map<String, String> params, ValidationExceptionCode exceptionCode) {
+    void testInvalidMapping(String collectionName, String actionName, Map<String, String> params,
+                            ValidationExceptionCode expectedExceptionCode) {
         // given
         ExecutionRQ executionRQ = createExecutionRQ(collectionName, actionName, params);
 
-        try {
-            // when
-            validationService.validate(executionRQ);
-            fail();
-        } catch (ValidationException e) {
-            // then
-            Assertions.assertEquals(e.getExceptionCode(), exceptionCode);
-        }
+        // when
+        Throwable e = catchThrowable(() -> validationService.validate(executionRQ));
+
+        // then
+        Assertions.assertEquals(ValidationException.class, e.getClass());
+        Assertions.assertEquals(expectedExceptionCode, ((CustomException) e).getExceptionCode());
     }
 
     private static Stream<Arguments> provideValidExecutionRQs() {

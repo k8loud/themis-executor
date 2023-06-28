@@ -16,7 +16,6 @@ public class VerticalScalingAction extends Action {
     private double diskResizeValue;
     private double ramResizeValue;
     private double vcpusResizeValue;
-    // params ----------------------------------------------------------------------------------------------------------
     private final NovaApi novaApi;
 
     public VerticalScalingAction(Map<String, String> params) {

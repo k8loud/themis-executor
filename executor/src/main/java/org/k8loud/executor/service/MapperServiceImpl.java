@@ -21,7 +21,7 @@ public class MapperServiceImpl implements MapperService {
 
     @NotNull
     @Override
-    public Action map(ExecutionRQ executionRQ) throws MapperException {
+    public Action map(@NotNull ExecutionRQ executionRQ) throws MapperException {
         String collectionName = executionRQ.getCollectionName();
         String actionName = executionRQ.getActionName();
         Map<String, String> params = executionRQ.getParams();

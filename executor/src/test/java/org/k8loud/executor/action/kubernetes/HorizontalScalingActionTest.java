@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 @EnableKubernetesMockClient(crud = true)
-class HorizontalKubernetesScalingActionTest {
+class HorizontalScalingActionTest {
     KubernetesClient client;
 
     public static Stream<Map<String, String>> provideStatefulSetScalingParams() {
@@ -48,7 +48,7 @@ class HorizontalKubernetesScalingActionTest {
         client.resource(sts).create();
 
         //when
-        Action action = new HorizontalKubernetesScalingAction(params, client);
+        Action action = new HorizontalScalingAction(params, client);
         ExecutionRS rs = action.perform();
         StatefulSet sts1 = client.apps().statefulSets().withName(params.get("resourceName")).get();
 
@@ -88,7 +88,7 @@ class HorizontalKubernetesScalingActionTest {
         client.resource(depl).create();
 
         //when
-        Action action = new HorizontalKubernetesScalingAction(params, client);
+        Action action = new HorizontalScalingAction(params, client);
         ExecutionRS rs = action.perform();
         Deployment depl1 = client.apps().deployments().withName(params.get("resourceName")).get();
 
@@ -129,7 +129,7 @@ class HorizontalKubernetesScalingActionTest {
         client.resource(rss).create();
 
         // when
-        Action action = new HorizontalKubernetesScalingAction(params, client);
+        Action action = new HorizontalScalingAction(params, client);
         ExecutionRS rs = action.perform();
         ReplicaSet repl = client.apps().replicaSets().withName(params.get("resourceName")).get();
 
