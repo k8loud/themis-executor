@@ -14,7 +14,8 @@ import org.k8loud.executor.action.Action;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @EnableKubernetesMockClient(crud = true)
 class UpdateConfigMapActionTest {
@@ -23,17 +24,17 @@ class UpdateConfigMapActionTest {
 
     public static Stream<Arguments> provideUpdateValuesConfigMapParams() {
         return Stream.of(
-                Arguments.of(Map.of("resource-name", "cm1", "namespace", "test", "k1", "k1", "v1", "v2"),
+                Arguments.of(Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v2"),
                         Map.of("k1", "v1"),
                         Map.of("k1", "v2"),
                         1),
                 Arguments.of(
-                        Map.of("resource-name", "cm1", "namespace", "test", "k1", "k1", "v1", "v2"),
+                        Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v2"),
                         Map.of("k1", "v1", "k2", "v2", "k3", "v3"),
                         Map.of("k1", "v2", "k2", "v2", "k3", "v3"),
                         3),
                 Arguments.of(
-                        Map.of("resource-name", "cm1", "namespace", "test", "k1", "k1", "v1", "v1"),
+                        Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v1"),
                         Map.of("k2", "v2", "k3", "v3"),
                         Map.of("k1", "v1", "k2", "v2", "k3", "v3"),
                         3)

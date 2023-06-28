@@ -1,21 +1,22 @@
 package org.k8loud.executor.action;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.k8loud.executor.exception.MapperException;
+
+import static org.k8loud.executor.exception.code.MapperExceptionCode.ACTION_CLASS_NOT_FOUND;
 
 @Slf4j
 public class ActionHelper {
-    @Nullable
-    public Class<?> getActionClass(String collectionName, String actionName) {
+    @NotNull
+    public Class<?> getActionClass(String collectionName, String actionName) throws MapperException {
         String fullActionName = String.format("%s.%s", collectionName, actionName);
-        Class<?> clazz = null;
         try {
             String packageName = this.getClass().getPackageName();
             String fullClassName = String.format("%s.%s", packageName, fullActionName);
-            clazz = Class.forName(fullClassName);
+            return Class.forName(fullClassName);
         } catch (ClassNotFoundException e) {
-            log.error("Couldn't find class for action `{}`", fullActionName);
+            throw new MapperException(e, ACTION_CLASS_NOT_FOUND);
         }
-        return clazz;
     }
 }

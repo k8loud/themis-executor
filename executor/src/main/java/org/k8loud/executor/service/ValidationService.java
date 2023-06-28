@@ -2,9 +2,8 @@ package org.k8loud.executor.service;
 
 
 import data.ExecutionRQ;
+import org.k8loud.executor.exception.ValidationException;
 
 public interface ValidationService {
-
-    boolean validate(ExecutionRQ request);
-
+    void validate(ExecutionRQ request) throws ValidationException;
 }

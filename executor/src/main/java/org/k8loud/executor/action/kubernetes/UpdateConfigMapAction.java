@@ -9,11 +9,10 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import java.util.Map;
 
 public class UpdateConfigMapAction extends KubernetesAction {
-
     private String namespace;
     private String resourceName;
-
     private Map<String, String> replacements;
+    // params ----------------------------------------------------------------------------------------------------------
 
     public UpdateConfigMapAction(Map<String, String> params) {
         super(params);
@@ -26,7 +25,7 @@ public class UpdateConfigMapAction extends KubernetesAction {
     @Override
     public void unpackParams(Map<String, String> params) {
         namespace = params.get("namespace");
-        resourceName = params.get("resource-name");
+        resourceName = params.get("resourceName");
         // FIXME more than 1 param change pls
         replacements = Map.of(params.get("k1"), params.get("v1"));
     }

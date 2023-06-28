@@ -22,9 +22,9 @@ class HorizontalKubernetesScalingActionTest {
 
     public static Stream<Map<String, String>> provideStatefulSetScalingParams() {
         return Stream.of(
-                Map.of("resource-type", "StatefulSet", "resource-name", "depl1", "namespace", "test", "replicas", "3"),
-                Map.of("resource-type", "StatefulSet", "resource-name", "depl1", "namespace", "test", "replicas", "1"),
-                Map.of("resource-type", "StatefulSet", "resource-name", "depl1", "namespace", "test", "replicas", "2")
+                Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "3"),
+                Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "1"),
+                Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "2")
         );
     }
 
@@ -50,7 +50,7 @@ class HorizontalKubernetesScalingActionTest {
         //when
         Action action = new HorizontalKubernetesScalingAction(params, client);
         ExecutionRS rs = action.perform();
-        StatefulSet sts1 = client.apps().statefulSets().withName(params.get("resource-name")).get();
+        StatefulSet sts1 = client.apps().statefulSets().withName(params.get("resourceName")).get();
 
         //then
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
@@ -62,9 +62,9 @@ class HorizontalKubernetesScalingActionTest {
 
     public static Stream<Map<String, String>> provideDeploymentScalingParams() {
         return Stream.of(
-                Map.of("resource-type", "Deployment", "resource-name", "depl1", "namespace", "test", "replicas", "3"),
-                Map.of("resource-type", "Deployment", "resource-name", "depl1", "namespace", "test", "replicas", "1"),
-                Map.of("resource-type", "Deployment", "resource-name", "depl1", "namespace", "test", "replicas", "2")
+                Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas", "3"),
+                Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas", "1"),
+                Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas", "2")
         );
     }
 
@@ -90,7 +90,7 @@ class HorizontalKubernetesScalingActionTest {
         //when
         Action action = new HorizontalKubernetesScalingAction(params, client);
         ExecutionRS rs = action.perform();
-        Deployment depl1 = client.apps().deployments().withName(params.get("resource-name")).get();
+        Deployment depl1 = client.apps().deployments().withName(params.get("resourceName")).get();
 
         //then
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
@@ -102,9 +102,9 @@ class HorizontalKubernetesScalingActionTest {
 
     public static Stream<Map<String, String>> provideReplicasetScalingParams() {
         return Stream.of(
-                Map.of("resource-type", "ReplicaSet", "resource-name", "repl1", "namespace", "test", "replicas", "3"),
-                Map.of("resource-type", "ReplicaSet", "resource-name", "repl1", "namespace", "test", "replicas", "1"),
-                Map.of("resource-type", "ReplicaSet", "resource-name", "repl1", "namespace", "test", "replicas", "2")
+                Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas", "3"),
+                Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas", "1"),
+                Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas", "2")
         );
     }
 
@@ -131,7 +131,7 @@ class HorizontalKubernetesScalingActionTest {
         // when
         Action action = new HorizontalKubernetesScalingAction(params, client);
         ExecutionRS rs = action.perform();
-        ReplicaSet repl = client.apps().replicaSets().withName(params.get("resource-name")).get();
+        ReplicaSet repl = client.apps().replicaSets().withName(params.get("resourceName")).get();
 
         // then
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());

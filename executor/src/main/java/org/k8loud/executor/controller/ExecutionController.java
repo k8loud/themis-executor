@@ -17,7 +17,7 @@ public class ExecutionController {
     }
 
     @PostMapping(value = "/execute", consumes = "application/json")
-    public ResponseEntity<String> action(@RequestBody ExecutionRQ actionRQ) {
-        return executionWrapperService.execute(actionRQ);
+    public ResponseEntity<String> execute(@RequestBody ExecutionRQ executionRQ) {
+        return executionWrapperService.execute(executionRQ);
     }
 }

@@ -9,8 +9,8 @@ import java.util.Map;
 
 @Slf4j
 public class HorizontalKubernetesScalingAction extends KubernetesAction {
-    private String name;
-    private String type;
+    private String resourceName;
+    private String resourceType;
     private String namespace;
     private int replicas;
     // params ----------------------------------------------------------------------------------------------------------
@@ -25,19 +25,19 @@ public class HorizontalKubernetesScalingAction extends KubernetesAction {
 
     @Override
     public void unpackParams(Map<String, String> params) {
-        name = params.get("resource-name");
-        type = params.get("resource-type");
+        resourceName = params.get("resourceName");
+        resourceType = params.get("resourceType");
         namespace = params.get("namespace");
         replicas = Integer.parseInt(params.get("replicas"));
     }
 
     @Override
     public ExecutionRS perform() {
-        switch (type) {
-            case "ReplicaSet" -> client.apps().replicaSets().inNamespace(namespace).withName(name).scale(replicas);
-            case "Deployment" -> client.apps().deployments().inNamespace(namespace).withName(name).scale(replicas);
-            case "StatefulSet" -> client.apps().statefulSets().inNamespace(namespace).withName(name).scale(replicas);
-            case "ControllerRevision" -> client.apps().controllerRevisions().inNamespace(namespace).withName(name).scale(replicas);
+        switch (resourceType) {
+            case "ReplicaSet" -> client.apps().replicaSets().inNamespace(namespace).withName(resourceName).scale(replicas);
+            case "Deployment" -> client.apps().deployments().inNamespace(namespace).withName(resourceName).scale(replicas);
+            case "StatefulSet" -> client.apps().statefulSets().inNamespace(namespace).withName(resourceName).scale(replicas);
+            case "ControllerRevision" -> client.apps().controllerRevisions().inNamespace(namespace).withName(resourceName).scale(replicas);
             default -> {
                 return ExecutionRS.builder()
                         .result("BAAAAAAAAAD")
@@ -47,7 +47,7 @@ public class HorizontalKubernetesScalingAction extends KubernetesAction {
         }
 
         return ExecutionRS.builder()
-                .result("Resource: " + type + "/" + name + " scaled to: " + replicas)
+                .result("Resource: " + resourceType + "/" + resourceName + " scaled to: " + replicas)
                 .exitCode(ExecutionExitCode.OK)
                 .build();
     }
