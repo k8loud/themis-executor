@@ -6,7 +6,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.Action;
-import org.k8loud.executor.exception.CustomException;
 import org.k8loud.executor.exception.MapperException;
 import org.k8loud.executor.exception.code.MapperExceptionCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static data.ExecutionRQ.createExecutionRQ;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -54,8 +54,8 @@ class MapperServiceImplTest {
         Throwable e = catchThrowable(() -> mapperService.map(executionRQ));
 
         // then
-        Assertions.assertEquals(MapperException.class, e.getClass());
-        Assertions.assertEquals(expectedExceptionCode, ((CustomException) e).getExceptionCode());
+        assertThat(e).isExactlyInstanceOf(MapperException.class);
+        assertThat(((MapperException) e).getExceptionCode()).isEqualTo(expectedExceptionCode);
     }
 
     private static Stream<Arguments> provideMappableExecutionRQs() {

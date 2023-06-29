@@ -1,11 +1,9 @@
 package org.k8loud.executor.service;
 
 import data.ExecutionRQ;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.k8loud.executor.exception.CustomException;
 import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.exception.code.ValidationExceptionCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static data.ExecutionRQ.createExecutionRQ;
-import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 
 @SpringBootTest
 public class ValidationServiceTest {
@@ -48,8 +47,8 @@ public class ValidationServiceTest {
         Throwable e = catchThrowable(() -> validationService.validate(executionRQ));
 
         // then
-        Assertions.assertEquals(ValidationException.class, e.getClass());
-        Assertions.assertEquals(expectedExceptionCode, ((CustomException) e).getExceptionCode());
+        assertThat(e).isExactlyInstanceOf(ValidationException.class);
+        assertThat(((ValidationException) e).getExceptionCode()).isEqualTo(expectedExceptionCode);
     }
 
     private static Stream<Arguments> provideValidExecutionRQs() {
