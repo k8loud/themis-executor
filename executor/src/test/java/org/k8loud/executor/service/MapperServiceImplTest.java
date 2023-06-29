@@ -1,6 +1,7 @@
 package org.k8loud.executor.service;
 
 import data.ExecutionRQ;
+import data.Params;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -26,14 +27,15 @@ import static org.junit.jupiter.api.Assertions.fail;
 @SpringBootTest
 class MapperServiceImplTest {
     private static final String INVALID = "invalidName";
-    private static final Map<String, String> VALID_PARAMS = Map.of("param1", "val1");
+    private static final Params VALID_PARAMS = new Params(Map.of("param1", "val1"));
+    public static final Params EMPTY_PARAMS = new Params(Collections.emptyMap());
 
     @Autowired
     private MapperServiceImpl mapperService;
 
     @ParameterizedTest
     @MethodSource("provideMappableExecutionRQs")
-    void testValidMapping(String collectionName, String actionName, Map<String, String> params) throws MapperException, ActionException {
+    void testValidMapping(String collectionName, String actionName, Params params) throws MapperException, ActionException {
         // given
         ExecutionRQ executionRQ = createExecutionRQ(collectionName, actionName, params);
 
@@ -47,7 +49,7 @@ class MapperServiceImplTest {
 
     @ParameterizedTest
     @MethodSource("provideUnmappableExecutionRQs")
-    void testInvalidMapping(String collectionName, String actionName, Map<String, String> params,
+    void testInvalidMapping(String collectionName, String actionName, Params params,
                             Class<? extends CustomException> expectedExceptionClass, Enum expectedExceptionCode) {
         // given
         ExecutionRQ executionRQ = createExecutionRQ(collectionName, actionName, params);
@@ -61,15 +63,19 @@ class MapperServiceImplTest {
     }
 
     private static Stream<Arguments> provideMappableExecutionRQs() {
+        Params horizontalKubernetesScalingParams = new Params(Map.of("resourceName", "nameVal",
+                "resourceType", "typeVal", "namespace", "namespaceVal", "replicas", "420"));
+        Params horizontalOpenstackScalingParams = new Params(Map.of("region", "regionVal",
+                "serverId", "EUNE"));
+        Params verticalOpenstackScalingParams = new Params(Map.of("region", "regionVal",
+                "serverId", "EUNE", "diskResizeValue", "2.12323123", "ramResizeValue", "-0.11",
+                "vcpusResizeValue", "5768763425"));
+
         return Stream.of(
-                Arguments.of("kubernetes", "DeletePodAction", Collections.emptyMap()),
-                Arguments.of("kubernetes", "HorizontalScalingAction", Map.of("resourceName", "nameVal",
-                        "resourceType", "typeVal", "namespace", "namespaceVal", "replicas", "420")),
-                Arguments.of("openstack", "HorizontalScalingAction", Map.of("region", "regionVal",
-                        "serverId", "EUNE")),
-                Arguments.of("openstack", "VerticalScalingAction", Map.of("region", "regionVal",
-                        "serverId", "EUNE", "diskResizeValue", "2.12323123", "ramResizeValue", "-0.11",
-                        "vcpusResizeValue", "5768763425"))
+                Arguments.of("kubernetes", "DeletePodAction", EMPTY_PARAMS),
+                Arguments.of("kubernetes", "HorizontalScalingAction", horizontalKubernetesScalingParams),
+                Arguments.of("openstack", "HorizontalScalingAction", horizontalOpenstackScalingParams),
+                Arguments.of("openstack", "VerticalScalingAction", verticalOpenstackScalingParams)
 // TODO: How to handle map?
 //                Arguments.of("kubernetes", "UpdateConfigMapAction", Map.of("namespace", "nameVal",
 //                        "resourceName", "typeVal", "replacements", Map.of("k1", "v1")))
@@ -102,9 +108,10 @@ class MapperServiceImplTest {
         }
     }
 
-    private void checkFieldsValues(Object object, Map<String, String> map) {
-        for (Map.Entry<String, String> entry : map.entrySet()) {
+    private void checkFieldsValues(Object object, Params params) {
+        for (Map.Entry<String, String> entry : params.getParams().entrySet()) {
             checkFieldValue(object, entry.getKey(), entry.getValue());
         }
     }
 }
+

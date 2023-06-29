@@ -19,5 +19,11 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
         </dependency>
+
+        <!--    TEST DEPENDENCIES    -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
     </dependencies>
 </project>

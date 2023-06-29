@@ -1,6 +1,7 @@
 package org.k8loud.executor.service;
 
 import data.ExecutionRQ;
+import data.Params;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.action.Action;
@@ -25,11 +26,11 @@ public class MapperServiceImpl implements MapperService {
     public Action map(@NotNull ExecutionRQ executionRQ) throws MapperException, ActionException {
         String collectionName = executionRQ.getCollectionName();
         String actionName = executionRQ.getActionName();
-        Map<String, String> params = executionRQ.getParams();
+        Params params = executionRQ.getParams();
 
         Class<?> actionClass = actionHelper.getActionClass(collectionName, actionName);
         try {
-            return (Action) actionClass.getConstructor(Map.class).newInstance(params);
+            return (Action) actionClass.getConstructor(Params.class).newInstance(params);
         } catch (NoSuchMethodException e) {
             throw new MapperException(e, INVALID_CONSTRUCTOR);
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {

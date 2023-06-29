@@ -2,6 +2,7 @@ package org.k8loud.executor.action.kubernetes;
 
 import data.ExecutionExitCode;
 import data.ExecutionRS;
+import data.Params;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -25,17 +26,18 @@ class UpdateConfigMapActionTest {
 
     public static Stream<Arguments> provideUpdateValuesConfigMapParams() {
         return Stream.of(
-                Arguments.of(Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v2"),
+                Arguments.of(
+                        new Params(Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v2")),
                         Map.of("k1", "v1"),
                         Map.of("k1", "v2"),
                         1),
                 Arguments.of(
-                        Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v2"),
+                        new Params(Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v2")),
                         Map.of("k1", "v1", "k2", "v2", "k3", "v3"),
                         Map.of("k1", "v2", "k2", "v2", "k3", "v3"),
                         3),
                 Arguments.of(
-                        Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v1"),
+                        new Params(Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v1")),
                         Map.of("k2", "v2", "k3", "v3"),
                         Map.of("k1", "v1", "k2", "v2", "k3", "v3"),
                         3)
@@ -45,7 +47,7 @@ class UpdateConfigMapActionTest {
 
     @ParameterizedTest
     @MethodSource("provideUpdateValuesConfigMapParams")
-    void testUpdateValuesConfigMap(Map<String, String> params, Map<String, String> data, Map<String, String> newData, int finalLength) throws ActionException {
+    void testUpdateValuesConfigMap(Params params, Map<String, String> data, Map<String, String> newData, int finalLength) throws ActionException {
         // given
         ConfigMap cm = new ConfigMapBuilder()
                 .withNewMetadata()

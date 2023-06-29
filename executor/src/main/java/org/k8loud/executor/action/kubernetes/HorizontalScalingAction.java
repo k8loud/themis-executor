@@ -2,6 +2,7 @@ package org.k8loud.executor.action.kubernetes;
 
 import data.ExecutionExitCode;
 import data.ExecutionRS;
+import data.Params;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.exception.ActionException;
@@ -15,20 +16,20 @@ public class HorizontalScalingAction extends KubernetesAction {
     private String namespace;
     private int replicas;
 
-    public HorizontalScalingAction(Map<String, String> params) throws ActionException {
+    public HorizontalScalingAction(Params params) throws ActionException {
         super(params);
     }
 
-    public HorizontalScalingAction(Map<String, String> params, KubernetesClient client) throws ActionException {
+    public HorizontalScalingAction(Params params, KubernetesClient client) throws ActionException {
         super(params, client);
     }
 
     @Override
-    public void unpackParams(Map<String, String> params) {
-        resourceName = params.get("resourceName");
-        resourceType = params.get("resourceType");
-        namespace = params.get("namespace");
-        replicas = Integer.parseInt(params.get("replicas"));
+    public void unpackParams(Params params) {
+        resourceName = params.getRequiredParam("resourceName");
+        resourceType = params.getRequiredParam("resourceType");
+        namespace = params.getRequiredParam("namespace");
+        replicas = Integer.parseInt(params.getRequiredParam("replicas"));
     }
 
     @Override

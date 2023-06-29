@@ -2,6 +2,7 @@ package org.k8loud.executor.action.kubernetes;
 
 import data.ExecutionExitCode;
 import data.ExecutionRS;
+import data.Params;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -14,20 +15,20 @@ public class UpdateConfigMapAction extends KubernetesAction {
     private String resourceName;
     private Map<String, String> replacements;
 
-    public UpdateConfigMapAction(Map<String, String> params) throws ActionException {
+    public UpdateConfigMapAction(Params params) throws ActionException {
         super(params);
     }
 
-    public UpdateConfigMapAction(Map<String, String> params, KubernetesClient client) throws ActionException {
+    public UpdateConfigMapAction(Params params, KubernetesClient client) throws ActionException {
         super(params, client);
     }
 
     @Override
-    public void unpackParams(Map<String, String> params) {
-        namespace = params.get("namespace");
-        resourceName = params.get("resourceName");
+    public void unpackParams(Params params) {
+        namespace = params.getRequiredParam("namespace");
+        resourceName = params.getRequiredParam("resourceName");
         // FIXME more than 1 param change pls
-        replacements = Map.of(params.get("k1"), params.get("v1"));
+        replacements = Map.of(params.getRequiredParam("k1"), params.getRequiredParam("v1"));
     }
 
     /**

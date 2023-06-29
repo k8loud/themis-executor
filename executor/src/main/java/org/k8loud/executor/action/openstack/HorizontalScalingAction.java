@@ -2,6 +2,7 @@ package org.k8loud.executor.action.openstack;
 
 import data.ExecutionExitCode;
 import data.ExecutionRS;
+import data.Params;
 import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.domain.Flavor;
 import org.jclouds.openstack.nova.v2_0.domain.Server;
@@ -18,7 +19,7 @@ public class HorizontalScalingAction extends Action {
     private String serverId;
     private final NovaApi novaApi;
 
-    public HorizontalScalingAction(Map<String, String> params) throws ActionException {
+    public HorizontalScalingAction(Params params) throws ActionException {
         super(params);
         novaApi = null;
 // FIXME: 'java.lang.IllegalStateException: Unable to load cache item' when this object is instantiated in tests
@@ -26,9 +27,9 @@ public class HorizontalScalingAction extends Action {
     }
 
     @Override
-    public void unpackParams(Map<String, String> params) {
-        region = params.get("region");
-        serverId = params.get("serverId");
+    public void unpackParams(Params params) {
+        region = params.getRequiredParam("region");
+        serverId = params.getRequiredParam("serverId");
     }
 
     @Override

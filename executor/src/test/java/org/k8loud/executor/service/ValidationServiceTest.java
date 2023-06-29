@@ -1,6 +1,7 @@
 package org.k8loud.executor.service;
 
 import data.ExecutionRQ;
+import data.Params;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -19,13 +20,14 @@ import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 
 @SpringBootTest
 public class ValidationServiceTest {
-    private static final Map<String, String> VALID_PARAMS = Map.of("param1", "val1");
+    private static final Params VALID_PARAMS = new Params(Map.of("param1", "val1"));
+    private static final Params EMPTY_PARAMS = new Params(Collections.emptyMap());
     @Autowired
     private ValidationService validationService;
 
     @ParameterizedTest
     @MethodSource("provideValidExecutionRQs")
-    void testValidMapping(String collectionName, String actionName, Map<String, String> params) throws ValidationException {
+    void testValidMapping(String collectionName, String actionName, Params params) throws ValidationException {
         // given
         ExecutionRQ executionRQ = createExecutionRQ(collectionName, actionName, params);
 
@@ -38,7 +40,7 @@ public class ValidationServiceTest {
 
     @ParameterizedTest
     @MethodSource("provideInvalidExecutionRQs")
-    void testInvalidMapping(String collectionName, String actionName, Map<String, String> params,
+    void testInvalidMapping(String collectionName, String actionName, Params params,
                             ValidationExceptionCode expectedExceptionCode) {
         // given
         ExecutionRQ executionRQ = createExecutionRQ(collectionName, actionName, params);
@@ -54,7 +56,7 @@ public class ValidationServiceTest {
     private static Stream<Arguments> provideValidExecutionRQs() {
         return Stream.of(
                 Arguments.of("kubernetes", "DeletePodAction", VALID_PARAMS),
-                Arguments.of("kubernetes", "DeletePodAction", Collections.emptyMap())
+                Arguments.of("kubernetes", "DeletePodAction", EMPTY_PARAMS)
         );
     }
 

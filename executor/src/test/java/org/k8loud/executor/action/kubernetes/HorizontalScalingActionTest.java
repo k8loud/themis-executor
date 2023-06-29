@@ -2,6 +2,7 @@ package org.k8loud.executor.action.kubernetes;
 
 import data.ExecutionExitCode;
 import data.ExecutionRS;
+import data.Params;
 import io.fabric8.kubernetes.api.model.apps.*;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.server.mock.EnableKubernetesMockClient;
@@ -21,17 +22,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class HorizontalScalingActionTest {
     KubernetesClient client;
 
-    public static Stream<Map<String, String>> provideStatefulSetScalingParams() {
+    public static Stream<Params> provideStatefulSetScalingParams() {
         return Stream.of(
-                Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "3"),
-                Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "1"),
-                Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "2")
+                new Params(Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "3")),
+                new Params(Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "1")),
+                new Params(Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "2"))
         );
     }
 
     @ParameterizedTest
     @MethodSource("provideStatefulSetScalingParams")
-    void testScalingStatefulSet(Map<String, String> params) throws ActionException {
+    void testScalingStatefulSet(Params params) throws ActionException {
         // given
         StatefulSet sts = new StatefulSetBuilder()
                 .withNewMetadata()
@@ -51,27 +52,27 @@ class HorizontalScalingActionTest {
         //when
         Action action = new HorizontalScalingAction(params, client);
         ExecutionRS rs = action.perform();
-        StatefulSet sts1 = client.apps().statefulSets().withName(params.get("resourceName")).get();
+        StatefulSet sts1 = client.apps().statefulSets().withName(params.getRequiredParam("resourceName")).get();
 
         //then
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
         assertNotNull(sts1);
         assertNotNull(sts1.getSpec());
         assertNotNull(sts1.getStatus());
-        assertEquals(Integer.parseInt(params.get("replicas")), sts1.getSpec().getReplicas().intValue());
+        assertEquals(Integer.parseInt(params.getRequiredParam("replicas")), sts1.getSpec().getReplicas().intValue());
     }
 
-    public static Stream<Map<String, String>> provideDeploymentScalingParams() {
+    public static Stream<Params> provideDeploymentScalingParams() {
         return Stream.of(
-                Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas", "3"),
-                Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas", "1"),
-                Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas", "2")
+                new Params(Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas", "3")),
+                new Params(Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas", "1")),
+                new Params(Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas", "2"))
         );
     }
 
     @ParameterizedTest
     @MethodSource("provideDeploymentScalingParams")
-    void testScalingDeployment(Map<String, String> params) throws ActionException {
+    void testScalingDeployment(Params params) throws ActionException {
         // given
         Deployment depl = new DeploymentBuilder()
                 .withNewMetadata()
@@ -91,27 +92,27 @@ class HorizontalScalingActionTest {
         //when
         Action action = new HorizontalScalingAction(params, client);
         ExecutionRS rs = action.perform();
-        Deployment depl1 = client.apps().deployments().withName(params.get("resourceName")).get();
+        Deployment depl1 = client.apps().deployments().withName(params.getRequiredParam("resourceName")).get();
 
         //then
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
         assertNotNull(depl1);
         assertNotNull(depl1.getSpec());
         assertNotNull(depl1.getStatus());
-        assertEquals(Integer.parseInt(params.get("replicas")), depl1.getSpec().getReplicas().intValue());
+        assertEquals(Integer.parseInt(params.getRequiredParam("replicas")), depl1.getSpec().getReplicas().intValue());
     }
 
-    public static Stream<Map<String, String>> provideReplicasetScalingParams() {
+    public static Stream<Params> provideReplicasetScalingParams() {
         return Stream.of(
-                Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas", "3"),
-                Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas", "1"),
-                Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas", "2")
+                new Params(Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas", "3")),
+                new Params(Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas", "1")),
+                new Params(Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas", "2"))
         );
     }
 
     @ParameterizedTest
     @MethodSource("provideReplicasetScalingParams")
-    void testScalingReplicaSet(Map<String, String> params) throws ActionException {
+    void testScalingReplicaSet(Params params) throws ActionException {
 
         // given
         ReplicaSet rss = new ReplicaSetBuilder()
@@ -132,13 +133,13 @@ class HorizontalScalingActionTest {
         // when
         Action action = new HorizontalScalingAction(params, client);
         ExecutionRS rs = action.perform();
-        ReplicaSet repl = client.apps().replicaSets().withName(params.get("resourceName")).get();
+        ReplicaSet repl = client.apps().replicaSets().withName(params.getRequiredParam("resourceName")).get();
 
         // then
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
         assertNotNull(repl);
         assertNotNull(repl.getSpec());
         assertNotNull(repl.getStatus());
-        assertEquals(Integer.parseInt(params.get("replicas")), repl.getSpec().getReplicas().intValue());
+        assertEquals(Integer.parseInt(params.getRequiredParam("replicas")), repl.getSpec().getReplicas().intValue());
     }
 }
