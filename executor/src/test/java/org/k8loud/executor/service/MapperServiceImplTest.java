@@ -6,8 +6,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.Action;
+import org.k8loud.executor.exception.ActionException;
+import org.k8loud.executor.exception.CustomException;
 import org.k8loud.executor.exception.MapperException;
-import org.k8loud.executor.exception.code.MapperExceptionCode;
+import org.k8loud.executor.exception.code.ActionExceptionCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -31,7 +33,7 @@ class MapperServiceImplTest {
 
     @ParameterizedTest
     @MethodSource("provideMappableExecutionRQs")
-    void testValidMapping(String collectionName, String actionName, Map<String, String> params) throws MapperException {
+    void testValidMapping(String collectionName, String actionName, Map<String, String> params) throws MapperException, ActionException {
         // given
         ExecutionRQ executionRQ = createExecutionRQ(collectionName, actionName, params);
 
@@ -46,7 +48,7 @@ class MapperServiceImplTest {
     @ParameterizedTest
     @MethodSource("provideUnmappableExecutionRQs")
     void testInvalidMapping(String collectionName, String actionName, Map<String, String> params,
-                            MapperExceptionCode expectedExceptionCode) {
+                            Class<? extends CustomException> expectedExceptionClass, Enum expectedExceptionCode) {
         // given
         ExecutionRQ executionRQ = createExecutionRQ(collectionName, actionName, params);
 
@@ -54,8 +56,8 @@ class MapperServiceImplTest {
         Throwable e = catchThrowable(() -> mapperService.map(executionRQ));
 
         // then
-        assertThat(e).isExactlyInstanceOf(MapperException.class);
-        assertThat(((MapperException) e).getExceptionCode()).isEqualTo(expectedExceptionCode);
+        assertThat(e).isExactlyInstanceOf(expectedExceptionClass);
+        assertThat(((CustomException) e).getExceptionCode()).isEqualTo(expectedExceptionCode);
     }
 
     private static Stream<Arguments> provideMappableExecutionRQs() {
@@ -78,8 +80,8 @@ class MapperServiceImplTest {
         // TODO: The VALID_PARAMS here aren't actually valid for all cases; it's not covered because in the specific
         //  Action implementations we access values by specific keys anyway, other keys will be ignored
         return Stream.of(
-                Arguments.of("kubernetes", INVALID, VALID_PARAMS, MapperExceptionCode.ACTION_CLASS_NOT_FOUND),
-                Arguments.of(INVALID, "DeletePodAction", VALID_PARAMS, MapperExceptionCode.ACTION_CLASS_NOT_FOUND)
+                Arguments.of("kubernetes", INVALID, VALID_PARAMS, ActionException.class, ActionExceptionCode.ACTION_CLASS_NOT_FOUND),
+                Arguments.of(INVALID, "DeletePodAction", VALID_PARAMS, ActionException.class, ActionExceptionCode.ACTION_CLASS_NOT_FOUND)
         );
     }
 

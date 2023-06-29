@@ -5,6 +5,7 @@ import data.ExecutionRS;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.action.Action;
+import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.MapperException;
 import org.k8loud.executor.exception.ValidationException;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class ExecutionWrapperServiceImpl implements ExecutionWrapperService {
             return new ResponseEntity<>(response.toString(), HttpStatus.OK);
         } catch (ValidationException e) {
             return logErrorAndRespond(e, HttpStatus.BAD_REQUEST);
-        } catch (MapperException e) {
+        } catch (MapperException | ActionException e) {
             return logErrorAndRespond(e, HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }

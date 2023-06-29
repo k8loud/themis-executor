@@ -10,6 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.Action;
+import org.k8loud.executor.exception.ActionException;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -44,7 +45,7 @@ class UpdateConfigMapActionTest {
 
     @ParameterizedTest
     @MethodSource("provideUpdateValuesConfigMapParams")
-    void testUpdateValuesConfigMap(Map<String, String> params, Map<String, String> data, Map<String, String> newData, int finalLength) {
+    void testUpdateValuesConfigMap(Map<String, String> params, Map<String, String> data, Map<String, String> newData, int finalLength) throws ActionException {
         // given
         ConfigMap cm = new ConfigMapBuilder()
                 .withNewMetadata()

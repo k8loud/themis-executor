@@ -8,6 +8,7 @@ import io.fabric8.kubernetes.client.server.mock.EnableKubernetesMockClient;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.Action;
+import org.k8loud.executor.exception.ActionException;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -30,7 +31,7 @@ class HorizontalScalingActionTest {
 
     @ParameterizedTest
     @MethodSource("provideStatefulSetScalingParams")
-    void testScalingStatefulSet(Map<String, String> params) {
+    void testScalingStatefulSet(Map<String, String> params) throws ActionException {
         // given
         StatefulSet sts = new StatefulSetBuilder()
                 .withNewMetadata()
@@ -70,7 +71,7 @@ class HorizontalScalingActionTest {
 
     @ParameterizedTest
     @MethodSource("provideDeploymentScalingParams")
-    void testScalingDeployment(Map<String, String> params) {
+    void testScalingDeployment(Map<String, String> params) throws ActionException {
         // given
         Deployment depl = new DeploymentBuilder()
                 .withNewMetadata()
@@ -110,7 +111,7 @@ class HorizontalScalingActionTest {
 
     @ParameterizedTest
     @MethodSource("provideReplicasetScalingParams")
-    void testScalingReplicaSet(Map<String, String> params) {
+    void testScalingReplicaSet(Map<String, String> params) throws ActionException {
 
         // given
         ReplicaSet rss = new ReplicaSetBuilder()

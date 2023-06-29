@@ -9,6 +9,7 @@ import org.jclouds.openstack.nova.v2_0.features.FlavorApi;
 import org.jclouds.openstack.nova.v2_0.features.ServerApi;
 import org.jclouds.openstack.v2_0.domain.Resource;
 import org.k8loud.executor.action.Action;
+import org.k8loud.executor.exception.ActionException;
 
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public class HorizontalScalingAction extends Action {
     private String serverId;
     private final NovaApi novaApi;
 
-    public HorizontalScalingAction(Map<String, String> params) {
+    public HorizontalScalingAction(Map<String, String> params) throws ActionException {
         super(params);
         novaApi = null;
 // FIXME: 'java.lang.IllegalStateException: Unable to load cache item' when this object is instantiated in tests

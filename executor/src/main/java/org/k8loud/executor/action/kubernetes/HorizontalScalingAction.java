@@ -4,6 +4,7 @@ import data.ExecutionExitCode;
 import data.ExecutionRS;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.extern.slf4j.Slf4j;
+import org.k8loud.executor.exception.ActionException;
 
 import java.util.Map;
 
@@ -14,11 +15,11 @@ public class HorizontalScalingAction extends KubernetesAction {
     private String namespace;
     private int replicas;
 
-    public HorizontalScalingAction(Map<String, String> params) {
+    public HorizontalScalingAction(Map<String, String> params) throws ActionException {
         super(params);
     }
 
-    public HorizontalScalingAction(Map<String, String> params, KubernetesClient client) {
+    public HorizontalScalingAction(Map<String, String> params, KubernetesClient client) throws ActionException {
         super(params, client);
     }
 

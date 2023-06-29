@@ -5,6 +5,7 @@ import data.ExecutionRS;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import org.k8loud.executor.exception.ActionException;
 
 import java.util.Map;
 
@@ -13,11 +14,11 @@ public class UpdateConfigMapAction extends KubernetesAction {
     private String resourceName;
     private Map<String, String> replacements;
 
-    public UpdateConfigMapAction(Map<String, String> params) {
+    public UpdateConfigMapAction(Map<String, String> params) throws ActionException {
         super(params);
     }
 
-    public UpdateConfigMapAction(Map<String, String> params, KubernetesClient client) {
+    public UpdateConfigMapAction(Map<String, String> params, KubernetesClient client) throws ActionException {
         super(params, client);
     }
 
