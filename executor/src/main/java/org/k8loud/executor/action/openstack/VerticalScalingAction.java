@@ -2,11 +2,13 @@ package org.k8loud.executor.action.openstack;
 
 import data.ExecutionExitCode;
 import data.ExecutionRS;
+import data.Params;
 import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.domain.Flavor;
 import org.jclouds.openstack.nova.v2_0.domain.Server;
 import org.jclouds.openstack.nova.v2_0.features.ServerApi;
 import org.k8loud.executor.action.Action;
+import org.k8loud.executor.exception.ActionException;
 
 import java.util.Map;
 
@@ -18,18 +20,20 @@ public class VerticalScalingAction extends Action {
     private double vcpusResizeValue;
     private final NovaApi novaApi;
 
-    public VerticalScalingAction(Map<String, String> params) {
+    public VerticalScalingAction(Params params) throws ActionException {
         super(params);
-        novaApi = OpenstackHelper.getNovaApi("openstack-nova", "demo:demo", "devstack", "http://xxx.xxx.xxx.xxx:5000/v2.0/");
+        novaApi = null;
+// FIXME: 'java.lang.IllegalStateException: Unable to load cache item' when this object is instantiated in tests
+//        novaApi = OpenstackHelper.getNovaApi("openstack-nova", "demo:demo", "devstack", "http://xxx.xxx.xxx.xxx:5000/v2.0/");
     }
 
     @Override
-    public void unpackParams(Map<String, String> params) {
-        region = params.get("region");
-        serverId = params.get("serverId");
-        diskResizeValue = Double.parseDouble(params.get("diskResizeValue"));
-        ramResizeValue = Double.parseDouble(params.get("ramResizeValue"));
-        vcpusResizeValue = Double.parseDouble(params.get("vcpusResizeValue"));
+    public void unpackParams(Params params) {
+        region = params.getRequiredParam("region");
+        serverId = params.getRequiredParam("serverId");
+        diskResizeValue = Double.parseDouble(params.getOptionalParam("diskResizeValue", "1"));
+        ramResizeValue = Double.parseDouble(params.getOptionalParam("ramResizeValue", "1"));
+        vcpusResizeValue = Double.parseDouble(params.getOptionalParam("vcpusResizeValue", "1"));
     }
 
     @Override

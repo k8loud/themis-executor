@@ -2,17 +2,24 @@ package org.k8loud.executor.action;
 
 
 import data.ExecutionRS;
+import data.Params;
+import exception.ParamNotFoundException;
 import lombok.Data;
+import org.k8loud.executor.exception.ActionException;
+import org.k8loud.executor.exception.code.ActionExceptionCode;
 
 import java.util.Map;
 
 @Data
 public abstract class Action {
-    protected Action(Map<String, String> params) {
-        unpackParams(params);
+    protected Action(Params params) throws ActionException {
+        try {
+            unpackParams(params);
+        } catch (ParamNotFoundException e) {
+            throw new ActionException(e, ActionExceptionCode.UNPACKING_PARAMS_FAILURE);
+        }
     }
 
-    // TODO: Add parse exception
-    public abstract void unpackParams(Map<String, String> params);
+    public abstract void unpackParams(Params params) throws ActionException;
     public abstract ExecutionRS perform();
 }

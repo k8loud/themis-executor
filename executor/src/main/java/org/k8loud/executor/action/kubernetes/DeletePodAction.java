@@ -1,17 +1,18 @@
 package org.k8loud.executor.action.kubernetes;
 
 import data.ExecutionRS;
+import data.Params;
 import org.k8loud.executor.action.Action;
+import org.k8loud.executor.exception.ActionException;
 
-import java.util.Map;
 
 public class DeletePodAction extends Action {
-    public DeletePodAction(Map<String, String> params) {
+    public DeletePodAction(Params params) throws ActionException {
         super(params);
     }
 
     @Override
-    public void unpackParams(Map<String, String> params) {
+    public void unpackParams(Params params) {
         // TODO: implement
     }
 

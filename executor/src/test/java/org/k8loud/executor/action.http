@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
   "collectionName": "kubernetes",
-  "actionName": "HorizontalKubernetesScalingAction",
+  "actionName": "HorizontalScalingAction",
   "params": {
     "resource-type": "Deployment",
     "resource-name": "nginx-deployment",
