@@ -8,8 +8,6 @@ import lombok.Data;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.code.ActionExceptionCode;
 
-import java.util.Map;
-
 @Data
 public abstract class Action {
     protected Action(Params params) throws ActionException {
@@ -21,5 +19,6 @@ public abstract class Action {
     }
 
     public abstract void unpackParams(Params params) throws ActionException;
+
     public abstract ExecutionRS perform();
 }

@@ -1,0 +1,31 @@
+### resize to h2.medium
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "openstack",
+  "actionName": "VerticalScalingAction",
+  "params": {
+    "params": {
+      "region": "RegionOne",
+      "serverId": "1f14c9e8-8db4-4f0a-b713-ee0bb0505cff",
+      "flavorId": "414a6a89-57c3-4331-9a05-0a53fc9a7d02"
+    }
+  }
+}
+
+### resize to c1.small
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "openstack",
+  "actionName": "VerticalScalingAction",
+  "params": {
+    "params": {
+      "region": "RegionOne",
+      "serverId": "1f14c9e8-8db4-4f0a-b713-ee0bb0505cff",
+      "flavorId": "f2559863-ef7d-416c-907e-4ea4043d4831"
+    }
+  }
+}

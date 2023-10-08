@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Openstack credentials ###
+executor/src/main/resources/openstack-config.properties

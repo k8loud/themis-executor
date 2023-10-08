@@ -30,8 +30,7 @@ public class ParamsTest {
         Throwable e = catchThrowable(() -> PARAMS.getRequiredParam(NOT_DEFINED_PARAM));
 
         // then
-        assertThat(e)
-                .isExactlyInstanceOf(ParamNotFoundException.class)
+        assertThat(e).isExactlyInstanceOf(ParamNotFoundException.class)
                 .hasMessage("Param '%s' is declared as required and was not found", NOT_DEFINED_PARAM);
     }
 

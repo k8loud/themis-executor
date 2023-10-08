@@ -23,19 +23,21 @@ class HorizontalScalingActionTest {
     KubernetesClient client;
 
     public static Stream<Params> provideStatefulSetScalingParams() {
-        return Stream.of(
-                new Params(Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "3")),
-                new Params(Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "1")),
-                new Params(Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "2"))
-        );
+        return Stream.of(new Params(
+                        Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas"
+                                , "3")),
+                new Params(
+                        Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas",
+                                "1")), new Params(
+                        Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas",
+                                "2")));
     }
 
     @ParameterizedTest
     @MethodSource("provideStatefulSetScalingParams")
     void testScalingStatefulSet(Params params) throws ActionException {
         // given
-        StatefulSet sts = new StatefulSetBuilder()
-                .withNewMetadata()
+        StatefulSet sts = new StatefulSetBuilder().withNewMetadata()
                 .withName("depl1")
                 .withNamespace("test")
                 .withResourceVersion("1")
@@ -63,19 +65,21 @@ class HorizontalScalingActionTest {
     }
 
     public static Stream<Params> provideDeploymentScalingParams() {
-        return Stream.of(
-                new Params(Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas", "3")),
-                new Params(Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas", "1")),
-                new Params(Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas", "2"))
-        );
+        return Stream.of(new Params(
+                        Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas"
+                                , "3")),
+                new Params(
+                        Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas",
+                                "1")), new Params(
+                        Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas",
+                                "2")));
     }
 
     @ParameterizedTest
     @MethodSource("provideDeploymentScalingParams")
     void testScalingDeployment(Params params) throws ActionException {
         // given
-        Deployment depl = new DeploymentBuilder()
-                .withNewMetadata()
+        Deployment depl = new DeploymentBuilder().withNewMetadata()
                 .withName("depl1")
                 .withNamespace("test")
                 .withResourceVersion("1")
@@ -103,11 +107,14 @@ class HorizontalScalingActionTest {
     }
 
     public static Stream<Params> provideReplicasetScalingParams() {
-        return Stream.of(
-                new Params(Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas", "3")),
-                new Params(Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas", "1")),
-                new Params(Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas", "2"))
-        );
+        return Stream.of(new Params(
+                        Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas"
+                                , "3")),
+                new Params(
+                        Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas",
+                                "1")), new Params(
+                        Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas",
+                                "2")));
     }
 
     @ParameterizedTest
@@ -115,8 +122,7 @@ class HorizontalScalingActionTest {
     void testScalingReplicaSet(Params params) throws ActionException {
 
         // given
-        ReplicaSet rss = new ReplicaSetBuilder()
-                .withNewMetadata()
+        ReplicaSet rss = new ReplicaSetBuilder().withNewMetadata()
                 .withName("repl1")
                 .withNamespace("test")
                 .withResourceVersion("1")

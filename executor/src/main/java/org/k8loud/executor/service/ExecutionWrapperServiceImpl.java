@@ -19,7 +19,8 @@ public class ExecutionWrapperServiceImpl implements ExecutionWrapperService {
     private final ExecutionService executionService;
     private final MapperService mapperService;
 
-    public ExecutionWrapperServiceImpl(ValidationService validationService, ExecutionService executionService, MapperService mapperService) {
+    public ExecutionWrapperServiceImpl(ValidationService validationService, ExecutionService executionService,
+                                       MapperService mapperService) {
         this.validationService = validationService;
         this.executionService = executionService;
         this.mapperService = mapperService;

@@ -36,7 +36,6 @@ public class UpdateConfigMapAction extends KubernetesAction {
      * resource-name:
      * operation-type: { replace | change-value }
      * replacements: { key: value }
-     *
      */
 
     @Override
@@ -44,8 +43,7 @@ public class UpdateConfigMapAction extends KubernetesAction {
         ConfigMap cm = client.configMaps()
                 .inNamespace(namespace)
                 .withName(resourceName)
-                .edit(c -> new ConfigMapBuilder(c)
-                        .addToData(replacements).build());
+                .edit(c -> new ConfigMapBuilder(c).addToData(replacements).build());
 
 
         return ExecutionRS.builder()

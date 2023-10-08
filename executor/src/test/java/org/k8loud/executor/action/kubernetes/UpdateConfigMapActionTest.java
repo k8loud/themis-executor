@@ -26,31 +26,21 @@ class UpdateConfigMapActionTest {
 
     public static Stream<Arguments> provideUpdateValuesConfigMapParams() {
         return Stream.of(
-                Arguments.of(
-                        new Params(Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v2")),
-                        Map.of("k1", "v1"),
-                        Map.of("k1", "v2"),
-                        1),
-                Arguments.of(
-                        new Params(Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v2")),
-                        Map.of("k1", "v1", "k2", "v2", "k3", "v3"),
-                        Map.of("k1", "v2", "k2", "v2", "k3", "v3"),
-                        3),
-                Arguments.of(
-                        new Params(Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v1")),
-                        Map.of("k2", "v2", "k3", "v3"),
-                        Map.of("k1", "v1", "k2", "v2", "k3", "v3"),
-                        3)
-        );
+                Arguments.of(new Params(Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v2")),
+                        Map.of("k1", "v1"), Map.of("k1", "v2"), 1),
+                Arguments.of(new Params(Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v2")),
+                        Map.of("k1", "v1", "k2", "v2", "k3", "v3"), Map.of("k1", "v2", "k2", "v2", "k3", "v3"), 3),
+                Arguments.of(new Params(Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v1")),
+                        Map.of("k2", "v2", "k3", "v3"), Map.of("k1", "v1", "k2", "v2", "k3", "v3"), 3));
 
     }
 
     @ParameterizedTest
     @MethodSource("provideUpdateValuesConfigMapParams")
-    void testUpdateValuesConfigMap(Params params, Map<String, String> data, Map<String, String> newData, int finalLength) throws ActionException {
+    void testUpdateValuesConfigMap(Params params, Map<String, String> data, Map<String, String> newData,
+                                   int finalLength) throws ActionException {
         // given
-        ConfigMap cm = new ConfigMapBuilder()
-                .withNewMetadata()
+        ConfigMap cm = new ConfigMapBuilder().withNewMetadata()
                 .withName("cm1")
                 .withNamespace("test")
                 .withResourceVersion("1")
@@ -63,10 +53,7 @@ class UpdateConfigMapActionTest {
         // when
         Action action = new UpdateConfigMapAction(params, client);
         ExecutionRS rs = action.perform();
-        ConfigMap cm1 = client.configMaps()
-                .inNamespace("test")
-                .withName("cm1")
-                .get();
+        ConfigMap cm1 = client.configMaps().inNamespace("test").withName("cm1").get();
 
         //then
         assertNotNull(rs);
