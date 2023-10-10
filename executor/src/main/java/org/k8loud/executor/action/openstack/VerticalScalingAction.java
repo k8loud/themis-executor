@@ -24,6 +24,6 @@ public class VerticalScalingAction extends OpenstackAction {
     @Override
     protected void performOpenstackAction() throws OpenstackException {
         this.openstackService.resizeServer(region, serverId, flavorId);
-        //FIXME It is not working when resizing down -> maybe create snapshot, and new server with smaller flavor
+        //FIXME It is not working when resizing down -> check if root disks are same for both flavors before resizing down
     }
 }

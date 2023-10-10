@@ -6,7 +6,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.retry.annotation.EnableRetry;
 
 @SpringBootApplication
-@EnableConfigurationProperties
 @EnableRetry
 public class ExecutorApplication {
     public static void main(String[] args) {

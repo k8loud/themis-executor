@@ -51,7 +51,7 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
 
     @Override
     public Server getServer(String serverId, OSClient.OSClientV3 client) throws OpenstackException {
-        log.trace("Getting server object from serverID {}", serverId);
+        log.debug("Getting server object from serverID {}", serverId);
         Server server = client.compute().servers().get(serverId);
         if (server == null) {
             throw new OpenstackException(SERVER_NOT_EXISTS);
@@ -61,7 +61,7 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
 
     @Override
     public Flavor getFlavor(String flavourId, OSClient.OSClientV3 client) throws OpenstackException {
-        log.trace("Getting flavor object from flavorID {}", flavourId);
+        log.debug("Getting flavor object from flavorID {}", flavourId);
         Flavor flavor = client.compute().flavors().get(flavourId);
         if (flavor == null) {
             throw new OpenstackException(FLAVOR_NOT_EXITS);
@@ -86,7 +86,7 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
                                  Function<ServerCreateBuilder, ServerCreate> optionalSetup) {
         log.debug("Creating new server. Name={}, flavorID={}, imageID={}", name, flavorId, imageId);
         ServerCreateBuilder serverCreateBuilder = Builders.server().name(name).flavor(flavorId)
-                .image(imageId).keypairName("default-from-api");
+                .image(imageId).keypairName("default");
 
         ServerCreate serverCreate = optionalSetup.apply(serverCreateBuilder);
 
