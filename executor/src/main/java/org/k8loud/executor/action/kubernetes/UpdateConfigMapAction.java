@@ -45,7 +45,6 @@ public class UpdateConfigMapAction extends KubernetesAction {
                 .withName(resourceName)
                 .edit(c -> new ConfigMapBuilder(c).addToData(replacements).build());
 
-
         return ExecutionRS.builder()
                 .result("Update of config map: " + resourceName + " successful")
                 .exitCode(ExecutionExitCode.OK)

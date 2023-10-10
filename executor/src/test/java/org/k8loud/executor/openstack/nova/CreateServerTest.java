@@ -1,4 +1,4 @@
-package org.k8loud.executor.service.openstack.nova;
+package org.k8loud.executor.openstack.nova;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

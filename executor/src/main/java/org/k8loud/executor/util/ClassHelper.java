@@ -9,15 +9,17 @@ public class ClassHelper {
         return Class.forName(fullClassName);
     }
 
-    public static Object getInstance(Class<?> clazz,
-                                     ClassParameter... classParameters) throws NoSuchMethodException,
+    public static Object getInstance(Class<?> clazz, ClassParameter... classParameters) throws NoSuchMethodException,
             InvocationTargetException, InstantiationException, IllegalAccessException {
         Class<?>[] constructorClasses = Arrays.stream(classParameters)
                 .map(ClassParameter::getClazz)
                 .toArray(Class<?>[]::new);
-        Object[] instanceArguments = Arrays.stream(classParameters).map(ClassParameter::getInstance).toArray();
-        return clazz.getConstructor(constructorClasses).newInstance(instanceArguments);
+
+        Object[] instanceArguments = Arrays.stream(classParameters)
+                .map(ClassParameter::getInstance)
+                .toArray();
+
+        return clazz.getConstructor(constructorClasses)
+                .newInstance(instanceArguments);
     }
-
-
 }

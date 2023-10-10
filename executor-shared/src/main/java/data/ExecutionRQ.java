@@ -16,6 +16,10 @@ public class ExecutionRQ {
 
     @TestOnly
     public static ExecutionRQ createExecutionRQ(String collectionName, String actionName, Params params) {
-        return ExecutionRQ.builder().collectionName(collectionName).actionName(actionName).params(params).build();
+        return ExecutionRQ.builder()
+                .collectionName(collectionName)
+                .actionName(actionName)
+                .params(params)
+                .build();
     }
 }

@@ -55,7 +55,9 @@ public class OpenstackClientProvider {
 
     private boolean isTokenExpiringSoon(Token token) {
         // is token expiring within next 30 minutes
-        boolean isTokenExpiring = token.getExpires().before(Date.from(Instant.now().minus(30, ChronoUnit.MINUTES)));
+        boolean isTokenExpiring = token.getExpires()
+                .before(Date.from(Instant.now()
+                        .minus(30, ChronoUnit.MINUTES)));
         if (isTokenExpiring) {
             log.debug("Token is expiring. Expiry date is {}", token.getExpires());
         }
@@ -67,8 +69,10 @@ public class OpenstackClientProvider {
                 .endpoint(openstackProperties.getEndpoint())
                 .withConfig(Config.newConfig()
                         .withEndpointNATResolution("149.156.9.196")
-                        .withConnectionTimeout((int) Duration.ofSeconds(10).toMillis())
-                        .withReadTimeout((int) Duration.ofSeconds(10).toMillis()));
+                        .withConnectionTimeout((int) Duration.ofSeconds(10)
+                                .toMillis())
+                        .withReadTimeout((int) Duration.ofSeconds(10)
+                                .toMillis()));
 
         switch (openstackProperties.getApiConfig()) {
             case UNSCOPED ->

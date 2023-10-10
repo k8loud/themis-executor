@@ -15,7 +15,7 @@ import java.time.temporal.ChronoUnit;
 @Component
 @Aspect
 public class ExecutorAspect {
-    @Around("@annotation(org.k8loud.executor.util.annotation.logExecutionTime)")
+    @Around("@annotation(org.k8loud.executor.util.annotation.LogExecutionTime)")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         Logger log = LoggerFactory.getLogger(joinPoint.getThis().getClass());
 

@@ -14,6 +14,4 @@ public class OpenstackException extends CustomException {
     public OpenstackException(String message, @NotNull Enum exceptionCode) {
         super(message, exceptionCode);
     }
-
-
 }

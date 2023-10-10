@@ -33,16 +33,31 @@ public class HorizontalScalingAction extends KubernetesAction {
     @Override
     public ExecutionRS perform() {
         switch (resourceType) {
-            case "ReplicaSet" ->
-                    client.apps().replicaSets().inNamespace(namespace).withName(resourceName).scale(replicas);
-            case "Deployment" ->
-                    client.apps().deployments().inNamespace(namespace).withName(resourceName).scale(replicas);
-            case "StatefulSet" ->
-                    client.apps().statefulSets().inNamespace(namespace).withName(resourceName).scale(replicas);
-            case "ControllerRevision" ->
-                    client.apps().controllerRevisions().inNamespace(namespace).withName(resourceName).scale(replicas);
+            case "ReplicaSet" -> client.apps()
+                    .replicaSets()
+                    .inNamespace(namespace)
+                    .withName(resourceName)
+                    .scale(replicas);
+            case "Deployment" -> client.apps()
+                    .deployments()
+                    .inNamespace(namespace)
+                    .withName(resourceName)
+                    .scale(replicas);
+            case "StatefulSet" -> client.apps()
+                    .statefulSets()
+                    .inNamespace(namespace)
+                    .withName(resourceName)
+                    .scale(replicas);
+            case "ControllerRevision" -> client.apps()
+                    .controllerRevisions()
+                    .inNamespace(namespace)
+                    .withName(resourceName)
+                    .scale(replicas);
             default -> {
-                return ExecutionRS.builder().result("BAAAAAAAAAD").exitCode(ExecutionExitCode.NOT_OK).build();
+                return ExecutionRS.builder()
+                        .result("BAAAAAAAAAD")
+                        .exitCode(ExecutionExitCode.NOT_OK)
+                        .build();
             }
         }
 

@@ -21,10 +21,16 @@ public abstract class OpenstackAction extends Action {
         try {
             performOpenstackAction();
         } catch (OpenstackException e) {
-            return ExecutionRS.builder().result(e.toString()).exitCode(ExecutionExitCode.NOT_OK).build();
+            return ExecutionRS.builder()
+                    .result(e.toString())
+                    .exitCode(ExecutionExitCode.NOT_OK)
+                    .build();
         }
 
-        return ExecutionRS.builder().result("Success").exitCode(ExecutionExitCode.OK).build();
+        return ExecutionRS.builder()
+                .result("Success")
+                .exitCode(ExecutionExitCode.OK)
+                .build();
     }
 
     protected abstract void performOpenstackAction() throws OpenstackException;

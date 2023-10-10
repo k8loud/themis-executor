@@ -85,7 +85,7 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
                                  OSClient.OSClientV3 client,
                                  Function<ServerCreateBuilder, ServerCreate> optionalSetup) {
         log.debug("Creating new server. Name={}, flavorID={}, imageID={}", name, flavorId, imageId);
-        ServerCreateBuilder serverCreateBuilder = Builders.server().name(name).flavor(flavorId) //cq.nano
+        ServerCreateBuilder serverCreateBuilder = Builders.server().name(name).flavor(flavorId)
                 .image(imageId).keypairName("default-from-api");
 
         ServerCreate serverCreate = optionalSetup.apply(serverCreateBuilder);
