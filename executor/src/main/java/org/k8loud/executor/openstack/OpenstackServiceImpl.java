@@ -29,6 +29,7 @@ public class OpenstackServiceImpl implements OpenstackService {
         openstackNovaService.resize(server, newFlavor, client);
         openstackNovaService.waitForServerStatus(server, Server.Status.VERIFY_RESIZE, 120, client);
         openstackNovaService.confirmResize(server, client);
+        log.info("Resizing a server with id={} finished with success", serverId);
     }
 
     @NotNull
@@ -45,6 +46,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
         openstackNovaService.createServer(server.getName() + "-copy", server.getFlavorId(), server.getImageId(), 30000,
                 client);
+        log.info("Copying a server with id={} finished with success", serverId);
         //FIXME right now we are only creating a new server with same flavor and image
     }
 }
