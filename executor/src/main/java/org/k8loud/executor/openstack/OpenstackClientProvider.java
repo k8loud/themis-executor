@@ -66,13 +66,7 @@ public class OpenstackClientProvider {
 
     private Token createOpenstackToken() throws OpenstackException {
         IOSClientBuilder.V3 clientBuilder = OSFactory.builderV3()
-                .endpoint(openstackProperties.getEndpoint())
-                .withConfig(Config.newConfig()
-                        .withEndpointNATResolution("149.156.9.196")
-                        .withConnectionTimeout((int) Duration.ofSeconds(10)
-                                .toMillis())
-                        .withReadTimeout((int) Duration.ofSeconds(10)
-                                .toMillis()));
+                .endpoint(openstackProperties.getEndpoint());
 
         switch (openstackProperties.getApiConfig()) {
             case UNSCOPED ->
