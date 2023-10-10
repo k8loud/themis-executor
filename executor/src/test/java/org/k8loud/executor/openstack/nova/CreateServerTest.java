@@ -31,7 +31,7 @@ public class CreateServerTest {
             .name(SERVER_NAME)
             .flavor(FLAVOR_ID)
             .image(SERVER_ID)
-            .keypairName("default-from-api")
+            .keypairName("default")
             .build();
 
     @Mock
