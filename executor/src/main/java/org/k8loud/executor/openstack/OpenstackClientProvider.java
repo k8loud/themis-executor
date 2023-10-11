@@ -39,7 +39,7 @@ public class OpenstackClientProvider {
             return false;
         }
 
-        return isTokenExpiringSoon(token);
+        return !isTokenExpiringSoon(token);
     }
 
     @Synchronized
@@ -55,9 +55,9 @@ public class OpenstackClientProvider {
 
     private boolean isTokenExpiringSoon(Token token) {
         // is token expiring within next 30 minutes
-        boolean isTokenExpiring = token.getExpires()
-                .before(Date.from(Instant.now()
-                        .minus(30, ChronoUnit.MINUTES)));
+        Date nowPlusHalfHour = Date.from(Instant.now().plus(30, ChronoUnit.MINUTES));
+
+        boolean isTokenExpiring = token.getExpires().before(nowPlusHalfHour);
         if (isTokenExpiring) {
             log.debug("Token is expiring. Expiry date is {}", token.getExpires());
         }
