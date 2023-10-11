@@ -1,0 +1,14 @@
+### copy server
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "openstack",
+  "actionName": "HorizontalScalingAction",
+  "params": {
+    "params": {
+      "region": "RegionOne",
+      "serverId": "PUT_ID"
+    }
+  }
+}

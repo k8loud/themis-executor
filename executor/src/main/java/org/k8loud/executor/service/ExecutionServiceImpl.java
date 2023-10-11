@@ -12,7 +12,7 @@ public class ExecutionServiceImpl implements ExecutionService {
     @NotNull
     @Override
     public ExecutionRS execute(@NotNull Action action) {
-        log.info("Performing action: {}", action);
+        log.info("Performing action: {}", action.getClass());
         return action.perform();
     }
 }

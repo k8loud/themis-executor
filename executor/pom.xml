@@ -9,67 +9,35 @@
         <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
 
-    <properties>
-        <jclouds.version>2.4.0</jclouds.version>
-    </properties>
-
     <artifactId>executor</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>executor</name>
 
+    <properties>
+        <openstack4j.version>3.11</openstack4j.version>
+    </properties>
+
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+        </dependency>
+
         <!--    COMPILE DEPENDENCIES    -->
-        <!-- jclouds dependencies -->
         <dependency>
-            <groupId>org.apache.jclouds.driver</groupId>
-            <artifactId>jclouds-slf4j</artifactId>
-            <version>${jclouds.version}</version>
+            <groupId>com.github.openstack4j.core</groupId>
+            <artifactId>openstack4j-core</artifactId>
+            <version>${openstack4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.jclouds.driver</groupId>
-            <artifactId>jclouds-sshj</artifactId>
-            <version>${jclouds.version}</version>
-        </dependency>
-        <!-- jclouds OpenStack dependencies -->
-        <dependency>
-            <groupId>org.apache.jclouds.api</groupId>
-            <artifactId>openstack-keystone</artifactId>
-            <version>${jclouds.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.jclouds.api</groupId>
-            <artifactId>openstack-nova</artifactId>
-            <version>${jclouds.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.jclouds.api</groupId>
-            <artifactId>openstack-swift</artifactId>
-            <version>${jclouds.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.jclouds.api</groupId>
-            <artifactId>openstack-cinder</artifactId>
-            <version>${jclouds.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.jclouds.api</groupId>
-            <artifactId>openstack-trove</artifactId>
-            <version>${jclouds.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.jclouds.labs</groupId>
-            <artifactId>openstack-glance</artifactId>
-            <version>${jclouds.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.jclouds.labs</groupId>
-            <artifactId>openstack-marconi</artifactId>
-            <version>${jclouds.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.jclouds.labs</groupId>
-            <artifactId>openstack-neutron</artifactId>
-            <version>2.0.3</version>
+            <groupId>com.github.openstack4j.core.connectors</groupId>
+            <artifactId>openstack4j-httpclient</artifactId>
+            <version>${openstack4j.version}</version>
         </dependency>
         <!-- 3rd party dependencies -->
         <dependency>
@@ -78,12 +46,22 @@
             <version>5.1.25</version>
         </dependency>
         <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

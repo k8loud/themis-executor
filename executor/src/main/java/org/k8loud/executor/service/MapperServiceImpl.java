@@ -8,10 +8,14 @@ import org.k8loud.executor.action.Action;
 import org.k8loud.executor.action.ActionHelper;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.MapperException;
+import org.k8loud.executor.openstack.OpenstackService;
+import org.k8loud.executor.util.ClassHelper;
+import org.k8loud.executor.util.ClassParameter;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.k8loud.executor.exception.code.MapperExceptionCode.INVALID_CONSTRUCTOR;
 import static org.k8loud.executor.exception.code.MapperExceptionCode.NEW_INSTANCE_FAILURE;
@@ -20,6 +24,11 @@ import static org.k8loud.executor.exception.code.MapperExceptionCode.NEW_INSTANC
 @Service
 public class MapperServiceImpl implements MapperService {
     private final ActionHelper actionHelper = new ActionHelper();
+    private final OpenstackService openstackService;
+
+    public MapperServiceImpl(OpenstackService openstackService) {
+        this.openstackService = openstackService;
+    }
 
     @NotNull
     @Override
@@ -29,8 +38,13 @@ public class MapperServiceImpl implements MapperService {
         Params params = executionRQ.getParams();
 
         Class<?> actionClass = actionHelper.getActionClass(collectionName, actionName);
+        List<ClassParameter> classParameters = new ArrayList<>(List.of(new ClassParameter(Params.class, params)));
         try {
-            return (Action) actionClass.getConstructor(Params.class).newInstance(params);
+            if (collectionName.equals("openstack")) {
+                classParameters.add(new ClassParameter(OpenstackService.class, openstackService));
+            }
+
+            return (Action) ClassHelper.getInstance(actionClass, classParameters.toArray(ClassParameter[]::new));
         } catch (NoSuchMethodException e) {
             throw new MapperException(e, INVALID_CONSTRUCTOR);
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {

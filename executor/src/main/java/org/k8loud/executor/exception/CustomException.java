@@ -2,10 +2,8 @@ package org.k8loud.executor.exception;
 
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
-@ToString
 @Getter
 public class CustomException extends Exception {
     @NonNull
@@ -18,5 +16,17 @@ public class CustomException extends Exception {
     public CustomException(Exception e, @NotNull Enum exceptionCode) {
         super(e.getMessage(), e.getCause());
         this.exceptionCode = exceptionCode;
+    }
+
+    public CustomException(String message, @NotNull Enum exceptionCode) {
+        super(message);
+        this.exceptionCode = exceptionCode;
+    }
+
+    @Override
+    public String toString() {
+        String classAndExceptionCode = getClass().getName() + String.format("[%s]", exceptionCode);
+        String message = getLocalizedMessage();
+        return (message != null) ? (classAndExceptionCode + ": " + message) : classAndExceptionCode;
     }
 }

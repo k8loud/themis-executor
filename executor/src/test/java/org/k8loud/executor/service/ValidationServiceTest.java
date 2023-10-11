@@ -54,17 +54,14 @@ public class ValidationServiceTest {
     }
 
     private static Stream<Arguments> provideValidExecutionRQs() {
-        return Stream.of(
-                Arguments.of("kubernetes", "DeletePodAction", VALID_PARAMS),
-                Arguments.of("kubernetes", "DeletePodAction", EMPTY_PARAMS)
-        );
+        return Stream.of(Arguments.of("kubernetes", "DeletePodAction", VALID_PARAMS),
+                Arguments.of("kubernetes", "DeletePodAction", EMPTY_PARAMS));
     }
 
     private static Stream<Arguments> provideInvalidExecutionRQs() {
         return Stream.of(
                 Arguments.of(null, "DeletePodAction", VALID_PARAMS, ValidationExceptionCode.MISSING_COLLECTION_NAME),
                 Arguments.of("kubernetes", null, VALID_PARAMS, ValidationExceptionCode.MISSING_ACTION_NAME),
-                Arguments.of("kubernetes", "DeletePodAction", null, ValidationExceptionCode.MISSING_PARAMS)
-        );
+                Arguments.of("kubernetes", "DeletePodAction", null, ValidationExceptionCode.MISSING_PARAMS));
     }
 }

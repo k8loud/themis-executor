@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.With;
 import org.jetbrains.annotations.TestOnly;
 
-import java.util.Map;
-
 @With
 @Builder
 @Data

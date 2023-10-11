@@ -35,7 +35,8 @@ class MapperServiceImplTest {
 
     @ParameterizedTest
     @MethodSource("provideMappableExecutionRQs")
-    void testValidMapping(String collectionName, String actionName, Params params) throws MapperException, ActionException {
+    void testValidMapping(String collectionName, String actionName,
+                          Params params) throws MapperException, ActionException {
         // given
         ExecutionRQ executionRQ = createExecutionRQ(collectionName, actionName, params);
 
@@ -63,16 +64,14 @@ class MapperServiceImplTest {
     }
 
     private static Stream<Arguments> provideMappableExecutionRQs() {
-        Params horizontalKubernetesScalingParams = new Params(Map.of("resourceName", "nameVal",
-                "resourceType", "typeVal", "namespace", "namespaceVal", "replicas", "420"));
-        Params horizontalOpenstackScalingParams = new Params(Map.of("region", "regionVal",
-                "serverId", "EUNE"));
-        Params verticalOpenstackScalingParams = new Params(Map.of("region", "regionVal",
-                "serverId", "EUNE", "diskResizeValue", "2.12323123", "ramResizeValue", "-0.11",
-                "vcpusResizeValue", "5768763425"));
+        Params horizontalKubernetesScalingParams = new Params(
+                Map.of("resourceName", "nameVal", "resourceType", "typeVal", "namespace", "namespaceVal", "replicas",
+                        "420"));
+        Params horizontalOpenstackScalingParams = new Params(Map.of("region", "regionVal", "serverId", "EUNE"));
+        Params verticalOpenstackScalingParams = new Params(
+                Map.of("region", "regionVal", "serverId", "EUNE", "flavorId", "asdad123312"));
 
-        return Stream.of(
-                Arguments.of("kubernetes", "DeletePodAction", EMPTY_PARAMS),
+        return Stream.of(Arguments.of("kubernetes", "DeletePodAction", EMPTY_PARAMS),
                 Arguments.of("kubernetes", "HorizontalScalingAction", horizontalKubernetesScalingParams),
                 Arguments.of("openstack", "HorizontalScalingAction", horizontalOpenstackScalingParams),
                 Arguments.of("openstack", "VerticalScalingAction", verticalOpenstackScalingParams)
@@ -85,10 +84,10 @@ class MapperServiceImplTest {
     private static Stream<Arguments> provideUnmappableExecutionRQs() {
         // TODO: The VALID_PARAMS here aren't actually valid for all cases; it's not covered because in the specific
         //  Action implementations we access values by specific keys anyway, other keys will be ignored
-        return Stream.of(
-                Arguments.of("kubernetes", INVALID, VALID_PARAMS, ActionException.class, ActionExceptionCode.ACTION_CLASS_NOT_FOUND),
-                Arguments.of(INVALID, "DeletePodAction", VALID_PARAMS, ActionException.class, ActionExceptionCode.ACTION_CLASS_NOT_FOUND)
-        );
+        return Stream.of(Arguments.of("kubernetes", INVALID, VALID_PARAMS, ActionException.class,
+                        ActionExceptionCode.ACTION_CLASS_NOT_FOUND),
+                Arguments.of(INVALID, "DeletePodAction", VALID_PARAMS, ActionException.class,
+                        ActionExceptionCode.ACTION_CLASS_NOT_FOUND));
     }
 
     private void checkFieldValue(Object object, String fieldName, String expectedValue) {

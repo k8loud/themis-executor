@@ -6,8 +6,6 @@ import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import org.k8loud.executor.action.Action;
 import org.k8loud.executor.exception.ActionException;
 
-import java.util.Map;
-
 public abstract class KubernetesAction extends Action {
     protected KubernetesClient client;
 

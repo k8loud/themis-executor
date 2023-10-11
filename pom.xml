@@ -80,13 +80,13 @@
     </dependencyManagement>
 
     <dependencies>
-    <!--    COMPILE DEPENDENCIES    -->
+        <!--    COMPILE DEPENDENCIES    -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
 
-    <!--    TEST DEPENDENCIES    -->
+        <!--    TEST DEPENDENCIES    -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
