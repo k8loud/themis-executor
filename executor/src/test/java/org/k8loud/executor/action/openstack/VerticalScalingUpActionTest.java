@@ -57,7 +57,7 @@ public class VerticalScalingUpActionTest {
 
         // then
         assertThat(throwable).isExactlyInstanceOf(ActionException.class)
-                .hasMessage("Param '%s' is declared as " + "required and was not found", missingParam);
+                .hasMessage("Param '%s' is declared as required and was not found", missingParam);
         assertThat(((ActionException) throwable).getExceptionCode()).isEqualTo(UNPACKING_PARAMS_FAILURE);
 
         verifyNoInteractions(openstackServiceMock);

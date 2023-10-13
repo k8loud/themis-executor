@@ -39,14 +39,13 @@ public class VerticalScalingDownActionTest {
         VerticalScalingDownAction verticalScalingAction = new VerticalScalingDownAction(VALID_PARAMS,
                 openstackServiceImplMock);
 
-        doNothing().when(openstackServiceImplMock)
-                .resizeServerUp(eq(REGION), eq(SERVER_ID), eq(FLAVOR_ID));
+        doNothing().when(openstackServiceImplMock).resizeServerDown(eq(REGION), eq(SERVER_ID), eq(FLAVOR_ID));
 
         // when
         ExecutionRS response = verticalScalingAction.perform();
 
         // then
-        verify(openstackServiceImplMock).resizeServerUp(eq(REGION), eq(SERVER_ID), eq(FLAVOR_ID));
+        verify(openstackServiceImplMock).resizeServerDown(eq(REGION), eq(SERVER_ID), eq(FLAVOR_ID));
         assertThat(response.getResult()).isEqualTo("Success");
         assertThat(response.getExitCode()).isSameAs(ExecutionExitCode.OK);
     }
