@@ -74,7 +74,7 @@ class MapperServiceImplTest {
         return Stream.of(Arguments.of("kubernetes", "DeletePodAction", EMPTY_PARAMS),
                 Arguments.of("kubernetes", "HorizontalScalingAction", horizontalKubernetesScalingParams),
                 Arguments.of("openstack", "HorizontalScalingAction", horizontalOpenstackScalingParams),
-                Arguments.of("openstack", "VerticalScalingAction", verticalOpenstackScalingParams)
+                Arguments.of("openstack", "VerticalScalingUpAction", verticalOpenstackScalingParams)
 // TODO: How to handle map?
 //                Arguments.of("kubernetes", "UpdateConfigMapAction", Map.of("namespace", "nameVal",
 //                        "resourceName", "typeVal", "replacements", Map.of("k1", "v1")))

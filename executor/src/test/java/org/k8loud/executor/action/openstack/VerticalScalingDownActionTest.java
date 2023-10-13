@@ -24,26 +24,29 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class VerticalScalingActionTest {
+public class VerticalScalingDownActionTest {
     private static final String REGION = "regionTest";
     private static final String SERVER_ID = "123-server-id-123";
-    private static final Params VALID_PARAMS = new Params(Map.of("region", REGION, "serverId", SERVER_ID));
+    private static final String FLAVOR_ID = "123-flavor-id-123";
+    private static final Params VALID_PARAMS = new Params(
+            Map.of("region", REGION, "serverId", SERVER_ID, "flavorId", FLAVOR_ID));
     @Mock
     OpenstackServiceImpl openstackServiceImplMock;
 
     @Test
     void testVerticalScalingAction() throws ActionException, OpenstackException {
         // given
-        HorizontalScalingAction horizontalScalingAction = new HorizontalScalingAction(VALID_PARAMS,
+        VerticalScalingDownAction verticalScalingAction = new VerticalScalingDownAction(VALID_PARAMS,
                 openstackServiceImplMock);
 
-        doNothing().when(openstackServiceImplMock).copyServer(eq(REGION), eq(SERVER_ID));
+        doNothing().when(openstackServiceImplMock)
+                .resizeServerUp(eq(REGION), eq(SERVER_ID), eq(FLAVOR_ID));
 
         // when
-        ExecutionRS response = horizontalScalingAction.perform();
+        ExecutionRS response = verticalScalingAction.perform();
 
         // then
-        verify(openstackServiceImplMock).copyServer(eq(REGION), eq(SERVER_ID));
+        verify(openstackServiceImplMock).resizeServerUp(eq(REGION), eq(SERVER_ID), eq(FLAVOR_ID));
         assertThat(response.getResult()).isEqualTo("Success");
         assertThat(response.getExitCode()).isSameAs(ExecutionExitCode.OK);
     }
@@ -52,7 +55,8 @@ public class VerticalScalingActionTest {
     @MethodSource
     void testVerticalScalingActionWrongParams(Params invalidParams, String missingParam) {
         // when
-        Throwable throwable = catchThrowable(() -> new VerticalScalingAction(invalidParams, openstackServiceImplMock));
+        Throwable throwable = catchThrowable(
+                () -> new VerticalScalingDownAction(invalidParams, openstackServiceImplMock));
 
         // then
         assertThat(throwable).isExactlyInstanceOf(ActionException.class)
@@ -63,7 +67,8 @@ public class VerticalScalingActionTest {
     }
 
     private static Stream<Arguments> testVerticalScalingActionWrongParams() {
-        return Stream.of(Arguments.of(new Params(Map.of("serverId", SERVER_ID)), "region"),
-                Arguments.of(new Params(Map.of("region", REGION)), "serverId"));
+        return Stream.of(Arguments.of(new Params(Map.of("serverId", SERVER_ID, "flavorId", FLAVOR_ID)), "region"),
+                Arguments.of(new Params(Map.of("region", REGION, "flavorId", FLAVOR_ID)), "serverId"),
+                Arguments.of(new Params(Map.of("region", REGION, "serverId", SERVER_ID)), "flavorId"));
     }
 }

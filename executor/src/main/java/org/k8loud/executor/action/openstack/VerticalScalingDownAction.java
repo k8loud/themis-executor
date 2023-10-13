@@ -5,12 +5,12 @@ import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.openstack.OpenstackService;
 
-public class VerticalScalingAction extends OpenstackAction {
+public class VerticalScalingDownAction extends OpenstackAction {
     private String region;
     private String serverId;
     private String flavorId;
 
-    public VerticalScalingAction(Params params, OpenstackService openstackService) throws ActionException {
+    public VerticalScalingDownAction(Params params, OpenstackService openstackService) throws ActionException {
         super(params, openstackService);
     }
 
@@ -23,7 +23,6 @@ public class VerticalScalingAction extends OpenstackAction {
 
     @Override
     protected void performOpenstackAction() throws OpenstackException {
-        this.openstackService.resizeServer(region, serverId, flavorId);
-        //FIXME It is not working when resizing down -> check if root disks are same for both flavors before resizing down
+        this.openstackService.resizeServerDown(region, serverId, flavorId);
     }
 }
