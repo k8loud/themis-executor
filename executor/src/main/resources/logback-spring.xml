@@ -17,4 +17,8 @@
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </logger>
+    <logger name="org.k8loud.executor.openstack.OpenstackCinderServiceImpl" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
 </configuration>

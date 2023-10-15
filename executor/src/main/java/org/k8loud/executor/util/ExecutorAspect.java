@@ -53,7 +53,7 @@ public class ExecutorAspect {
             ClassParameter exceptionParameter = new ClassParameter(Exception.class, e);
             ClassParameter exceptionCodeParameter = new ClassParameter(Enum.class,
                     getEnumConstant(exceptionCodeClass, annotation.exceptionCode()));
-            throw (Exception) ClassHelper.getInstance(exceptionClass, exceptionParameter, exceptionCodeParameter);
+            throw (CustomException) ClassHelper.getInstance(exceptionClass, exceptionParameter, exceptionCodeParameter);
         }
 
         return output;

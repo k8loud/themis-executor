@@ -40,7 +40,7 @@ Content-Type: application/json
   "params": {
     "params": {
       "region": "RegionOne",
-      "serverId": "PUT_ID",
+      "serverId": "453045c4-b6c2-4031-95b4-ac3003ecc66b",
       "flavorId": "f2559863-ef7d-416c-907e-4ea4043d4831"
     }
   }

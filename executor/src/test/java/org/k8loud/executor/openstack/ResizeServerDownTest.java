@@ -40,7 +40,7 @@ public class ResizeServerDownTest {
 
     @BeforeEach
     void setUp() {
-        openstackService = new OpenstackServiceImpl(openstackClientProviderMock, openstackNovaServiceMock);
+        openstackService = new OpenstackServiceImpl(openstackClientProviderMock, openstackNovaServiceMock, null);
     }
 
     @Test
