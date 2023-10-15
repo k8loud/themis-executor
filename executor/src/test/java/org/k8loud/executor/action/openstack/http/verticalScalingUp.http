@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "collectionName": "openstack",
-  "actionName": "VerticalScalingAction",
+  "actionName": "VerticalScalingUpAction",
   "params": {
     "params": {
       "region": "RegionOne",
@@ -20,7 +20,7 @@ Content-Type: application/json
 
 {
   "collectionName": "openstack",
-  "actionName": "VerticalScalingAction",
+  "actionName": "VerticalScalingUpAction",
   "params": {
     "params": {
       "region": "RegionOne",
@@ -36,7 +36,7 @@ Content-Type: application/json
 
 {
   "collectionName": "openstack",
-  "actionName": "VerticalScalingAction",
+  "actionName": "VerticalScalingUpAction",
   "params": {
     "params": {
       "region": "RegionOne",
