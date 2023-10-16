@@ -64,7 +64,9 @@ public class HorizontalScalingActionTest {
 
     private static Stream<Arguments> testVerticalScalingActionWrongParams() {
         return Stream.of(
-                Arguments.of(new Params(Map.of("serverId", SERVER_ID)), "region"),
-                Arguments.of(new Params(Map.of("region", REGION)), "serverId"));
+                Arguments.of(
+                        new Params(Map.of("serverId", SERVER_ID)), "region"),
+                Arguments.of(
+                        new Params(Map.of("region", REGION)), "serverId"));
     }
 }

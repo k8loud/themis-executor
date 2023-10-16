@@ -24,7 +24,7 @@ Content-Type: application/json
   "params": {
     "params": {
       "region": "RegionOne",
-      "serverId": "453045c4-b6c2-4031-95b4-ac3003ecc66b",
+      "serverId": "PUT_ID",
       "flavorId": "13a343c9-1fc5-4dae-9a74-203d290d736b"
     }
   }
@@ -40,7 +40,7 @@ Content-Type: application/json
   "params": {
     "params": {
       "region": "RegionOne",
-      "serverId": "1a85eefb-fcd2-40f1-a170-247e5ac111dc",
+      "serverId": "PUT_ID",
       "flavorId": "f2559863-ef7d-416c-907e-4ea4043d4831"
     }
   }

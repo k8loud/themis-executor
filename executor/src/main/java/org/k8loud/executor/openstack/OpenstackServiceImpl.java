@@ -79,7 +79,7 @@ public class OpenstackServiceImpl implements OpenstackService {
         if (volume.getStatus() != Volume.Status.AVAILABLE) {
             log.error("Volume {} has status {}, but available is needed", volume.getName(), volume.getStatus());
             throw new OpenstackException(
-                    String.format("Volume %s has status %s, but AVAILABLE is needed",
+                    String.format("Volume %s has status %s, but available is needed",
                             volume.getName(), volume.getStatus()), VOLUME_ERROR);
         }
 
