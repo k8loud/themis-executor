@@ -1,4 +1,4 @@
-package org.k8loud.executor.action.openstack;
+package org.k8loud.executor.action.openstack.nova;
 
 import data.ExecutionExitCode;
 import data.ExecutionRS;
@@ -8,9 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.k8loud.executor.action.openstack.HorizontalScalingAction;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.openstack.OpenstackServiceImpl;
+import org.k8loud.executor.openstack.OpenstackService;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -29,40 +30,40 @@ public class HorizontalScalingActionTest {
     private static final String SERVER_ID = "123-server-id-123";
     private static final Params VALID_PARAMS = new Params(Map.of("region", REGION, "serverId", SERVER_ID));
     @Mock
-    OpenstackServiceImpl openstackServiceImplMock;
+    OpenstackService openstackServiceMock;
 
     @Test
-    void testVerticalScalingAction() throws ActionException, OpenstackException {
+    void testHorizontalScalingAction() throws ActionException, OpenstackException {
         // given
         HorizontalScalingAction horizontalScalingAction = new HorizontalScalingAction(VALID_PARAMS,
-                openstackServiceImplMock);
+                openstackServiceMock);
 
-        doNothing().when(openstackServiceImplMock).copyServer(eq(REGION), eq(SERVER_ID));
+        doNothing().when(openstackServiceMock).copyServer(anyString(), anyString());
 
         // when
         ExecutionRS response = horizontalScalingAction.perform();
 
         // then
-        verify(openstackServiceImplMock).copyServer(eq(REGION), eq(SERVER_ID));
+        verify(openstackServiceMock).copyServer(eq(REGION), eq(SERVER_ID));
         assertThat(response.getResult()).isEqualTo("Success");
         assertThat(response.getExitCode()).isSameAs(ExecutionExitCode.OK);
     }
 
     @ParameterizedTest
     @MethodSource
-    void testVerticalScalingActionWrongParams(Params invalidParams, String missingParam) {
+    void testHorizontalScalingActionWrongParams(Params invalidParams, String missingParam) {
         // when
-        Throwable throwable = catchThrowable(() -> new HorizontalScalingAction(invalidParams, openstackServiceImplMock));
+        Throwable throwable = catchThrowable(() -> new HorizontalScalingAction(invalidParams, openstackServiceMock));
 
         // then
         assertThat(throwable).isExactlyInstanceOf(ActionException.class)
                 .hasMessage("Param '%s' is declared as " + "required and was not found", missingParam);
         assertThat(((ActionException) throwable).getExceptionCode()).isEqualTo(UNPACKING_PARAMS_FAILURE);
 
-        verifyNoInteractions(openstackServiceImplMock);
+        verifyNoInteractions(openstackServiceMock);
     }
 
-    private static Stream<Arguments> testVerticalScalingActionWrongParams() {
+    private static Stream<Arguments> testHorizontalScalingActionWrongParams() {
         return Stream.of(
                 Arguments.of(
                         new Params(Map.of("serverId", SERVER_ID)), "region"),
