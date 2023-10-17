@@ -3,14 +3,15 @@ package org.k8loud.executor.openstack;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 
+//FIXME enable annotation here not in implementation (with spring-retry working)
 public interface OpenstackService {
-    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "RESIZE_SERVER_FAILED")
     void resizeServerUp(String region, String serverId, String newFlavorId) throws OpenstackException;
 
-    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "RESIZE_SERVER_FAILED")
     void resizeServerDown(String region, String serverId, String newFlavorId) throws OpenstackException;
 
-    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "COPY_SERVER_FAILED")
     void copyServer(String region, String serverId) throws OpenstackException;
 
+    void attachVolume(String region, String serverId, String volumeId, String device) throws OpenstackException;
+
+    void detachVolume(String region, String serverId, String volumeId) throws OpenstackException;
 }

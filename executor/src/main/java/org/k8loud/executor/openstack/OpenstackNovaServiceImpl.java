@@ -54,16 +54,18 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
         log.debug("Getting server object from serverID {}", serverId);
         Server server = client.compute().servers().get(serverId);
         if (server == null) {
+            log.error("Failed to find server with id={}", serverId);
             throw new OpenstackException(SERVER_NOT_EXISTS);
         }
         return server;
     }
 
     @Override
-    public Flavor getFlavor(String flavourId, OSClient.OSClientV3 client) throws OpenstackException {
-        log.debug("Getting flavor object from flavorID {}", flavourId);
-        Flavor flavor = client.compute().flavors().get(flavourId);
+    public Flavor getFlavor(String flavorId, OSClient.OSClientV3 client) throws OpenstackException {
+        log.debug("Getting flavor object from flavorID {}", flavorId);
+        Flavor flavor = client.compute().flavors().get(flavorId);
         if (flavor == null) {
+            log.error("Failed to find flavor with id={}", flavorId);
             throw new OpenstackException(FLAVOR_NOT_EXITS);
         }
         return flavor;

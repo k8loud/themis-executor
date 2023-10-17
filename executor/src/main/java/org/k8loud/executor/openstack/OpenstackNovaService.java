@@ -7,6 +7,7 @@ import org.openstack4j.model.compute.Flavor;
 import org.openstack4j.model.compute.Server;
 import org.openstack4j.model.compute.ServerCreate;
 import org.openstack4j.model.compute.builder.ServerCreateBuilder;
+import org.openstack4j.model.storage.block.Volume;
 import org.springframework.retry.annotation.Retryable;
 
 import java.util.function.Function;
@@ -19,12 +20,12 @@ public interface OpenstackNovaService {
 
     void confirmResize(Server server, OSClient.OSClientV3 client) throws OpenstackException;
 
-    Server getServer(String serverId, OSClient.OSClientV3 client) throws OpenstackException;
-
-    Flavor getFlavor(String flavourId, OSClient.OSClientV3 client) throws OpenstackException;
-
     void createServer(String name, String flavorId, String imageId, int waitActiveMillis, OSClient.OSClientV3 client,
                       Function<ServerCreateBuilder, ServerCreate> optionalSetup);
 
     void createServer(String name, String flavorId, String imageId, int waitActiveMillis, OSClient.OSClientV3 client);
+
+    Server getServer(String serverId, OSClient.OSClientV3 client) throws OpenstackException;
+
+    Flavor getFlavor(String flavourId, OSClient.OSClientV3 client) throws OpenstackException;
 }

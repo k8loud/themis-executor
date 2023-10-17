@@ -64,8 +64,12 @@ public class VerticalScalingUpActionTest {
     }
 
     private static Stream<Arguments> testActionWrongParams() {
-        return Stream.of(Arguments.of(new Params(Map.of("serverId", SERVER_ID, "flavorId", FLAVOR_ID)), "region"),
-                Arguments.of(new Params(Map.of("region", REGION, "flavorId", FLAVOR_ID)), "serverId"),
-                Arguments.of(new Params(Map.of("region", REGION, "serverId", SERVER_ID)), "flavorId"));
+        return Stream.of(
+                Arguments.of(
+                        new Params(Map.of("serverId", SERVER_ID, "flavorId", FLAVOR_ID)), "region"),
+                Arguments.of(
+                        new Params(Map.of("region", REGION, "flavorId", FLAVOR_ID)), "serverId"),
+                Arguments.of(
+                        new Params(Map.of("region", REGION, "serverId", SERVER_ID)), "flavorId"));
     }
 }
