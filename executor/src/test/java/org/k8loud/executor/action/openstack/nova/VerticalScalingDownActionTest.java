@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.openstack.VerticalScalingDownAction;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.openstack.OpenstackServiceImpl;
+import org.k8loud.executor.openstack.OpenstackService;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -32,21 +32,21 @@ public class VerticalScalingDownActionTest {
     private static final Params VALID_PARAMS = new Params(
             Map.of("region", REGION, "serverId", SERVER_ID, "flavorId", FLAVOR_ID));
     @Mock
-    OpenstackServiceImpl openstackServiceImplMock;
+    OpenstackService openstackServiceMock;
 
     @Test
     void testVerticalScalingAction() throws ActionException, OpenstackException {
         // given
         VerticalScalingDownAction verticalScalingAction = new VerticalScalingDownAction(VALID_PARAMS,
-                openstackServiceImplMock);
+                openstackServiceMock);
 
-        doNothing().when(openstackServiceImplMock).resizeServerDown(eq(REGION), eq(SERVER_ID), eq(FLAVOR_ID));
+        doNothing().when(openstackServiceMock).resizeServerDown(anyString(), anyString(), anyString());
 
         // when
         ExecutionRS response = verticalScalingAction.perform();
 
         // then
-        verify(openstackServiceImplMock).resizeServerDown(eq(REGION), eq(SERVER_ID), eq(FLAVOR_ID));
+        verify(openstackServiceMock).resizeServerDown(eq(REGION), eq(SERVER_ID), eq(FLAVOR_ID));
         assertThat(response.getResult()).isEqualTo("Success");
         assertThat(response.getExitCode()).isSameAs(ExecutionExitCode.OK);
     }
@@ -56,14 +56,14 @@ public class VerticalScalingDownActionTest {
     void testVerticalScalingActionWrongParams(Params invalidParams, String missingParam) {
         // when
         Throwable throwable = catchThrowable(
-                () -> new VerticalScalingDownAction(invalidParams, openstackServiceImplMock));
+                () -> new VerticalScalingDownAction(invalidParams, openstackServiceMock));
 
         // then
         assertThat(throwable).isExactlyInstanceOf(ActionException.class)
                 .hasMessage("Param '%s' is declared as " + "required and was not found", missingParam);
         assertThat(((ActionException) throwable).getExceptionCode()).isEqualTo(UNPACKING_PARAMS_FAILURE);
 
-        verifyNoInteractions(openstackServiceImplMock);
+        verifyNoInteractions(openstackServiceMock);
     }
 
     private static Stream<Arguments> testVerticalScalingActionWrongParams() {

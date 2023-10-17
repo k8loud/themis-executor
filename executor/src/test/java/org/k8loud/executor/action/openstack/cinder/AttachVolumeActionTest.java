@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.openstack.AttachVolumeAction;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
+import org.k8loud.executor.openstack.OpenstackService;
 import org.k8loud.executor.openstack.OpenstackServiceImpl;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -33,21 +34,21 @@ public class AttachVolumeActionTest {
     private static final Params VALID_PARAMS = new Params(
             Map.of("region", REGION, "serverId", SERVER_ID, "volumeId", VOLUME_ID, "device", DEVICE));
     @Mock
-    OpenstackServiceImpl openstackServiceImplMock;
+    OpenstackService openstackServiceMock;
 
     @Test
     void testAttachVolumeAction() throws ActionException, OpenstackException {
         // given
         AttachVolumeAction attachVolumeAction = new AttachVolumeAction(VALID_PARAMS,
-                openstackServiceImplMock);
+                openstackServiceMock);
 
-        doNothing().when(openstackServiceImplMock).attachVolume(anyString(), anyString(), anyString(), anyString());
+        doNothing().when(openstackServiceMock).attachVolume(anyString(), anyString(), anyString(), anyString());
 
         // when
         ExecutionRS response = attachVolumeAction.perform();
 
         // then
-        verify(openstackServiceImplMock).attachVolume(eq(REGION), eq(SERVER_ID), eq(VOLUME_ID), eq(DEVICE));
+        verify(openstackServiceMock).attachVolume(eq(REGION), eq(SERVER_ID), eq(VOLUME_ID), eq(DEVICE));
         assertThat(response.getResult()).isEqualTo("Success");
         assertThat(response.getExitCode()).isSameAs(ExecutionExitCode.OK);
     }
@@ -57,14 +58,14 @@ public class AttachVolumeActionTest {
     void testAttachVolumeActionWrongParams(Params invalidParams, String missingParam) {
         // when
         Throwable throwable = catchThrowable(
-                () -> new AttachVolumeAction(invalidParams, openstackServiceImplMock));
+                () -> new AttachVolumeAction(invalidParams, openstackServiceMock));
 
         // then
         assertThat(throwable).isExactlyInstanceOf(ActionException.class)
                 .hasMessage("Param '%s' is declared as " + "required and was not found", missingParam);
         assertThat(((ActionException) throwable).getExceptionCode()).isEqualTo(UNPACKING_PARAMS_FAILURE);
 
-        verifyNoInteractions(openstackServiceImplMock);
+        verifyNoInteractions(openstackServiceMock);
     }
 
     private static Stream<Arguments> testAttachVolumeActionWrongParams() {

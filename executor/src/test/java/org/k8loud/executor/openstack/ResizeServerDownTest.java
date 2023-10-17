@@ -44,7 +44,7 @@ public class ResizeServerDownTest {
     }
 
     @Test
-    void testResizeServerSuccess() throws OpenstackException {
+    void testResizeServerDownSuccess() throws OpenstackException {
         // given
         setUpMocks();
         when(newFlavor.getDisk()).thenReturn(CURRENT_FLAVOR_DISK_SIZE);

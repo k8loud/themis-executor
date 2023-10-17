@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.k8loud.executor.action.openstack.VerticalScalingUpAction;
+import org.k8loud.executor.action.openstack.PauseServerAction;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.openstack.OpenstackService;
@@ -25,52 +25,51 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class VerticalScalingUpActionTest {
+public class PauseServerActionTest {
     private static final String REGION = "regionTest";
     private static final String SERVER_ID = "123-server-id-123";
-    private static final String FLAVOR_ID = "123-flavor-id-123";
-    private static final Params VALID_PARAMS = new Params(
-            Map.of("region", REGION, "serverId", SERVER_ID, "flavorId", FLAVOR_ID));
+    private static final Params VALID_PARAMS = new Params(Map.of("region", REGION, "serverId", SERVER_ID));
     @Mock
     OpenstackService openstackServiceMock;
 
     @Test
-    void testSuccess() throws ActionException, OpenstackException {
+    void testPauseServerAction() throws ActionException, OpenstackException {
         // given
-        VerticalScalingUpAction verticalScalingAction = new VerticalScalingUpAction(VALID_PARAMS, openstackServiceMock);
+        PauseServerAction pauseServerAction = new PauseServerAction(VALID_PARAMS, openstackServiceMock);
 
-        doNothing().when(openstackServiceMock).resizeServerUp(anyString(), anyString(), anyString());
+        doNothing().when(openstackServiceMock).pauseServer(anyString(), anyString());
 
         // when
-        ExecutionRS response = verticalScalingAction.perform();
+        ExecutionRS response = pauseServerAction.perform();
 
         // then
-        verify(openstackServiceMock).resizeServerUp(eq(REGION), eq(SERVER_ID), eq(FLAVOR_ID));
+        verify(openstackServiceMock).pauseServer(eq(REGION), eq(SERVER_ID));
         assertThat(response.getResult()).isEqualTo("Success");
         assertThat(response.getExitCode()).isSameAs(ExecutionExitCode.OK);
     }
 
     @ParameterizedTest
     @MethodSource
-    void testActionWrongParams(Params invalidParams, String missingParam) {
+    void testPauseServerActionWrongParams(Params invalidParams, String missingParam) {
         // when
-        Throwable throwable = catchThrowable(() -> new VerticalScalingUpAction(invalidParams, openstackServiceMock));
+        Throwable throwable = catchThrowable(
+                () -> new PauseServerAction(invalidParams, openstackServiceMock));
 
         // then
         assertThat(throwable).isExactlyInstanceOf(ActionException.class)
-                .hasMessage("Param '%s' is declared as required and was not found", missingParam);
+                .hasMessage("Param '%s' is declared as " + "required and was not found", missingParam);
         assertThat(((ActionException) throwable).getExceptionCode()).isEqualTo(UNPACKING_PARAMS_FAILURE);
 
         verifyNoInteractions(openstackServiceMock);
     }
 
-    private static Stream<Arguments> testActionWrongParams() {
+    private static Stream<Arguments> testPauseServerActionWrongParams() {
         return Stream.of(
                 Arguments.of(
-                        new Params(Map.of("serverId", SERVER_ID, "flavorId", FLAVOR_ID)), "region"),
+                        new Params(Map.of("serverId", SERVER_ID)), "region"),
                 Arguments.of(
-                        new Params(Map.of("region", REGION, "flavorId", FLAVOR_ID)), "serverId"),
+                        new Params(Map.of("region", REGION)), "serverId"),
                 Arguments.of(
-                        new Params(Map.of("region", REGION, "serverId", SERVER_ID)), "flavorId"));
+                        new Params(Map.of()), "region"));
     }
 }

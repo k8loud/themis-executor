@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.openstack.DetachVolumeAction;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.openstack.OpenstackServiceImpl;
+import org.k8loud.executor.openstack.OpenstackService;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -33,41 +33,41 @@ public class DetachVolumeActionTest {
     private static final Params VALID_PARAMS = new Params(
             Map.of("region", REGION, "serverId", SERVER_ID, "volumeId", VOLUME_ID));
     @Mock
-    OpenstackServiceImpl openstackServiceImplMock;
+    OpenstackService openstackServiceMock;
 
     @Test
-    void testVerticalScalingAction() throws ActionException, OpenstackException {
+    void testDetachSuccess() throws ActionException, OpenstackException {
         // given
         DetachVolumeAction detachVolumeAction = new DetachVolumeAction(VALID_PARAMS,
-                openstackServiceImplMock);
+                openstackServiceMock);
 
-        doNothing().when(openstackServiceImplMock).detachVolume(anyString(), anyString(), anyString());
+        doNothing().when(openstackServiceMock).detachVolume(anyString(), anyString(), anyString());
 
         // when
         ExecutionRS response = detachVolumeAction.perform();
 
         // then
-        verify(openstackServiceImplMock).detachVolume(eq(REGION), eq(SERVER_ID), eq(VOLUME_ID));
+        verify(openstackServiceMock).detachVolume(eq(REGION), eq(SERVER_ID), eq(VOLUME_ID));
         assertThat(response.getResult()).isEqualTo("Success");
         assertThat(response.getExitCode()).isSameAs(ExecutionExitCode.OK);
     }
 
     @ParameterizedTest
     @MethodSource
-    void testVerticalScalingActionWrongParams(Params invalidParams, String missingParam) {
+    void testDetachActionWrongParams(Params invalidParams, String missingParam) {
         // when
         Throwable throwable = catchThrowable(
-                () -> new DetachVolumeAction(invalidParams, openstackServiceImplMock));
+                () -> new DetachVolumeAction(invalidParams, openstackServiceMock));
 
         // then
         assertThat(throwable).isExactlyInstanceOf(ActionException.class)
                 .hasMessage("Param '%s' is declared as " + "required and was not found", missingParam);
         assertThat(((ActionException) throwable).getExceptionCode()).isEqualTo(UNPACKING_PARAMS_FAILURE);
 
-        verifyNoInteractions(openstackServiceImplMock);
+        verifyNoInteractions(openstackServiceMock);
     }
 
-    private static Stream<Arguments> testVerticalScalingActionWrongParams() {
+    private static Stream<Arguments> testDetachActionWrongParams() {
         return Stream.of(
                 Arguments.of(
                         new Params(Map.of("serverId", SERVER_ID, "volumeId", VOLUME_ID)), "region"),

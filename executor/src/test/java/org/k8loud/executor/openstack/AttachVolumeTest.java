@@ -56,7 +56,7 @@ public class AttachVolumeTest {
     }
 
     @Test
-    void testResizeServerSuccess() throws OpenstackException {
+    void testAttachVolumeSuccess() throws OpenstackException {
         // given
         when(volume.getStatus()).thenReturn(Volume.Status.AVAILABLE);
 
@@ -73,7 +73,7 @@ public class AttachVolumeTest {
 
     @ParameterizedTest
     @EnumSource(value = Volume.Status.class, names = "AVAILABLE", mode = EnumSource.Mode.EXCLUDE)
-    void testDetachVolumeFailed(Volume.Status status) throws OpenstackException {
+    void testAttachVolumeFailed(Volume.Status status) throws OpenstackException {
         // given
         when(volume.getStatus()).thenReturn(status);
         when(volume.getName()).thenReturn(VOLUME_NAME);

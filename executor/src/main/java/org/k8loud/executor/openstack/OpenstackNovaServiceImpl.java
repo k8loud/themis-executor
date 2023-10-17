@@ -76,11 +76,12 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
     @Override
     public void basicServerAction(Server server, Action action, OSClient.OSClientV3 client) throws OpenstackException {
         log.debug("Perform action {} on server {}", action.name(), server.getName());
+        OpenstackExceptionCode code = OpenstackExceptionCode.getNovaExceptionCode(action);
         ActionResponse response = client.compute().servers().action(server.getId(), action);
         if (!response.isSuccess()){
             log.error("Failed to perform action {} on server {}. Reason: {}",
                     action.name(), server.getName(), response.getFault());
-            throw new OpenstackException(response.getFault(), OpenstackExceptionCode.getNovaExceptionCode(action));
+            throw new OpenstackException(response.getFault(), code);
         }
     }
 
