@@ -14,4 +14,8 @@ public interface OpenstackService {
     void attachVolume(String region, String serverId, String volumeId, String device) throws OpenstackException;
 
     void detachVolume(String region, String serverId, String volumeId) throws OpenstackException;
+
+    void pauseServer(String region, String serverId) throws OpenstackException;
+
+    void unpauseServer(String region, String serverId) throws OpenstackException;
 }

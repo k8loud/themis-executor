@@ -1,0 +1,14 @@
+### unpause server
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "openstack",
+  "actionName": "UnpauseServerAction",
+  "params": {
+    "params": {
+      "region": "RegionOne",
+      "serverId": "PUT_ID"
+    }
+  }
+}

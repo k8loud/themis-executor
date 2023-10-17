@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 import org.openstack4j.api.OSClient.OSClientV3;
+import org.openstack4j.model.compute.Action;
 import org.openstack4j.model.compute.Flavor;
 import org.openstack4j.model.compute.Server;
 import org.openstack4j.model.storage.block.Volume;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
+import static org.openstack4j.model.compute.Action.PAUSE;
+import static org.openstack4j.model.compute.Action.UNPAUSE;
 
 @Service
 @Slf4j
@@ -106,6 +109,18 @@ public class OpenstackServiceImpl implements OpenstackService {
         log.info("Detaching volume with id={} from a server with id={} finished with success", volumeId, serverId);
     }
 
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "PAUSE_SERVER_FAILED")
+    public void pauseServer(String region, String serverId) throws OpenstackException {
+        basicServerAction(region, serverId, PAUSE);
+    }
+
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "UNPAUSE_SERVER_FAILED")
+    public void unpauseServer(String region, String serverId) throws OpenstackException {
+        basicServerAction(region, serverId, UNPAUSE);
+    }
+
     @NotNull
     private OSClientV3 openstackClientWithRegion(String region) throws OpenstackException {
         OSClientV3 client = openstackClientProvider.getClientFromToken();
@@ -143,5 +158,12 @@ public class OpenstackServiceImpl implements OpenstackService {
                     String.format("Flavor with id=%s is not bigger than Flavor with id=%s",
                             biggerFlavor.getId(), smallerFlavor.getId()), FLAVORS_COMPARISON);
         }
+    }
+
+    private void basicServerAction(String region, String serverId, Action action) throws OpenstackException {
+        OSClientV3 client = openstackClientWithRegion(region);
+        Server server = openstackNovaService.getServer(serverId, client);
+        openstackNovaService.basicServerAction(server, action, client);
+        log.info("Performing action {} on server with id={} finished with success", action.name(), serverId);
     }
 }

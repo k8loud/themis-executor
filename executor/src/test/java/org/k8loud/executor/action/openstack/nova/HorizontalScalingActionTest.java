@@ -1,4 +1,4 @@
-package org.k8loud.executor.action.openstack;
+package org.k8loud.executor.action.openstack.nova;
 
 import data.ExecutionExitCode;
 import data.ExecutionRS;
@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.k8loud.executor.action.openstack.HorizontalScalingAction;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.openstack.OpenstackServiceImpl;

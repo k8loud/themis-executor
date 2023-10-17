@@ -2,10 +2,12 @@ package org.k8loud.executor.openstack;
 
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.exception.OpenstackException;
+import org.k8loud.executor.exception.code.OpenstackExceptionCode;
 import org.openstack4j.api.Builders;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.common.Buildable;
 import org.openstack4j.model.common.ActionResponse;
+import org.openstack4j.model.compute.Action;
 import org.openstack4j.model.compute.Flavor;
 import org.openstack4j.model.compute.Server;
 import org.openstack4j.model.compute.ServerCreate;
@@ -69,6 +71,17 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
             throw new OpenstackException(FLAVOR_NOT_EXITS);
         }
         return flavor;
+    }
+
+    @Override
+    public void basicServerAction(Server server, Action action, OSClient.OSClientV3 client) throws OpenstackException {
+        log.debug("Perform action {} on server {}", action.name(), server.getName());
+        ActionResponse response = client.compute().servers().action(server.getId(), action);
+        if (!response.isSuccess()){
+            log.error("Failed to perform action {} on server {}. Reason: {}",
+                    action.name(), server.getName(), response.getFault());
+            throw new OpenstackException(response.getFault(), OpenstackExceptionCode.getNovaExceptionCode(action));
+        }
     }
 
     @Override

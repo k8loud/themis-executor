@@ -1,9 +1,10 @@
-package org.k8loud.executor.action.openstack;
+package org.k8loud.executor.action.openstack.nova;
 
 import data.ExecutionExitCode;
 import data.ExecutionRS;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.k8loud.executor.action.openstack.OpenstackAction;
 import org.k8loud.executor.exception.OpenstackException;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;

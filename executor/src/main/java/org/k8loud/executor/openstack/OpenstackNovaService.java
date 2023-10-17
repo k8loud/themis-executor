@@ -1,13 +1,14 @@
 package org.k8loud.executor.openstack;
 
 import org.k8loud.executor.exception.OpenstackException;
+import org.k8loud.executor.exception.code.OpenstackExceptionCode;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.api.exceptions.ConnectionException;
+import org.openstack4j.model.compute.Action;
 import org.openstack4j.model.compute.Flavor;
 import org.openstack4j.model.compute.Server;
 import org.openstack4j.model.compute.ServerCreate;
 import org.openstack4j.model.compute.builder.ServerCreateBuilder;
-import org.openstack4j.model.storage.block.Volume;
 import org.springframework.retry.annotation.Retryable;
 
 import java.util.function.Function;
@@ -28,4 +29,6 @@ public interface OpenstackNovaService {
     Server getServer(String serverId, OSClient.OSClientV3 client) throws OpenstackException;
 
     Flavor getFlavor(String flavourId, OSClient.OSClientV3 client) throws OpenstackException;
+
+    void basicServerAction(Server server, Action action, OSClient.OSClientV3 client) throws OpenstackException;
 }

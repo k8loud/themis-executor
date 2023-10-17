@@ -1,4 +1,4 @@
-package org.k8loud.executor.action.openstack;
+package org.k8loud.executor.action.openstack.nova;
 
 import data.ExecutionExitCode;
 import data.ExecutionRS;
@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.k8loud.executor.action.openstack.VerticalScalingDownAction;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.openstack.OpenstackServiceImpl;
@@ -24,39 +25,38 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AttachVolumeActionTest {
+public class VerticalScalingDownActionTest {
     private static final String REGION = "regionTest";
     private static final String SERVER_ID = "123-server-id-123";
-    private static final String VOLUME_ID = "123-volume-id-123";
-    private static final String DEVICE = "/dev/test";
+    private static final String FLAVOR_ID = "123-flavor-id-123";
     private static final Params VALID_PARAMS = new Params(
-            Map.of("region", REGION, "serverId", SERVER_ID, "volumeId", VOLUME_ID, "device", DEVICE));
+            Map.of("region", REGION, "serverId", SERVER_ID, "flavorId", FLAVOR_ID));
     @Mock
     OpenstackServiceImpl openstackServiceImplMock;
 
     @Test
-    void testAttachVolumeAction() throws ActionException, OpenstackException {
+    void testVerticalScalingAction() throws ActionException, OpenstackException {
         // given
-        AttachVolumeAction attachVolumeAction = new AttachVolumeAction(VALID_PARAMS,
+        VerticalScalingDownAction verticalScalingAction = new VerticalScalingDownAction(VALID_PARAMS,
                 openstackServiceImplMock);
 
-        doNothing().when(openstackServiceImplMock).attachVolume(anyString(), anyString(), anyString(), anyString());
+        doNothing().when(openstackServiceImplMock).resizeServerDown(eq(REGION), eq(SERVER_ID), eq(FLAVOR_ID));
 
         // when
-        ExecutionRS response = attachVolumeAction.perform();
+        ExecutionRS response = verticalScalingAction.perform();
 
         // then
-        verify(openstackServiceImplMock).attachVolume(eq(REGION), eq(SERVER_ID), eq(VOLUME_ID), eq(DEVICE));
+        verify(openstackServiceImplMock).resizeServerDown(eq(REGION), eq(SERVER_ID), eq(FLAVOR_ID));
         assertThat(response.getResult()).isEqualTo("Success");
         assertThat(response.getExitCode()).isSameAs(ExecutionExitCode.OK);
     }
 
     @ParameterizedTest
     @MethodSource
-    void testAttachVolumeActionWrongParams(Params invalidParams, String missingParam) {
+    void testVerticalScalingActionWrongParams(Params invalidParams, String missingParam) {
         // when
         Throwable throwable = catchThrowable(
-                () -> new AttachVolumeAction(invalidParams, openstackServiceImplMock));
+                () -> new VerticalScalingDownAction(invalidParams, openstackServiceImplMock));
 
         // then
         assertThat(throwable).isExactlyInstanceOf(ActionException.class)
@@ -66,13 +66,13 @@ public class AttachVolumeActionTest {
         verifyNoInteractions(openstackServiceImplMock);
     }
 
-    private static Stream<Arguments> testAttachVolumeActionWrongParams() {
+    private static Stream<Arguments> testVerticalScalingActionWrongParams() {
         return Stream.of(
                 Arguments.of(
-                        new Params(Map.of("serverId", SERVER_ID, "volumeId", VOLUME_ID, "device", DEVICE)), "region"),
+                        new Params(Map.of("serverId", SERVER_ID, "flavorId", FLAVOR_ID)), "region"),
                 Arguments.of(
-                        new Params(Map.of("volumeId", VOLUME_ID, "device", DEVICE)), "region"),
+                        new Params(Map.of("region", REGION, "flavorId", FLAVOR_ID)), "serverId"),
                 Arguments.of(
-                        new Params(Map.of("region", REGION, "serverId", SERVER_ID)), "volumeId"));
+                        new Params(Map.of("region", REGION, "serverId", SERVER_ID)), "flavorId"));
     }
 }
