@@ -1,0 +1,9 @@
+POST localhost:8080/drool
+Content-Type: application/json
+
+{
+  "customerNumber": "100",
+  "age": 10,
+  "amount": 10
+}
+

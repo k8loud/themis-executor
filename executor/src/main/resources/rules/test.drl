@@ -1,0 +1,14 @@
+import org.k8loud.executor.dto.OrderDiscount;
+import org.k8loud.executor.dto.OrderRequest;
+
+global org.k8loud.executor.dto.OrderDiscount orderDiscount;
+
+dialect "mvel"
+
+rule "Age based"
+    when
+        OrderRequest(age < 20 || age > 50)
+    then
+        System.out.println("Age based activated");
+        orderDiscount.setDiscount(orderDiscount.getDiscount() + 10);
+    end
