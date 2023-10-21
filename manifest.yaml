@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: themis-executor
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: themis-executor
+  labels:
+    name: themis-executor
+  namespace: themis-executor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: themis-executor
+  template:
+    metadata:
+      labels:
+        name: themis-executor
+    spec:
+      containers:
+        - name: executor
+          image: agwen12/themis-executor:0.0.1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 500m
+              memory: 500Mi
+          ports:
+            - containerPort: 8080
+---
+kind: Service
+metadata:
+  name: themis-executor
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    name: themis-executor
+  namespace: themis-executor
+spec:
+  ports:
+    # the port that this service should serve on
+    - port: 80
+      targetPort: 8080
+  selector:
+    name: themis-executor
