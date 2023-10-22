@@ -1,0 +1,17 @@
+### pause server
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "command",
+  "actionName": "CustomScriptAction",
+  "params": {
+    "params": {
+      "host": "",
+      "port": "22",
+      "privateKey": "",
+      "user": "ubuntu",
+      "command": "echo \"Hello $(whoami)\""
+    }
+  }
+}
