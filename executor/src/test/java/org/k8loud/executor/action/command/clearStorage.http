@@ -1,0 +1,20 @@
+### pause server
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "command",
+  "actionName": "ClearStorageAction",
+  "params": {
+    "params": {
+      "host": "",
+      "port": "22",
+      "privateKey": "",
+      "user": "ubuntu",
+      "paths": "/home/ubuntu;/tmp",
+      "regexPattern": "to_delete*.txt",
+      "dateFrom": "2022-01-05T10:25:33",
+      "dateTo": "2024-01-05T10:25:33"
+    }
+  }
+}

@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 @Getter
@@ -25,5 +28,15 @@ public class Params {
 
     public String getOptionalParam(String param, String defaultValue) {
         return params.getOrDefault(param, defaultValue);
+    }
+
+    public Date getOptionalParamAsDate(String param, Date defaultValue, SimpleDateFormat dateFormatter) {
+        if (params.containsKey(param)) {
+            try {
+                return dateFormatter.parse(params.get(param));
+            } catch (ParseException ignored) {
+            }
+        }
+        return defaultValue;
     }
 }
