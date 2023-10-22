@@ -27,6 +27,14 @@ import static org.k8loud.executor.exception.code.CommandExceptionCode.NON_ZERO_E
 public class CommandExecutionServiceImpl implements CommandExecutionService {
     private static final int COMMAND_EXIT_CHECK_SLEEP_MS = 100;
 
+    public CommandExecutionServiceImpl() {
+        // Fixes https://stackoverflow.com/questions/6559272/algid-parse-error-not-a-sequence
+        // But maybe it's not the best approach
+        java.security.Security.addProvider(
+                new org.bouncycastle.jce.provider.BouncyCastleProvider()
+        );
+    }
+
     @Override
     public String executeCommand(@NotNull String host, @NotNull Integer port, @NotNull String privateKey,
                                @NotNull String user, @NotNull String command) throws CommandException {
@@ -71,14 +79,14 @@ public class CommandExecutionServiceImpl implements CommandExecutionService {
         return client;
     }
 
-    public PrivateKey loadPrivateKey(String privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    PrivateKey loadPrivateKey(String privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] decoded = Base64.decodeBase64(privateKey);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decoded);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         return keyFactory.generatePrivate(keySpec);
     }
 
-    private PublicKey getPublicKey(PrivateKey privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    PublicKey getPublicKey(PrivateKey privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
         RSAPrivateCrtKey privateCrtKey = (RSAPrivateCrtKey) privateKey;
         RSAPublicKeySpec publicKeySpec = new java.security.spec.RSAPublicKeySpec(privateCrtKey.getModulus(),
                 privateCrtKey.getPublicExponent());

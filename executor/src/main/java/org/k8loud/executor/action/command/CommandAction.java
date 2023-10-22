@@ -51,11 +51,9 @@ public abstract class CommandAction extends Action {
                 .build();
     }
 
-    protected abstract String performCommandAction() throws CommandException;
-
-    protected abstract String buildCommand(Object... args);
-
-    protected String delegateCommandExecution(Object... args) throws CommandException {
-        return commandExecutionService.executeCommand(host, port, privateKey, user, buildCommand(args));
+    protected String performCommandAction() throws CommandException {
+        return commandExecutionService.executeCommand(host, port, privateKey, user, buildCommand());
     }
+
+    protected abstract String buildCommand();
 }
