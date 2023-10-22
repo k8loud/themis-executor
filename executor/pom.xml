@@ -82,6 +82,19 @@
             <artifactId>kubernetes-client</artifactId>
             <version>6.6.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.hierynomus</groupId>
+            <artifactId>sshj</artifactId>
+            <version>0.35.0</version>
+        </dependency>
+        <!-- Bouncy Castle For Java before 1.74 is affected by an LDAP injection vulnerability. The vulnerability only
+        affects applications that use an LDAP CertStore from Bouncy Castle to validate X.509 certificates.
+        Doesn't affect our usage -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.70</version>
+        </dependency>
 
         <!--    TEST DEPENDENCIES    -->
         <dependency>

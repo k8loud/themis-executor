@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.action.Action;
 import org.k8loud.executor.action.ActionHelper;
+import org.k8loud.executor.command.CommandExecutionService;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.MapperException;
 import org.k8loud.executor.openstack.OpenstackService;
@@ -25,9 +26,11 @@ import static org.k8loud.executor.exception.code.MapperExceptionCode.NEW_INSTANC
 public class MapperServiceImpl implements MapperService {
     private final ActionHelper actionHelper = new ActionHelper();
     private final OpenstackService openstackService;
+    private final CommandExecutionService commandExecutionService;
 
-    public MapperServiceImpl(OpenstackService openstackService) {
+    public MapperServiceImpl(OpenstackService openstackService, CommandExecutionService commandExecutionService) {
         this.openstackService = openstackService;
+        this.commandExecutionService = commandExecutionService;
     }
 
     @NotNull
@@ -42,6 +45,8 @@ public class MapperServiceImpl implements MapperService {
         try {
             if (collectionName.equals("openstack")) {
                 classParameters.add(new ClassParameter(OpenstackService.class, openstackService));
+            } else if (collectionName.equals("command")) {
+                classParameters.add(new ClassParameter(CommandExecutionService.class, commandExecutionService));
             }
 
             return (Action) ClassHelper.getInstance(actionClass, classParameters.toArray(ClassParameter[]::new));
