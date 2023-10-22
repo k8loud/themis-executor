@@ -4,13 +4,10 @@ import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
 import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
 import org.k8loud.executor.action.Action;
 import org.k8loud.executor.command.CommandExecutionService;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CommandException;
-
-import static org.k8loud.executor.exception.code.CommandExceptionCode.COMMAND_IS_MISSING;
 
 @Setter
 public abstract class CommandAction extends Action {
@@ -19,8 +16,6 @@ public abstract class CommandAction extends Action {
     protected Integer port;
     protected String privateKey;
     protected String user;
-    @Nullable
-    protected String command;
 
     protected CommandAction(Params params, CommandExecutionService commandExecutionService) throws ActionException {
         super(params);
@@ -33,7 +28,6 @@ public abstract class CommandAction extends Action {
         this.port = Integer.parseInt(params.getOptionalParam("port", "22"));
         this.privateKey = params.getRequiredParam("privateKey");
         this.user = params.getRequiredParam("user");
-        this.command = params.getOptionalParam("command", null);
         unpackAdditionalParams(params);
     }
 
@@ -41,8 +35,9 @@ public abstract class CommandAction extends Action {
 
     @Override
     public ExecutionRS perform() {
+        String result;
         try {
-            performCommandAction();
+            result = performCommandAction();
         } catch (CommandException e) {
             return ExecutionRS.builder()
                     .result(e.toString())
@@ -51,22 +46,16 @@ public abstract class CommandAction extends Action {
         }
 
         return ExecutionRS.builder()
-                .result("Success")
+                .result(result)
                 .exitCode(ExecutionExitCode.OK)
                 .build();
     }
 
-    protected abstract void performCommandAction() throws CommandException;
+    protected abstract String performCommandAction() throws CommandException;
 
-    protected void delegateCommandExecution() throws CommandException {
-        if (this.command != null) {
-            delegateCommandExecution(this.command);
-        } else {
-            throw new CommandException(COMMAND_IS_MISSING);
-        }
-    }
+    protected abstract String buildCommand(Object... args);
 
-    protected void delegateCommandExecution(String command) throws CommandException {
-        commandExecutionService.executeCommand(host, port, privateKey, user, command);
+    protected String delegateCommandExecution(Object... args) throws CommandException {
+        return commandExecutionService.executeCommand(host, port, privateKey, user, buildCommand(args));
     }
 }

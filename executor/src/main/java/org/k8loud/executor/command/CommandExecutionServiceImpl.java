@@ -2,6 +2,7 @@ package org.k8loud.executor.command;
 
 import lombok.extern.slf4j.Slf4j;
 import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.connection.channel.direct.Session.Command;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
@@ -27,25 +28,29 @@ public class CommandExecutionServiceImpl implements CommandExecutionService {
     private static final int COMMAND_EXIT_CHECK_SLEEP_MS = 100;
 
     @Override
-    public void executeCommand(@NotNull String host, @NotNull Integer port, @NotNull String privateKey,
+    public String executeCommand(@NotNull String host, @NotNull Integer port, @NotNull String privateKey,
                                @NotNull String user, @NotNull String command) throws CommandException {
         try (SSHClient client = initClient(host, port, privateKey, user);
              Session session = client.startSession()) {
+            log.info("Executing `{}`", command);
             final Command commandObj = session.exec(command);
-            Integer exitStatus;
             do {
                 try {
                     Thread.sleep(COMMAND_EXIT_CHECK_SLEEP_MS);
                 } catch (InterruptedException e) {
                     log.warn("Interrupted while waiting for command exit");
                 }
-            } while ((exitStatus = commandObj.getExitStatus()) == null);
-            String errorMessage = commandObj.getExitErrorMessage();
+            } while(!commandObj.isEOF());
+            String stdout = IOUtils.readFully(commandObj.getInputStream()).toString();
+            String stderr = IOUtils.readFully(commandObj.getErrorStream()).toString();
+            Integer exitStatus = commandObj.getExitStatus();
             commandObj.close();
-
+            String result = String.format("exit status: %s, stdout: `%s`, stderr: `%s`", exitStatus, stdout, stderr);
+            log.info(result);
             if (exitStatus != 0) {
-                throw new CommandException(NON_ZERO_EXIT_CODE);
+                throw new CommandException(result, NON_ZERO_EXIT_CODE);
             }
+            return result;
         } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new CommandException(FAILED_TO_EXECUTE_COMMAND);
         }
@@ -60,9 +65,17 @@ public class CommandExecutionServiceImpl implements CommandExecutionService {
         PublicKey publicKeyObj = getPublicKey(privateKeyObj);
         KeyPair keyPair = new KeyPair(publicKeyObj, privateKeyObj);
         KeyProvider keyProvider = client.loadKeys(keyPair);
+        log.info("Connecting to {}:{} as {}", host, port, user);
         client.connect(host, port);
         client.authPublickey(user, keyProvider);
         return client;
+    }
+
+    public PrivateKey loadPrivateKey(String privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        byte[] decoded = Base64.decodeBase64(privateKey);
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decoded);
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        return keyFactory.generatePrivate(keySpec);
     }
 
     private PublicKey getPublicKey(PrivateKey privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -71,15 +84,5 @@ public class CommandExecutionServiceImpl implements CommandExecutionService {
                 privateCrtKey.getPublicExponent());
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         return keyFactory.generatePublic(publicKeySpec);
-    }
-
-    public PrivateKey loadPrivateKey(String privateKey) throws
-            java.security.NoSuchAlgorithmException,
-            java.security.spec.InvalidKeySpecException
-    {
-        byte[] decoded = Base64.decodeBase64(privateKey);
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decoded);
-        KeyFactory kf = KeyFactory.getInstance("RSA");
-        return kf.generatePrivate(keySpec);
     }
 }
