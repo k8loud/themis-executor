@@ -1,4 +1,4 @@
-### pause server
+### clear storage
 POST localhost:8080/execute
 Content-Type: application/json
 
