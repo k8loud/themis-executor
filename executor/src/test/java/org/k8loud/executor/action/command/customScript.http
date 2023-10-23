@@ -1,20 +1,17 @@
-### clear storage
+### custom script
 POST localhost:8080/execute
 Content-Type: application/json
 
 {
   "collectionName": "command",
-  "actionName": "ClearStorageAction",
+  "actionName": "CustomScriptAction",
   "params": {
     "params": {
       "host": "",
       "port": "22",
       "privateKey": "",
       "user": "ubuntu",
-      "paths": "/home/ubuntu /dev/null",
-      "regexPattern": "to_delete*",
-      "dateFrom": "2022-01-05T10:25:33",
-      "dateTo": "2024-01-05T10:25:33"
+      "command": "echo \"Hello $(whoami)\""
     }
   }
 }
