@@ -1,7 +1,5 @@
 package org.k8loud.executor.openstack.nova;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -22,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.UNSUPPORTED_ACTION;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,7 +40,7 @@ public class BasicServerActionTest {
     OpenstackNovaService openstackNovaService = new OpenstackNovaServiceImpl();
 
     @ParameterizedTest
-    @EnumSource(value = Action.class, names = {"PAUSE", "UNPAUSE"})
+    @EnumSource(value = Action.class, names = {"PAUSE", "UNPAUSE", "STOP", "START"})
     void testSupportedActionsSuccess(Action action) throws OpenstackException {
         // given
         setup();
@@ -59,7 +56,7 @@ public class BasicServerActionTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = Action.class, names = {"PAUSE", "UNPAUSE"})
+    @EnumSource(value = Action.class, names = {"PAUSE", "UNPAUSE", "STOP", "START"})
     void testSupportedActionsFailed(Action action) throws OpenstackException {
         // given
         setup();
@@ -67,7 +64,8 @@ public class BasicServerActionTest {
                 .thenReturn(ActionResponse.actionFailed(EXCEPTION_MESSAGE, 123));
 
         // when
-        Throwable throwable = catchThrowable(() -> openstackNovaService.basicServerAction(server, action, clientV3Mock));
+        Throwable throwable = catchThrowable(
+                () -> openstackNovaService.basicServerAction(server, action, clientV3Mock));
 
         // then
         verify(serverService).action(eq(SERVER_ID), eq(action));
@@ -81,13 +79,14 @@ public class BasicServerActionTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = Action.class, names = {"PAUSE", "UNPAUSE"}, mode = EnumSource.Mode.EXCLUDE)
+    @EnumSource(value = Action.class, names = {"PAUSE", "UNPAUSE", "STOP", "START"}, mode = EnumSource.Mode.EXCLUDE)
     void testUnsupportedActions(Action action) {
         // given
         when(server.getName()).thenReturn(SERVER_NAME);
 
         // when
-        Throwable throwable = catchThrowable(() -> openstackNovaService.basicServerAction(server, action, clientV3Mock));
+        Throwable throwable = catchThrowable(
+                () -> openstackNovaService.basicServerAction(server, action, clientV3Mock));
 
         // then
         verifyNoInteractions(serverService);

@@ -5,6 +5,7 @@ import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.exception.code.OpenstackExceptionCode;
 import org.openstack4j.api.Builders;
 import org.openstack4j.api.OSClient;
+import org.openstack4j.api.exceptions.ConnectionException;
 import org.openstack4j.common.Buildable;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.compute.Action;
@@ -15,7 +16,9 @@ import org.openstack4j.model.compute.builder.ServerCreateBuilder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
@@ -37,8 +40,15 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
     @Override
     public void waitForServerStatus(Server server, Server.Status status, int waitingTimeSec,
                                     OSClient.OSClientV3 client) {
-        log.debug("Waiting for server {} status {} for maximally {} sec", server.getName(), status, waitingTimeSec);
-        client.compute().servers().waitForServerStatus(server.getId(), status, waitingTimeSec, TimeUnit.SECONDS);
+        log.debug("Waiting for server {} status \"{}\" for maximally {} sec", server.getName(), status, waitingTimeSec);
+        serverConditionalWait(server, s -> s.getStatus() == status, waitingTimeSec, client);
+    }
+
+    @Override
+    public void waitForServerTaskEnd(Server server, int waitingTimeSec, OSClient.OSClientV3 client) {
+        log.debug("Waiting for server {} task state \"null\" for maximally {} sec",
+                server.getName(), waitingTimeSec);
+        serverConditionalWait(server, s -> Objects.isNull(s.getTaskState()), waitingTimeSec, client);
     }
 
     @Override
@@ -78,10 +88,23 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
         log.debug("Perform action {} on server {}", action.name(), server.getName());
         OpenstackExceptionCode code = OpenstackExceptionCode.getNovaExceptionCode(action);
         ActionResponse response = client.compute().servers().action(server.getId(), action);
-        if (!response.isSuccess()){
+        if (!response.isSuccess()) {
             log.error("Failed to perform action {} on server {}. Reason: {}",
                     action.name(), server.getName(), response.getFault());
             throw new OpenstackException(response.getFault(), code);
+        }
+    }
+
+    @Override
+    public void createServerSnapshot(Server server, String snapshotName,
+                                     OSClient.OSClientV3 client) throws OpenstackException {
+        log.debug("Creating snapshot with name {} on server {}", snapshotName, server.getName());
+        String snapshotId = client.compute().servers().createSnapshot(server.getId(), snapshotName);
+
+        if (snapshotId == null) {
+            log.error("Failed to create snapshot with name \"{}\" on server {}", snapshotName, server.getName());
+            throw new OpenstackException(String.format("Failed to create snapshot with name \"%s\" on server %s",
+                    snapshotName, server.getName()), CREATE_SERVER_SNAPSHOT_FAILED);
         }
     }
 
@@ -112,5 +135,39 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
         if (server.getStatus() != ACTIVE) {
             log.warn("Server {} not active after {}s after boot", server.getName(), waitingTimeSec);
         }
+    }
+
+    private void serverConditionalWait(Server server, Function<Server, Boolean> condition, long waitingTimeSec,
+                                       OSClient.OSClientV3 client) {
+        Instant start = Instant.now();
+        while (isTimeNotExceeded(waitingTimeSec, start)) {
+            try {
+                server = getUpdatedServerObject(server, client);
+                if (condition.apply(server)) {
+                    break;
+                }
+
+                Thread.sleep(1000);
+            } catch (ConnectionException e) {
+                log.debug("Connection with openstack lost during serverConditionalWait on server {}. ", server.getName(), e);
+            } catch (Exception e) {
+                log.debug("Problem during serverConditionalWait on server {}. ", server.getName(), e);
+            }
+        }
+
+        log.debug("Waited {} sec during serverConditionalWait on server {} (max={} sec) ",
+                getPassedSeconds(start), server.getName(), waitingTimeSec);
+    }
+
+    private Server getUpdatedServerObject(Server server, OSClient.OSClientV3 client) {
+        return client.compute().servers().get(server.getId());
+    }
+
+    private long getPassedSeconds(Instant start) {
+        return Duration.between(start, Instant.now()).toSeconds();
+    }
+
+    private boolean isTimeNotExceeded(long waitingTimeSec, Instant start) {
+        return start.plus(waitingTimeSec, ChronoUnit.SECONDS).isAfter(Instant.now());
     }
 }

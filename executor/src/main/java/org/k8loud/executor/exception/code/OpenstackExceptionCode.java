@@ -16,14 +16,20 @@ public enum OpenstackExceptionCode {
     ATTACH_VOLUME_FAILED,
     VOLUME_ERROR,
     DETACH_VOLUME_FAILED,
+    CREATE_SERVER_SNAPSHOT_FAILED,
+    DELETE_SERVER_SNAPSHOT_FAILED,
     PAUSE_SERVER_FAILED,
     UNPAUSE_SERVER_FAILED,
+    STOP_SERVER_FAILED,
+    START_SERVER_FAILED,
     UNSUPPORTED_ACTION;
 
     public static OpenstackExceptionCode getNovaExceptionCode(Action action) throws OpenstackException {
         return switch (action){
             case PAUSE -> PAUSE_SERVER_FAILED;
             case UNPAUSE -> UNPAUSE_SERVER_FAILED;
+            case STOP -> STOP_SERVER_FAILED;
+            case START -> START_SERVER_FAILED;
             default -> throw new OpenstackException(action.name() + " not supported", UNSUPPORTED_ACTION);
         };
     }

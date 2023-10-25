@@ -2,56 +2,35 @@ package org.k8loud.executor.openstack;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.k8loud.executor.exception.OpenstackException;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.model.compute.Server;
 import org.openstack4j.model.storage.block.Volume;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.k8loud.executor.exception.code.OpenstackExceptionCode.RESIZE_SERVER_FAILED;
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.VOLUME_ERROR;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class DetachVolumeTest {
+public class DetachVolumeTest extends BaseTest {
     private static final String REGION = "region";
     private static final String SERVER_ID = "serverId";
     private static final String VOLUME_ID = "volumeId";
     private static final String VOLUME_NAME = "volumeName";
 
     @Mock
-    OpenstackClientProvider openstackClientProviderMock;
-    @Mock
-    OSClient.OSClientV3 clientV3Mock;
-    @Mock
     Server server;
     @Mock
     Volume volume;
-    @Mock
-    OpenstackNovaService openstackNovaServiceMock;
-    @Mock
-    OpenstackCinderService openstackCinderService;
-
-    OpenstackService openstackService;
-
 
     @BeforeEach
     void setUp() throws OpenstackException {
-        openstackService = new OpenstackServiceImpl(openstackClientProviderMock, openstackNovaServiceMock,
-                openstackCinderService);
-
-        when(openstackClientProviderMock.getClientFromToken()).thenReturn(clientV3Mock);
-
         when(openstackNovaServiceMock.getServer(anyString(), any(OSClient.OSClientV3.class))).thenReturn(server);
         when(openstackCinderService.getVolume(anyString(), any(OSClient.OSClientV3.class))).thenReturn(volume);
-
     }
 
     @Test
