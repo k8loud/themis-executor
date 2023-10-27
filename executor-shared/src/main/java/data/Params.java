@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 @Getter
 @Builder
@@ -38,5 +39,9 @@ public class Params {
             }
         }
         return defaultValue;
+    }
+
+    public boolean getOptionalParamAsBoolean(String param, String defaultValue) {
+        return Boolean.parseBoolean(getOptionalParam(param, defaultValue));
     }
 }

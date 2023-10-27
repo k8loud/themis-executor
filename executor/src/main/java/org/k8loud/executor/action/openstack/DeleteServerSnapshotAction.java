@@ -18,7 +18,7 @@ public class DeleteServerSnapshotAction extends OpenstackAction {
     public void unpackParams(Params params) {
         region = params.getRequiredParam("region");
         serverId = params.getRequiredParam("serverId");
-        keepOneSnapshot = Boolean.parseBoolean(params.getOptionalParam("keepOneSnapshot", "true"));
+        keepOneSnapshot = params.getOptionalParamAsBoolean("keepOneSnapshot", "true");
     }
 
     @Override

@@ -20,7 +20,7 @@ public class CreateServerSnapshotAction extends OpenstackAction {
         region = params.getRequiredParam("region");
         serverId = params.getRequiredParam("serverId");
         snapshotName = params.getOptionalParam("snapshotName", null);
-        stopInstance = Boolean.parseBoolean(params.getOptionalParam("stopInstance", "false"));
+        stopInstance = params.getOptionalParamAsBoolean("stopInstance", "false");
     }
 
     @Override
