@@ -9,6 +9,7 @@ import org.k8loud.executor.action.ActionHelper;
 import org.k8loud.executor.command.CommandExecutionService;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.MapperException;
+import org.k8loud.executor.kubernetes.KubernetesService;
 import org.k8loud.executor.openstack.OpenstackService;
 import org.k8loud.executor.util.ClassHelper;
 import org.k8loud.executor.util.ClassParameter;
@@ -27,10 +28,13 @@ public class MapperServiceImpl implements MapperService {
     private final ActionHelper actionHelper = new ActionHelper();
     private final OpenstackService openstackService;
     private final CommandExecutionService commandExecutionService;
+    private final KubernetesService kubernetesService;
 
-    public MapperServiceImpl(OpenstackService openstackService, CommandExecutionService commandExecutionService) {
+    public MapperServiceImpl(OpenstackService openstackService, CommandExecutionService commandExecutionService,
+                             KubernetesService kubernetesService) {
         this.openstackService = openstackService;
         this.commandExecutionService = commandExecutionService;
+        this.kubernetesService = kubernetesService;
     }
 
     @NotNull
@@ -43,12 +47,13 @@ public class MapperServiceImpl implements MapperService {
         Class<?> actionClass = actionHelper.getActionClass(collectionName, actionName);
         List<ClassParameter> classParameters = new ArrayList<>(List.of(new ClassParameter(Params.class, params)));
         try {
-            if (collectionName.equals("openstack")) {
-                classParameters.add(new ClassParameter(OpenstackService.class, openstackService));
-            } else if (collectionName.equals("command")) {
-                classParameters.add(new ClassParameter(CommandExecutionService.class, commandExecutionService));
+            switch (collectionName) {
+                case "openstack" -> classParameters.add(new ClassParameter(OpenstackService.class, openstackService));
+                case "command" ->
+                        classParameters.add(new ClassParameter(CommandExecutionService.class, commandExecutionService));
+                case "kubernetes" ->
+                        classParameters.add(new ClassParameter(KubernetesService.class, kubernetesService));
             }
-
             return (Action) ClassHelper.getInstance(actionClass, classParameters.toArray(ClassParameter[]::new));
         } catch (NoSuchMethodException e) {
             throw new MapperException(e, INVALID_CONSTRUCTOR);

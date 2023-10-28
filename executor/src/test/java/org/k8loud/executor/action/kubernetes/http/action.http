@@ -5,10 +5,12 @@ Content-Type: application/json
   "collectionName": "kubernetes",
   "actionName": "HorizontalScalingAction",
   "params": {
-    "resource-type": "Deployment",
-    "resource-name": "nginx-deployment",
-    "namespace": "default",
-    "replicas": "1"
+    "params": {
+      "resourceType": "Deployment",
+      "resourceName": "nginx-deployment",
+      "namespace": "default",
+      "replicas": "1"
+    }
   }
 }
 
@@ -20,10 +22,12 @@ Content-Type: application/json
   "collectionName": "kubernetes",
   "actionName": "UpdateConfigMapAction",
   "params": {
-    "resource-name": "cm1",
-    "namespace": "default",
-    "k1": "k55",
-    "v1": "v55"
+    "params": {
+      "resourceName": "cm1",
+      "namespace": "default",
+      "k1": "k55",
+      "v1": "v55"
+    }
   }
 }
 
@@ -35,9 +39,11 @@ Content-Type: application/json
   "collectionName": "kubernetes",
   "actionName": "UpdateConfigMapAction",
   "params": {
-    "resource-name": "cm1",
-    "namespace": "default",
-    "k1": "k1",
-    "v1": "v100"
+    "params": {
+      "resourceName": "cm1",
+      "namespace": "default",
+      "k1": "k1",
+      "v1": "v100"
+    }
   }
 }

@@ -5,8 +5,6 @@ import data.ExecutionRS;
 import data.Params;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
-import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.server.mock.EnableKubernetesMockClient;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -19,11 +17,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@EnableKubernetesMockClient(crud = true)
-class UpdateConfigMapActionTest {
-
-    KubernetesClient client;
-
+class UpdateConfigMapActionTest extends BaseTest {
     public static Stream<Arguments> provideUpdateValuesConfigMapParams() {
         return Stream.of(
                 Arguments.of(new Params(Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v2")),
@@ -51,7 +45,7 @@ class UpdateConfigMapActionTest {
         client.resource(cm).create();
 
         // when
-        Action action = new UpdateConfigMapAction(params, client);
+        Action action = new UpdateConfigMapAction(params, kubernetesService);
         ExecutionRS rs = action.perform();
         ConfigMap cm1 = client.configMaps().inNamespace("test").withName("cm1").get();
 

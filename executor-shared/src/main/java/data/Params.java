@@ -39,4 +39,8 @@ public class Params {
         }
         return defaultValue;
     }
+
+    public Integer getRequiredParamAsInteger(String param) {
+        return Integer.parseInt(getRequiredParam(param));
+    }
 }

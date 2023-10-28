@@ -1,22 +1,38 @@
 package org.k8loud.executor.action.kubernetes;
 
+import data.ExecutionExitCode;
+import data.ExecutionRS;
 import data.Params;
-import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import org.k8loud.executor.action.Action;
 import org.k8loud.executor.exception.ActionException;
+import org.k8loud.executor.exception.KubernetesException;
+import org.k8loud.executor.kubernetes.KubernetesService;
 
 public abstract class KubernetesAction extends Action {
-    protected KubernetesClient client;
+    protected KubernetesService kubernetesService;
 
-    protected KubernetesAction(Params params) throws ActionException {
+    protected KubernetesAction(Params params, KubernetesService kubernetesService) throws ActionException {
         super(params);
-        //TODO how to configure??
-        this.client = new KubernetesClientBuilder().build();
+        this.kubernetesService = kubernetesService;
     }
 
-    protected KubernetesAction(Params params, KubernetesClient client) throws ActionException {
-        super(params);
-        this.client = client;
+    @Override
+    public ExecutionRS perform() {
+        String result;
+        try {
+            result = performKubernetesAction();
+        } catch (KubernetesException e) {
+            return ExecutionRS.builder()
+                    .result(e.toString())
+                    .exitCode(ExecutionExitCode.NOT_OK)
+                    .build();
+        }
+
+        return ExecutionRS.builder()
+                .result(result)
+                .exitCode(ExecutionExitCode.OK)
+                .build();
     }
+
+    protected abstract String performKubernetesAction() throws KubernetesException;
 }

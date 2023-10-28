@@ -3,9 +3,8 @@ package org.k8loud.executor.action.kubernetes;
 import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
+import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.apps.*;
-import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.server.mock.EnableKubernetesMockClient;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.Action;
@@ -18,10 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
-@EnableKubernetesMockClient(crud = true)
-class HorizontalScalingActionTest {
-    KubernetesClient client;
-
+class HorizontalScalingActionTest extends BaseTest {
     public static Stream<Params> provideStatefulSetScalingParams() {
         return Stream.of(
                 new Params(Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "3")),
@@ -48,8 +44,9 @@ class HorizontalScalingActionTest {
         client.resource(sts).create();
 
         //when
-        Action action = new HorizontalScalingAction(params, client);
+        Action action = new HorizontalScalingAction(params, kubernetesService);
         ExecutionRS rs = action.perform();
+        ConfigMap cm1 = client.configMaps().inNamespace("test").withName("cm1").get();
         StatefulSet sts1 = client.apps().statefulSets().withName(params.getRequiredParam("resourceName")).get();
 
         //then
@@ -91,7 +88,7 @@ class HorizontalScalingActionTest {
                 .create();
 
         //when
-        Action action = new HorizontalScalingAction(params, client);
+        Action action = new HorizontalScalingAction(params, kubernetesService);
         ExecutionRS rs = action.perform();
         Deployment depl1 = client.apps()
                 .deployments()
@@ -140,7 +137,7 @@ class HorizontalScalingActionTest {
                 .create();
 
         // when
-        Action action = new HorizontalScalingAction(params, client);
+        Action action = new HorizontalScalingAction(params, kubernetesService);
         ExecutionRS rs = action.perform();
         ReplicaSet repl = client.apps()
                 .replicaSets()

@@ -1,12 +1,9 @@
 package org.k8loud.executor.action.kubernetes;
 
-import data.ExecutionExitCode;
-import data.ExecutionRS;
 import data.Params;
-import io.fabric8.kubernetes.api.model.ConfigMap;
-import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
-import io.fabric8.kubernetes.client.KubernetesClient;
 import org.k8loud.executor.exception.ActionException;
+import org.k8loud.executor.exception.KubernetesException;
+import org.k8loud.executor.kubernetes.KubernetesService;
 
 import java.util.Map;
 
@@ -15,12 +12,8 @@ public class UpdateConfigMapAction extends KubernetesAction {
     private String resourceName;
     private Map<String, String> replacements;
 
-    public UpdateConfigMapAction(Params params) throws ActionException {
-        super(params);
-    }
-
-    public UpdateConfigMapAction(Params params, KubernetesClient client) throws ActionException {
-        super(params, client);
+    public UpdateConfigMapAction(Params params, KubernetesService kubernetesService) throws ActionException {
+        super(params, kubernetesService);
     }
 
     @Override
@@ -39,15 +32,7 @@ public class UpdateConfigMapAction extends KubernetesAction {
      */
 
     @Override
-    public ExecutionRS perform() {
-        ConfigMap cm = client.configMaps()
-                .inNamespace(namespace)
-                .withName(resourceName)
-                .edit(c -> new ConfigMapBuilder(c).addToData(replacements).build());
-
-        return ExecutionRS.builder()
-                .result("Update of config map: " + resourceName + " successful")
-                .exitCode(ExecutionExitCode.OK)
-                .build();
+    public String performKubernetesAction() throws KubernetesException {
+        return kubernetesService.updateConfigMap(namespace, resourceName, replacements);
     }
 }
