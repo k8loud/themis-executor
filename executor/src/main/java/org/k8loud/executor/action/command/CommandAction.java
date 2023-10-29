@@ -3,13 +3,13 @@ package org.k8loud.executor.action.command;
 import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
-import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.action.Action;
 import org.k8loud.executor.command.CommandExecutionService;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CommandException;
 
-@Setter
+@Slf4j
 public abstract class CommandAction extends Action {
     protected CommandExecutionService commandExecutionService;
     protected String host;
@@ -44,7 +44,7 @@ public abstract class CommandAction extends Action {
                     .exitCode(ExecutionExitCode.NOT_OK)
                     .build();
         }
-
+        log.info("Result: {}", result);
         return ExecutionRS.builder()
                 .result(result)
                 .exitCode(ExecutionExitCode.OK)

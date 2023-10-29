@@ -3,59 +3,39 @@ package org.k8loud.executor.action.kubernetes;
 import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
-import io.fabric8.kubernetes.api.model.ConfigMap;
-import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.Action;
 import org.k8loud.executor.exception.ActionException;
+import org.k8loud.executor.exception.KubernetesException;
 
 import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 class UpdateConfigMapActionTest extends BaseTest {
     @ParameterizedTest
     @MethodSource
-    void testUpdateValuesConfigMap(Params params, Map<String, String> data, Map<String, String> newData,
-                                   int finalLength) throws ActionException {
-        // given
-        ConfigMap cm = new ConfigMapBuilder().withNewMetadata()
-                .withName("cm1")
-                .withNamespace("test")
-                .withResourceVersion("1")
-                .endMetadata()
-                .withData(data)
-                .build();
-
-        client.resource(cm).create();
-
+    void testIfKubernetesServiceIsCalled(Params params, Map<String, String> replacements)
+            throws ActionException, KubernetesException {
         // when
         Action action = new UpdateConfigMapAction(params, kubernetesService);
         ExecutionRS rs = action.perform();
-        ConfigMap cm1 = client.configMaps().inNamespace("test").withName("cm1").get();
-
-        //then
-        assertNotNull(rs);
+        // then
+        verify(kubernetesService, times(1)).updateConfigMap(
+                params.getRequiredParam(NAMESPACE_KEY), params.getRequiredParam(RESOURCE_NAME_KEY), replacements);
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
-        assertNotNull(cm1);
-        assertNotNull(cm1.getMetadata());
-        assertNotNull(cm1.getData());
-        assertEquals(finalLength, cm1.getData().size());
-        assertEquals(newData, cm1.getData());
     }
 
-    private static Stream<Arguments> testUpdateValuesConfigMap() {
-        return Stream.of(
-                Arguments.of(new Params(Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v2")),
-                        Map.of("k1", "v1"), Map.of("k1", "v2"), 1),
-                Arguments.of(new Params(Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v2")),
-                        Map.of("k1", "v1", "k2", "v2", "k3", "v3"), Map.of("k1", "v2", "k2", "v2", "k3", "v3"), 3),
-                Arguments.of(new Params(Map.of("resourceName", "cm1", "namespace", "test", "k1", "k1", "v1", "v1")),
-                        Map.of("k2", "v2", "k3", "v3"), Map.of("k1", "v1", "k2", "v2", "k3", "v3"), 3));
-
+    private static Stream<Arguments> testIfKubernetesServiceIsCalled() {
+        return Stream.of(Arguments.of(new Params(Map.of(NAMESPACE_KEY, NAMESPACE, RESOURCE_NAME_KEY, RESOURCE_NAME, RESOURCE_TYPE_KEY,
+                        RESOURCE_TYPE, "k1", "k1", "v1", "v2")), Map.of("k1", "v2")),
+                Arguments.of(new Params(Map.of(NAMESPACE_KEY, NAMESPACE, RESOURCE_NAME_KEY, RESOURCE_NAME, RESOURCE_TYPE_KEY,
+                        RESOURCE_TYPE, "k1", "k6", "v1", "v5")), Map.of("k6", "v5"))
+        );
     }
 }

@@ -9,12 +9,13 @@ import io.fabric8.kubernetes.client.dsl.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.exception.KubernetesException;
+import org.k8loud.executor.util.Util;
 import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-import static org.k8loud.executor.exception.code.KubernetesExceptionCode.RESOURCE_NOT_FOUND;
+import static org.k8loud.executor.exception.code.KubernetesExceptionCode.*;
 import static org.k8loud.executor.kubernetes.ResourceType.CONFIG_MAP;
 
 @SuppressWarnings("unchecked")
@@ -28,33 +29,43 @@ public class KubernetesServiceImpl implements KubernetesService {
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException", exceptionCode = "SCALE_HORIZONTALLY_FAILED")
     public String scaleHorizontally(String namespace, String resourceName, String resourceType, Integer replicas)
             throws KubernetesException {
-        getResourceThrowIfAbsent(namespace, resourceType, resourceName)
+        log.info("Scaling {} to {}", getFullResourceName(resourceType, resourceName), replicas);
+        getResource(namespace, resourceType, resourceName)
                 .scale(replicas);
-        return String.format("Resource '%s/%s' scaled to %s", resourceType, resourceName, replicas);
+        return String.format("Scaled %s to %d", getFullResourceName(resourceType, resourceName), replicas);
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException", exceptionCode = "DELETE_RESOURCE_FAILED")
     public String deleteResource(String namespace, String resourceName, String resourceType, Long gracePeriodSeconds)
             throws KubernetesException {
-        getResourceThrowIfAbsent(namespace, resourceType, resourceName)
+        log.info("Deleting {}, giving {} seconds for shutdown", getFullResourceName(resourceType, resourceName),
+                gracePeriodSeconds);
+        getResource(namespace, resourceType, resourceName)
                 .withGracePeriod(gracePeriodSeconds)
                 .delete();
-        return String.format("Resource '%s/%s' deleted", resourceType, resourceName);
+        return String.format("Resource %s deleted", getFullResourceName(resourceType, resourceName));
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException", exceptionCode = "UPDATE_CONFIG_MAP_FAILED")
     public String updateConfigMap(String namespace, String resourceName, Map<String, String> replacements)
             throws KubernetesException {
-        getResourceThrowIfAbsent(namespace, CONFIG_MAP.toString(), resourceName)
+        log.info("Updating {} with {}", getFullResourceName(CONFIG_MAP.toString(), resourceName), replacements);
+        getResource(namespace, CONFIG_MAP.toString(), resourceName)
                 .edit(c -> new ConfigMapBuilder((ConfigMap) c)
                         .addToData(replacements).build());
-        return String.format("Update of config map '%s' successful", resourceName);
+        return String.format("Update of %s successful", getFullResourceName(CONFIG_MAP.toString(), resourceName));
     }
 
-    private <T> Resource<T> getResourceThrowIfAbsent(String namespace, String resourceType, String resourceName)
+    public <T> Resource<T> getResource(String namespace, String resourceType, String resourceName)
             throws KubernetesException {
+        log.info("Looking for {} in {}", getFullResourceName(resourceType, resourceName), namespace);
+        if (!Util.notEmptyBlank(namespace)) {
+            throw new KubernetesException(EMPTY_OR_BLANK_NAMESPACE);
+        } else if (!Util.notEmptyBlank(resourceName)) {
+            throw new KubernetesException(EMPTY_OR_BLANK_RESOURCE_NAME);
+        }
         ResourceType resourceTypeObj = ResourceType.fromString(resourceType);
         KubernetesClient client = clientProvider.getClient();
         AppsAPIGroupDSL apps = client.apps();
@@ -68,8 +79,13 @@ public class KubernetesServiceImpl implements KubernetesService {
         };
         Resource<T> resource = mixedOperation.inNamespace(namespace).withName(resourceName);
         if (resource.get() == null) {
+            log.error("Couldn't find {}", getFullResourceName(resourceType, resourceName));
             throw new KubernetesException(RESOURCE_NOT_FOUND);
         }
         return resource;
+    }
+
+    private String getFullResourceName(String resourceType, String resourceName) {
+        return String.format("%s/%s", resourceType, resourceName);
     }
 }

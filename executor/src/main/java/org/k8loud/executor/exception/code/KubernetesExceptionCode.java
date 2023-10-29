@@ -1,6 +1,11 @@
 package org.k8loud.executor.exception.code;
 
 public enum KubernetesExceptionCode {
+    SCALE_HORIZONTALLY_FAILED,
+    DELETE_RESOURCE_FAILED,
+    UPDATE_CONFIG_MAP_FAILED,
     INVALID_RESOURCE_TYPE,
-    RESOURCE_NOT_FOUND
+    RESOURCE_NOT_FOUND,
+    EMPTY_OR_BLANK_NAMESPACE,
+    EMPTY_OR_BLANK_RESOURCE_NAME
 }
