@@ -2,6 +2,7 @@ package org.k8loud.executor.action.kubernetes;
 
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.k8loud.executor.kubernetes.KubernetesClientProvider;
@@ -30,10 +31,10 @@ public class BaseTest {
         kubernetesService = new KubernetesServiceImpl(kubernetesClientProvider);
     }
 
-//    @AfterEach
-//    public void tearDown() {
-//        if (server != null) {
-//            server.after();
-//        }
-//    }
+    @AfterEach
+    public void tearDown() {
+        if (server != null) {
+            server.after();
+        }
+    }
 }

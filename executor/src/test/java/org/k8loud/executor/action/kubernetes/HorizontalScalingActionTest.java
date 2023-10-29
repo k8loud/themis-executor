@@ -3,7 +3,6 @@ package org.k8loud.executor.action.kubernetes;
 import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
-import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.apps.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -15,7 +14,6 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 
 class HorizontalScalingActionTest extends BaseTest {
     public static Stream<Params> provideStatefulSetScalingParams() {
@@ -46,7 +44,6 @@ class HorizontalScalingActionTest extends BaseTest {
         //when
         Action action = new HorizontalScalingAction(params, kubernetesService);
         ExecutionRS rs = action.perform();
-        ConfigMap cm1 = client.configMaps().inNamespace("test").withName("cm1").get();
         StatefulSet sts1 = client.apps().statefulSets().withName(params.getRequiredParam("resourceName")).get();
 
         //then
