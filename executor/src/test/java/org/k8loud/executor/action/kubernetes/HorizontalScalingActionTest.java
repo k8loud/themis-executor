@@ -16,15 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class HorizontalScalingActionTest extends BaseTest {
-    public static Stream<Params> provideStatefulSetScalingParams() {
-        return Stream.of(
-                new Params(Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "3")),
-                new Params(Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "1")),
-                new Params(Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "2")));
-    }
-
     @ParameterizedTest
-    @MethodSource("provideStatefulSetScalingParams")
+    @MethodSource
     void testScalingStatefulSet(Params params) throws ActionException {
         // given
         StatefulSet sts = new StatefulSetBuilder().withNewMetadata()
@@ -54,19 +47,8 @@ class HorizontalScalingActionTest extends BaseTest {
         assertEquals(Integer.parseInt(params.getRequiredParam("replicas")), sts1.getSpec().getReplicas().intValue());
     }
 
-    public static Stream<Params> provideDeploymentScalingParams() {
-        return Stream.of(new Params(
-                        Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas"
-                                , "3")),
-                new Params(
-                        Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas",
-                                "1")), new Params(
-                        Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas",
-                                "2")));
-    }
-
     @ParameterizedTest
-    @MethodSource("provideDeploymentScalingParams")
+    @MethodSource
     void testScalingDeployment(Params params) throws ActionException {
         // given
         Deployment depl = new DeploymentBuilder().withNewMetadata()
@@ -102,19 +84,8 @@ class HorizontalScalingActionTest extends BaseTest {
                 .intValue());
     }
 
-    public static Stream<Params> provideReplicasetScalingParams() {
-        return Stream.of(new Params(
-                        Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas"
-                                , "3")),
-                new Params(
-                        Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas",
-                                "1")), new Params(
-                        Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas",
-                                "2")));
-    }
-
     @ParameterizedTest
-    @MethodSource("provideReplicasetScalingParams")
+    @MethodSource
     void testScalingReplicaSet(Params params) throws ActionException {
 
         // given
@@ -149,5 +120,34 @@ class HorizontalScalingActionTest extends BaseTest {
         assertEquals(Integer.parseInt(params.getRequiredParam("replicas")), repl.getSpec()
                 .getReplicas()
                 .intValue());
+    }
+
+    private static Stream<Params> testScalingStatefulSet() {
+        return Stream.of(
+                new Params(Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "3")),
+                new Params(Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "1")),
+                new Params(Map.of("resourceType", "StatefulSet", "resourceName", "depl1", "namespace", "test", "replicas", "2")));
+    }
+
+    public static Stream<Params> testScalingDeployment() {
+        return Stream.of(new Params(
+                        Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas"
+                                , "3")),
+                new Params(
+                        Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas",
+                                "1")), new Params(
+                        Map.of("resourceType", "Deployment", "resourceName", "depl1", "namespace", "test", "replicas",
+                                "2")));
+    }
+
+    private static Stream<Params> testScalingReplicaSet() {
+        return Stream.of(new Params(
+                        Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas"
+                                , "3")),
+                new Params(
+                        Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas",
+                                "1")), new Params(
+                        Map.of("resourceType", "ReplicaSet", "resourceName", "repl1", "namespace", "test", "replicas",
+                                "2")));
     }
 }

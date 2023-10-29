@@ -19,16 +19,11 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class DeleteResourceActionTest extends BaseTest {
-    public static Stream<Params> provideDeletePodParams() {
-        return Stream.of(
-                new Params(Map.of("resourceType", "Pod", "resourceName", "pod1", "namespace", "test")),
-                new Params(Map.of("resourceType", "Pod", "resourceName", "pod1", "namespace", "test", "gracePeriodSeconds", "60")));
-    }
-
     @ParameterizedTest
-    @MethodSource("provideDeletePodParams")
+    @MethodSource
     void testDeletingPod(Params params) throws ActionException {
         // given
         final String resourceName = params.getRequiredParam("resourceName");
@@ -52,17 +47,11 @@ public class DeleteResourceActionTest extends BaseTest {
 
         // then
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
-        Assertions.assertNull(pod1);
-    }
-
-    public static Stream<Params> provideDeleteDeploymentParams() {
-        return Stream.of(
-                new Params(Map.of("resourceType", "Deployment", "resourceName", "cm1", "namespace", "test")),
-                new Params(Map.of("resourceType", "Deployment", "resourceName", "cm1", "namespace", "test", "gracePeriodSeconds", "60")));
+        assertNull(pod1);
     }
 
     @ParameterizedTest
-    @MethodSource("provideDeleteDeploymentParams")
+    @MethodSource
     void testDeletingDeployment(Params params) throws ActionException {
         // given
         final String resourceName = params.getRequiredParam("resourceName");
@@ -92,17 +81,11 @@ public class DeleteResourceActionTest extends BaseTest {
 
         // then
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
-        Assertions.assertNull(deployment1);
-    }
-
-    public static Stream<Params> provideDeleteConfigMapParams() {
-        return Stream.of(
-                new Params(Map.of("resourceType", "ConfigMap", "resourceName", "cm1", "namespace", "test")),
-                new Params(Map.of("resourceType", "ConfigMap", "resourceName", "cm1", "namespace", "test", "gracePeriodSeconds", "60")));
+        assertNull(deployment1);
     }
 
     @ParameterizedTest
-    @MethodSource("provideDeleteConfigMapParams")
+    @MethodSource
     void testDeletingConfigMap(Params params) throws ActionException {
         // given
         final String resourceName = params.getRequiredParam("resourceName");
@@ -122,6 +105,24 @@ public class DeleteResourceActionTest extends BaseTest {
 
         // then
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
-        Assertions.assertNull(cm1);
+        assertNull(cm1);
+    }
+
+    private static Stream<Params> testDeletingPod() {
+        return Stream.of(
+                new Params(Map.of("resourceType", "Pod", "resourceName", "pod1", "namespace", "test")),
+                new Params(Map.of("resourceType", "Pod", "resourceName", "pod1", "namespace", "test", "gracePeriodSeconds", "60")));
+    }
+
+    private static Stream<Params> testDeletingDeployment() {
+        return Stream.of(
+                new Params(Map.of("resourceType", "Deployment", "resourceName", "cm1", "namespace", "test")),
+                new Params(Map.of("resourceType", "Deployment", "resourceName", "cm1", "namespace", "test", "gracePeriodSeconds", "60")));
+    }
+
+    private static Stream<Params> testDeletingConfigMap() {
+        return Stream.of(
+                new Params(Map.of("resourceType", "ConfigMap", "resourceName", "cm1", "namespace", "test")),
+                new Params(Map.of("resourceType", "ConfigMap", "resourceName", "cm1", "namespace", "test", "gracePeriodSeconds", "60")));
     }
 }

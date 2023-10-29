@@ -2,6 +2,7 @@ package org.k8loud.executor.service;
 
 import data.ExecutionRQ;
 import data.Params;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.action.Action;
@@ -22,6 +23,7 @@ import java.util.List;
 import static org.k8loud.executor.exception.code.MapperExceptionCode.INVALID_CONSTRUCTOR;
 import static org.k8loud.executor.exception.code.MapperExceptionCode.NEW_INSTANCE_FAILURE;
 
+@RequiredArgsConstructor
 @Slf4j
 @Service
 public class MapperServiceImpl implements MapperService {
@@ -29,13 +31,6 @@ public class MapperServiceImpl implements MapperService {
     private final OpenstackService openstackService;
     private final CommandExecutionService commandExecutionService;
     private final KubernetesService kubernetesService;
-
-    public MapperServiceImpl(OpenstackService openstackService, CommandExecutionService commandExecutionService,
-                             KubernetesService kubernetesService) {
-        this.openstackService = openstackService;
-        this.commandExecutionService = commandExecutionService;
-        this.kubernetesService = kubernetesService;
-    }
 
     @NotNull
     @Override
