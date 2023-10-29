@@ -10,16 +10,14 @@ public enum ResourceType {
     REPLICA_SET("ReplicaSet"),
     DEPLOYMENT("Deployment"),
     STATEFUL_SET("StatefulSet"),
-    CONTROLLER_REVISION("ControllerRevision");
+    CONTROLLER_REVISION("ControllerRevision"),
+    CONFIG_MAP("ConfigMap"),
+    POD("Pod");
 
     private final String asString;
 
     ResourceType(String asString) {
         this.asString = asString;
-    }
-
-    public String getAsString() {
-        return asString;
     }
 
     public static ResourceType fromString(String s) throws KubernetesException {
@@ -28,10 +26,15 @@ public enum ResourceType {
                 return resourceType;
             }
         }
-        String exceptionMessage = String.format("Invalid resource type '%s', valid values: '%s'", s,
+        String exceptionMessage = String.format("Invalid resource type '%s', valid values: ['%s']", s,
                 Arrays.stream(ResourceType.values())
-                        .map(ResourceType::getAsString)
+                        .map(ResourceType::toString)
                         .collect(Collectors.joining("', '")));
         throw new KubernetesException(exceptionMessage, KubernetesExceptionCode.INVALID_RESOURCE_TYPE);
+    }
+
+    @Override
+    public String toString() {
+        return asString;
     }
 }

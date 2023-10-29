@@ -47,3 +47,36 @@ Content-Type: application/json
     }
   }
 }
+
+###
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "kubernetes",
+  "actionName": "DeleteResourceAction",
+  "params": {
+    "params": {
+      "resourceType": "Pod",
+      "resourceName": "nginx",
+      "namespace": "default",
+      "gracePeriodSeconds": "60"
+    }
+  }
+}
+
+###
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "kubernetes",
+  "actionName": "DeleteResourceAction",
+  "params": {
+    "params": {
+      "resourceType": "ConfigMap",
+      "resourceName": "cm1",
+      "namespace": "default"
+    }
+  }
+}

@@ -1,19 +1,18 @@
 package org.k8loud.executor.action.kubernetes;
 
 import data.Params;
-import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.KubernetesException;
 import org.k8loud.executor.kubernetes.KubernetesService;
 
-@Slf4j
-public class HorizontalScalingAction extends KubernetesAction {
+
+public class DeleteResourceAction extends KubernetesAction {
     private String namespace;
     private String resourceName;
     private String resourceType;
-    private int replicas;
+    private Long gracePeriodSeconds;
 
-    public HorizontalScalingAction(Params params, KubernetesService kubernetesService) throws ActionException {
+    public DeleteResourceAction(Params params, KubernetesService kubernetesService) throws ActionException {
         super(params, kubernetesService);
     }
 
@@ -22,11 +21,11 @@ public class HorizontalScalingAction extends KubernetesAction {
         namespace = params.getRequiredParam("namespace");
         resourceName = params.getRequiredParam("resourceName");
         resourceType = params.getRequiredParam("resourceType");
-        replicas = params.getRequiredParamAsInteger("replicas");
+        gracePeriodSeconds = params.getOptionalParamAsLong("gracePeriodSeconds", 0L);
     }
 
     @Override
-    protected String performKubernetesAction() throws KubernetesException  {
-        return kubernetesService.scaleHorizontally(namespace, resourceName, resourceType, replicas);
+    public String performKubernetesAction() throws KubernetesException {
+        return kubernetesService.deleteResource(namespace, resourceName, resourceType, gracePeriodSeconds);
     }
 }

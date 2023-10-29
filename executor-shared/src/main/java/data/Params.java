@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 @Getter
 @Builder
@@ -42,5 +43,9 @@ public class Params {
 
     public Integer getRequiredParamAsInteger(String param) {
         return Integer.parseInt(getRequiredParam(param));
+    }
+
+    public Long getOptionalParamAsLong(String param, Long defaultValue) {
+        return Optional.ofNullable(params.get(param)).map(Long::parseLong).orElseGet(() -> defaultValue);
     }
 }
