@@ -2,13 +2,16 @@ package org.k8loud.executor.openstack;
 
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.exception.OpenstackException;
+import org.openstack4j.api.Builders;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.compute.Server;
 import org.openstack4j.model.storage.block.Volume;
 import org.openstack4j.model.storage.block.VolumeAttachment;
+import org.openstack4j.model.storage.block.VolumeSnapshot;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -53,6 +56,58 @@ public class OpenstackCinderServiceImpl implements OpenstackCinderService {
             throw new OpenstackException(VOLUME_NOT_EXITS);
         }
         return volume;
+    }
+
+    @Override
+    public void createVolumeSnapshot(Volume volume, String snapshotName,
+                                     OSClient.OSClientV3 client) throws OpenstackException {
+        log.debug("Creating snapshot with name {} for volume {}", snapshotName, volume.getName());
+        VolumeSnapshot snapshot = client.blockStorage().snapshots()
+                .create(Builders.volumeSnapshot()
+                        .name(snapshotName)
+                        .volume(volume.getId())
+                        .build()
+                );
+
+        if (snapshot == null) {
+            log.error("Failed to create snapshot {} of a volume {}", snapshotName, volume.getName());
+            throw new OpenstackException(CREATE_VOLUME_SNAPSHOT_FAILED,
+                    "Failed to create snapshot %s of a volume %s", snapshotName, volume.getName());
+        }
+    }
+
+    @Override
+    public void deleteTheOldestVolumeSnapshot(Volume volume, boolean keepOneSnapshot,
+                                              OSClient.OSClientV3 client) throws OpenstackException {
+        log.debug("Deleting the oldest snapshot from volume {}", volume.getName());
+        VolumeSnapshot snapshotToDelete = getTheOldestSnapshot(volume, keepOneSnapshot, client);
+        ActionResponse response = client.blockStorage().snapshots().delete(snapshotToDelete.getId());
+        if (!response.isSuccess()) {
+            log.error("Failed to delete volume (name={}) snapshot (name={}). Reason: {}",
+                    volume.getName(), snapshotToDelete.getName(), response.getFault());
+            throw new OpenstackException(response.getFault(), DELETE_VOLUME_SNAPSHOT_FAILED);
+        }
+    }
+
+    private VolumeSnapshot getTheOldestSnapshot(Volume volume, boolean keepOneSnapshot,
+                                                OSClient.OSClientV3 client) throws OpenstackException {
+        List<VolumeSnapshot> snapshots = client.blockStorage().snapshots().list().stream()
+                .filter(v -> volume.getId().equals(v.getVolumeId()))
+                .map(v -> (VolumeSnapshot) v)
+                .sorted(Comparator.comparing(VolumeSnapshot::getCreated))
+                .toList();
+
+        if (snapshots.isEmpty()) {
+            log.error("Volume {} does not have any snapshots", volume.getName());
+            throw new OpenstackException(DELETE_VOLUME_SNAPSHOT_FAILED, "Volume %s does not have any snapshots",
+                    volume.getName());
+        } else if (snapshots.size() == 1 && keepOneSnapshot) {
+            log.error("Volume {} has 1 snapshot, and keepOneSnapshot was set on true", volume.getName());
+            throw new OpenstackException(DELETE_VOLUME_SNAPSHOT_FAILED,
+                    "Volume %s has 1 snapshot, and keepOneSnapshot was set on true", volume.getName());
+        }
+
+        return snapshots.get(0);
     }
 
     private String getAttachmentId(Volume volume, Server server) throws OpenstackException {

@@ -1,7 +1,6 @@
 package org.k8loud.executor.openstack;
 
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 
 //FIXME enable annotation here not in implementation (with spring-retry working)
 public interface OpenstackService {
@@ -18,4 +17,12 @@ public interface OpenstackService {
     void pauseServer(String region, String serverId) throws OpenstackException;
 
     void unpauseServer(String region, String serverId) throws OpenstackException;
+
+    void createServerSnapshot(String region, String serverId, String snapshotName, boolean stopInstance) throws OpenstackException;
+
+    void deleteTheOldestServerSnapshot(String region, String serverId, boolean keepOneSnapshot) throws OpenstackException;
+
+    void createVolumeSnapshot(String region, String volumeId, String snapshotName) throws OpenstackException;
+
+    void deleteTheOldestVolumeSnapshot(String region, String volumeId, boolean keepOneSnapshot) throws OpenstackException;
 }

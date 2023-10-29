@@ -14,4 +14,8 @@ public interface OpenstackCinderService {
     void detachVolume(Server server, Volume volume, OSClient.OSClientV3 client) throws OpenstackException;
 
     Volume getVolume(String flavourId, OSClient.OSClientV3 client) throws OpenstackException;
+
+    void createVolumeSnapshot(Volume volume, String snapshotName, OSClient.OSClientV3 client) throws OpenstackException;
+
+    void deleteTheOldestVolumeSnapshot(Volume volume, boolean keepOneSnapshot, OSClient.OSClientV3 client) throws OpenstackException;
 }

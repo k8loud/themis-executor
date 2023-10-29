@@ -1,11 +1,8 @@
 package org.k8loud.executor.openstack;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.k8loud.executor.exception.OpenstackException;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.model.compute.Flavor;
 import org.openstack4j.model.compute.Server;
@@ -14,8 +11,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.openstack4j.model.compute.Server.Status.VERIFY_RESIZE;
 
-@ExtendWith(MockitoExtension.class)
-public class ResizeServerDownTest {
+public class ResizeServerDownTest extends BaseTest {
     private static final String REGION = "region";
     private static final String FLAVOR_ID = "flavorId";
     private static final String SERVER_ID = "serverId";
@@ -23,25 +19,11 @@ public class ResizeServerDownTest {
     private static final int CURRENT_FLAVOR_VCPUS = 4;
 
     @Mock
-    OpenstackClientProvider openstackClientProviderMock;
-    @Mock
-    OSClient.OSClientV3 clientV3Mock;
-    @Mock
     Server server;
     @Mock
     Flavor currentFlavor;
     @Mock
     Flavor newFlavor;
-    @Mock
-    OpenstackNovaService openstackNovaServiceMock;
-
-    OpenstackService openstackService;
-
-
-    @BeforeEach
-    void setUp() {
-        openstackService = new OpenstackServiceImpl(openstackClientProviderMock, openstackNovaServiceMock, null);
-    }
 
     @Test
     void testResizeServerDownSuccess() throws OpenstackException {

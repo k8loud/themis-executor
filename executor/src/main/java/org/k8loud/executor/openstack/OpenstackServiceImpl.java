@@ -1,5 +1,6 @@
 package org.k8loud.executor.openstack;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.exception.OpenstackException;
@@ -11,27 +12,23 @@ import org.openstack4j.model.compute.Server;
 import org.openstack4j.model.storage.block.Volume;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Comparator;
+import java.util.Optional;
 
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
-import static org.openstack4j.model.compute.Action.PAUSE;
-import static org.openstack4j.model.compute.Action.UNPAUSE;
+import static org.openstack4j.model.compute.Action.*;
+import static org.openstack4j.model.compute.Server.Status.ACTIVE;
+import static org.openstack4j.model.compute.Server.Status.SHUTOFF;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class OpenstackServiceImpl implements OpenstackService {
     private final OpenstackClientProvider openstackClientProvider;
     private final OpenstackNovaService openstackNovaService;
     private final OpenstackCinderService openstackCinderService;
-
-
-    public OpenstackServiceImpl(OpenstackClientProvider openstackClientProvider,
-                                OpenstackNovaService openstackNovaService,
-                                OpenstackCinderService openstackCinderService) {
-        this.openstackClientProvider = openstackClientProvider;
-        this.openstackNovaService = openstackNovaService;
-        this.openstackCinderService = openstackCinderService;
-    }
+    private final OpenstackGlanceService openstackGlanceService;
 
     //TODO resize with looking for bigger/smaller available flavor
     @Override
@@ -78,7 +75,7 @@ public class OpenstackServiceImpl implements OpenstackService {
         Server server = openstackNovaService.getServer(serverId, client);
         Volume volume = openstackCinderService.getVolume(volumeId, client);
 
-        //FIXME this works for volumes with multiattach=false. Fix when openstack has multiattach volume type
+        //this works for volumes with multiattach=false. Our clouds version is not supporting multiattach volume type
         if (volume.getStatus() != Volume.Status.AVAILABLE) {
             log.error("Volume {} has status {}, but available is needed", volume.getName(), volume.getStatus());
             throw new OpenstackException(
@@ -119,6 +116,48 @@ public class OpenstackServiceImpl implements OpenstackService {
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "UNPAUSE_SERVER_FAILED")
     public void unpauseServer(String region, String serverId) throws OpenstackException {
         basicServerAction(region, serverId, UNPAUSE);
+    }
+
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "CREATE_SERVER_SNAPSHOT_FAILED")
+    public void createServerSnapshot(String region, String serverId, String snapshotName,
+                                     boolean stopInstance) throws OpenstackException {
+        OSClientV3 client = openstackClientWithRegion(region);
+        Server server = openstackNovaService.getServer(serverId, client);
+        snapshotName = Optional.ofNullable(snapshotName).filter(s -> !s.isBlank()).orElse(generateSnapshotName(server));
+        openstackNovaService.waitForServerStatus(server, ACTIVE, 60, client);
+        if (stopInstance) {
+            createSnapshotOnStoppedServer(snapshotName, client, server);
+        } else {
+            createSnapshotAndWait(snapshotName, client, server);
+        }
+    }
+
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "DELETE_SERVER_SNAPSHOT_FAILED")
+    public void deleteTheOldestServerSnapshot(String region, String serverId,
+                                              boolean keepOneSnapshot) throws OpenstackException {
+        OSClientV3 client = openstackClientWithRegion(region);
+        Server server = openstackNovaService.getServer(serverId, client);
+        openstackGlanceService.deleteTheOldestSnapshot(server, keepOneSnapshot, client);
+    }
+
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "CREATE_VOLUME_SNAPSHOT_FAILED")
+    public void createVolumeSnapshot(String region, String volumeId, String snapshotName) throws OpenstackException {
+        OSClientV3 client = openstackClientWithRegion(region);
+        Volume volume = openstackCinderService.getVolume(volumeId, client);
+        snapshotName = Optional.ofNullable(snapshotName).filter(s -> !s.isBlank()).orElse(generateSnapshotName(volume));
+        openstackCinderService.createVolumeSnapshot(volume, snapshotName, client);
+    }
+
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "DELETE_VOLUME_SNAPSHOT_FAILED")
+    public void deleteTheOldestVolumeSnapshot(String region, String volumeId,
+                                              boolean keepOneSnapshot) throws OpenstackException {
+        OSClientV3 client = openstackClientWithRegion(region);
+        Volume volume = openstackCinderService.getVolume(volumeId, client);
+        openstackCinderService.deleteTheOldestVolumeSnapshot(volume, keepOneSnapshot, client);
     }
 
     @NotNull
@@ -165,5 +204,32 @@ public class OpenstackServiceImpl implements OpenstackService {
         Server server = openstackNovaService.getServer(serverId, client);
         openstackNovaService.basicServerAction(server, action, client);
         log.info("Performing action {} on server with id={} finished with success", action.name(), serverId);
+    }
+
+    private void createSnapshotOnStoppedServer(String snapshotName, OSClientV3 client,
+                                               Server server) throws OpenstackException {
+        openstackNovaService.basicServerAction(server, STOP, client);
+        openstackNovaService.waitForServerStatus(server, SHUTOFF, 60, client);
+
+        createSnapshotAndWait(snapshotName, client, server);
+
+        openstackNovaService.basicServerAction(server, START, client);
+        openstackNovaService.waitForServerStatus(server, ACTIVE, 60, client);
+    }
+
+    private void createSnapshotAndWait(String snapshotName, OSClientV3 client,
+                                       Server server) throws OpenstackException {
+        openstackNovaService.createServerSnapshot(server, snapshotName, client);
+        openstackNovaService.waitForServerTaskEnd(server, 600, client);
+    }
+
+    @NotNull
+    private String generateSnapshotName(Server server) {
+        return server.getName() + "-snapshot-" + Instant.now();
+    }
+
+    @NotNull
+    private String generateSnapshotName(Volume volume) {
+        return volume.getName() + "-volume-" + Instant.now();
     }
 }

@@ -17,8 +17,6 @@ import java.util.function.Function;
 public interface OpenstackNovaService {
     void resize(Server server, Flavor newFlavor, OSClient.OSClientV3 client) throws OpenstackException;
 
-    void waitForServerStatus(Server server, Server.Status status, int waitingTimeSec, OSClient.OSClientV3 client);
-
     void confirmResize(Server server, OSClient.OSClientV3 client) throws OpenstackException;
 
     void createServer(String name, String flavorId, String imageId, int waitActiveMillis, OSClient.OSClientV3 client,
@@ -31,4 +29,12 @@ public interface OpenstackNovaService {
     Flavor getFlavor(String flavourId, OSClient.OSClientV3 client) throws OpenstackException;
 
     void basicServerAction(Server server, Action action, OSClient.OSClientV3 client) throws OpenstackException;
+
+    void createServerSnapshot(Server server, String snapshotName, OSClient.OSClientV3 client) throws OpenstackException;
+
+    @Retryable(maxAttempts = 1)
+    void waitForServerStatus(Server server, Server.Status status, int waitingTimeSec, OSClient.OSClientV3 client);
+
+    @Retryable(maxAttempts = 1)
+    void waitForServerTaskEnd(Server server, int waitingTimeSec, OSClient.OSClientV3 client);
 }
