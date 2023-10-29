@@ -21,4 +21,8 @@ public interface OpenstackService {
     void createServerSnapshot(String region, String serverId, String snapshotName, boolean stopInstance) throws OpenstackException;
 
     void deleteTheOldestServerSnapshot(String region, String serverId, boolean keepOneSnapshot) throws OpenstackException;
+
+    void createVolumeSnapshot(String region, String volumeId, String snapshotName) throws OpenstackException;
+
+    void deleteTheOldestVolumeSnapshot(String region, String volumeId, boolean keepOneSnapshot) throws OpenstackException;
 }

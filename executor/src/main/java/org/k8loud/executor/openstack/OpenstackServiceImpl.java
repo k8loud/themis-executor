@@ -142,6 +142,24 @@ public class OpenstackServiceImpl implements OpenstackService {
         openstackGlanceService.deleteTheOldestSnapshot(server, keepOneSnapshot, client);
     }
 
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "CREATE_VOLUME_SNAPSHOT_FAILED")
+    public void createVolumeSnapshot(String region, String volumeId, String snapshotName) throws OpenstackException {
+        OSClientV3 client = openstackClientWithRegion(region);
+        Volume volume = openstackCinderService.getVolume(volumeId, client);
+        snapshotName = Optional.ofNullable(snapshotName).filter(s -> !s.isBlank()).orElse(generateSnapshotName(volume));
+        openstackCinderService.createVolumeSnapshot(volume, snapshotName, client);
+    }
+
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "DELETE_VOLUME_SNAPSHOT_FAILED")
+    public void deleteTheOldestVolumeSnapshot(String region, String volumeId,
+                                              boolean keepOneSnapshot) throws OpenstackException {
+        OSClientV3 client = openstackClientWithRegion(region);
+        Volume volume = openstackCinderService.getVolume(volumeId, client);
+        openstackCinderService.deleteTheOldestVolumeSnapshot(volume, keepOneSnapshot, client);
+    }
+
     @NotNull
     private OSClientV3 openstackClientWithRegion(String region) throws OpenstackException {
         OSClientV3 client = openstackClientProvider.getClientFromToken();
@@ -208,5 +226,10 @@ public class OpenstackServiceImpl implements OpenstackService {
     @NotNull
     private String generateSnapshotName(Server server) {
         return server.getName() + "-snapshot-" + Instant.now();
+    }
+
+    @NotNull
+    private String generateSnapshotName(Volume volume) {
+        return volume.getName() + "-volume-" + Instant.now();
     }
 }

@@ -28,7 +28,6 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.DELETE_SERVER_SNAPSHOT_FAILED;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,9 +36,7 @@ public class DeleteServerSnapshotTest {
     private static final String SERVER_ID = "serverId";
     private static final String OLDEST_IMAGE_ID = "oldestImageId";
     private static final String OLDEST_IMAGE_NAME = "oldestImageName";
-    private static final String WRONG_SERVER_ID = "wrongId";
     private static final String EXCEPTION_MESSAGE = "Whatever message";
-    private static Image OLDEST_IMAGE = createMockImage(SERVER_ID, Date.from(Instant.now()), false);
     @Mock
     OSClient.OSClientV3 clientV3Mock;
     @Mock
