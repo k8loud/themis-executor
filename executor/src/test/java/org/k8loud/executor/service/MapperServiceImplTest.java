@@ -64,6 +64,8 @@ class MapperServiceImplTest {
     }
 
     private static Stream<Arguments> provideMappableExecutionRQs() {
+        Params deleteResourceActionParams = new Params(Map.of("resourceName", "nameVal", "resourceType",
+                "typeVal", "namespace", "namespaceVal"));
         Params horizontalKubernetesScalingParams = new Params(
                 Map.of("resourceName", "nameVal", "resourceType", "typeVal", "namespace", "namespaceVal", "replicas",
                         "420"));
@@ -71,7 +73,7 @@ class MapperServiceImplTest {
         Params verticalOpenstackScalingParams = new Params(
                 Map.of("region", "regionVal", "serverId", "EUNE", "flavorId", "asdad123312"));
 
-        return Stream.of(Arguments.of("kubernetes", "DeletePodAction", EMPTY_PARAMS),
+        return Stream.of(Arguments.of("kubernetes", "DeleteResourceAction", deleteResourceActionParams),
                 Arguments.of("kubernetes", "HorizontalScalingAction", horizontalKubernetesScalingParams),
                 Arguments.of("openstack", "HorizontalScalingAction", horizontalOpenstackScalingParams),
                 Arguments.of("openstack", "VerticalScalingUpAction", verticalOpenstackScalingParams)
@@ -86,7 +88,7 @@ class MapperServiceImplTest {
         //  Action implementations we access values by specific keys anyway, other keys will be ignored
         return Stream.of(Arguments.of("kubernetes", INVALID, VALID_PARAMS, ActionException.class,
                         ActionExceptionCode.ACTION_CLASS_NOT_FOUND),
-                Arguments.of(INVALID, "DeletePodAction", VALID_PARAMS, ActionException.class,
+                Arguments.of(INVALID, "DeleteResourceAction", VALID_PARAMS, ActionException.class,
                         ActionExceptionCode.ACTION_CLASS_NOT_FOUND));
     }
 
