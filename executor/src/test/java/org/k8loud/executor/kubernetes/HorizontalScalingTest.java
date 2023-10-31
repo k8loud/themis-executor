@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.k8loud.executor.util.Util.getFullResourceName;
 
 public class HorizontalScalingTest extends BaseTest {
     @ParameterizedTest
@@ -32,7 +33,7 @@ public class HorizontalScalingTest extends BaseTest {
         client.resource(sts).create();
 
         // when
-        kubernetesService.scaleHorizontally(namespace, resourceName, resourceType, replicas);
+        String res = kubernetesService.scaleHorizontally(namespace, resourceName, resourceType, replicas);
         StatefulSet sts1 = client.apps().statefulSets().inNamespace(namespace).withName(resourceName).get();
 
         // then
@@ -40,6 +41,7 @@ public class HorizontalScalingTest extends BaseTest {
         assertNotNull(sts1.getSpec());
         assertNotNull(sts1.getStatus());
         assertEquals(replicas, sts1.getSpec().getReplicas().intValue());
+        assertEquals(String.format("Scaled %s to %d", getFullResourceName(resourceType, resourceName), replicas), res);
     }
 
     @ParameterizedTest
@@ -62,7 +64,7 @@ public class HorizontalScalingTest extends BaseTest {
         client.resource(depl).create();
 
         // when
-        kubernetesService.scaleHorizontally(namespace, resourceName, resourceType, replicas);
+        String res = kubernetesService.scaleHorizontally(namespace, resourceName, resourceType, replicas);
         Deployment depl1 = client.apps().deployments().inNamespace(namespace).withName(resourceName).get();
 
         // then
@@ -70,6 +72,7 @@ public class HorizontalScalingTest extends BaseTest {
         assertNotNull(depl1.getSpec());
         assertNotNull(depl1.getStatus());
         assertEquals(replicas, depl1.getSpec().getReplicas().intValue());
+        assertEquals(String.format("Scaled %s to %d", getFullResourceName(resourceType, resourceName), replicas), res);
     }
 
     @ParameterizedTest
@@ -93,7 +96,7 @@ public class HorizontalScalingTest extends BaseTest {
         client.resource(rss).create();
 
         // when
-        kubernetesService.scaleHorizontally(namespace, resourceName, resourceType, replicas);
+        String res = kubernetesService.scaleHorizontally(namespace, resourceName, resourceType, replicas);
         ReplicaSet repl = client.apps().replicaSets().inNamespace(namespace).withName(resourceName).get();
 
         // then
@@ -101,6 +104,7 @@ public class HorizontalScalingTest extends BaseTest {
         assertNotNull(repl.getSpec());
         assertNotNull(repl.getStatus());
         assertEquals(replicas, repl.getSpec().getReplicas().intValue());
+        assertEquals(String.format("Scaled %s to %d", getFullResourceName(resourceType, resourceName), replicas), res);
     }
 
     private static Stream<Arguments> testScalingStatefulSet() {

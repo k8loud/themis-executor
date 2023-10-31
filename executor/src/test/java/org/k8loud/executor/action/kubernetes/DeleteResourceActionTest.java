@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public class DeleteResourceActionTest extends BaseTest {
@@ -30,8 +29,7 @@ public class DeleteResourceActionTest extends BaseTest {
         ExecutionRS rs = action.perform();
 
         // then
-        verify(kubernetesService, times(1)).deleteResource(eq(params.getRequiredParam(NAMESPACE_KEY)),
-                eq(params.getRequiredParam(RESOURCE_NAME_KEY)), eq(params.getRequiredParam(RESOURCE_TYPE_KEY)), any());
+        verify(kubernetesService).deleteResource(eq(NAMESPACE), eq(RESOURCE_NAME), eq(RESOURCE_TYPE), any());
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
     }
 

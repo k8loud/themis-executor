@@ -91,6 +91,7 @@ public class KubernetesServiceImplTest extends BaseTest {
                 Arguments.of("", "StatefulSet", RESOURCE_NAME, EMPTY_OR_BLANK_NAMESPACE),
                 Arguments.of("  ", "ConfigMap", RESOURCE_NAME, EMPTY_OR_BLANK_NAMESPACE),
                 Arguments.of(NAMESPACE, "", RESOURCE_NAME, INVALID_RESOURCE_TYPE),
-                Arguments.of(NAMESPACE, "    ", RESOURCE_NAME, INVALID_RESOURCE_TYPE));
+                Arguments.of(NAMESPACE, "    ", RESOURCE_NAME, INVALID_RESOURCE_TYPE),
+                Arguments.of(NAMESPACE, "ConfigMap", RESOURCE_NAME, RESOURCE_NOT_FOUND));
     }
 }

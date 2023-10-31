@@ -1,5 +1,6 @@
 package org.k8loud.executor.kubernetes;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -28,14 +29,18 @@ class ResourceTypeTest {
         assertEquals(expected, resourceType);
     }
 
-    @ParameterizedTest
-    @MethodSource
-    void testInvalidResourceTypeParsing(String s) {
+    @Test
+    void testInvalidResourceTypeParsing() {
+        // given
+        String s = "MyResourceType";
+
         // when
         Throwable e = catchThrowable(() -> ResourceType.fromString(s));
 
         // then
-        assertThat(e).isExactlyInstanceOf(KubernetesException.class);
+        assertThat(e).isExactlyInstanceOf(KubernetesException.class)
+                .hasMessage("Invalid resource type MyResourceType, valid values: " +
+                "[ReplicaSet, Deployment, StatefulSet, ControllerRevision, ConfigMap, Pod]");
         assertEquals(INVALID_RESOURCE_TYPE, ((CustomException) e).getExceptionCode());
     }
 
@@ -47,10 +52,5 @@ class ResourceTypeTest {
                 Arguments.of("ConfigMap", CONFIG_MAP),
                 Arguments.of("Pod", POD)
         );
-    }
-
-    private static Stream<String> testInvalidResourceTypeParsing() {
-        return Stream.of("VM",
-                "MyResourceType");
     }
 }

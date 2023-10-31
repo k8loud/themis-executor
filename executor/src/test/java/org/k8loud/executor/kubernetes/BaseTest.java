@@ -6,9 +6,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+import static org.mockito.Mockito.when;
+
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 public class BaseTest {
     protected static final String NAMESPACE = "namespaceValue";
@@ -25,8 +29,7 @@ public class BaseTest {
         server.before();
         client = server.getClient();
 
-        // Set lenient strictness not to get Unnecessary Stubbing exception
-        Mockito.lenient().when(kubernetesClientProvider.getClient()).thenReturn(client);
+        when(kubernetesClientProvider.getClient()).thenReturn(client);
         kubernetesService = new KubernetesServiceImpl(kubernetesClientProvider);
     }
 

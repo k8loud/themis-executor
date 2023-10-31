@@ -13,8 +13,8 @@ import org.k8loud.executor.exception.KubernetesException;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.k8loud.executor.util.Util.getFullResourceName;
 
 class DeleteResourceTest extends BaseTest {
     private static final Long GRACE_PERIOD_SECONDS = 5L;
@@ -37,11 +37,12 @@ class DeleteResourceTest extends BaseTest {
         assertNotNull(client.pods().inNamespace(namespace).withName(resourceName).get());
 
         // when
-        kubernetesService.deleteResource(namespace, resourceName, resourceType, gracePeriodSeconds);
+        String res = kubernetesService.deleteResource(namespace, resourceName, resourceType, gracePeriodSeconds);
         Pod pod1 = client.pods().inNamespace(namespace).withName(resourceName).get();
 
         // then
         assertNull(pod1);
+        assertEquals(String.format("Resource %s deleted", getFullResourceName(resourceType, resourceName)), res);
     }
 
     @ParameterizedTest
@@ -68,11 +69,12 @@ class DeleteResourceTest extends BaseTest {
         assertNotNull(client.apps().deployments().inNamespace(namespace).withName(resourceName).get());
 
         // when
-        kubernetesService.deleteResource(namespace, resourceName, resourceType, gracePeriodSeconds);
+        String res = kubernetesService.deleteResource(namespace, resourceName, resourceType, gracePeriodSeconds);
         Deployment deployment1 = client.apps().deployments().inNamespace(namespace).withName(resourceName).get();
 
         // then
         assertNull(deployment1);
+        assertEquals(String.format("Resource %s deleted", getFullResourceName(resourceType, resourceName)), res);
     }
 
     @ParameterizedTest
@@ -89,11 +91,12 @@ class DeleteResourceTest extends BaseTest {
         assertNotNull(client.configMaps().inNamespace(namespace).withName(resourceName).get());
 
         // when
-        kubernetesService.deleteResource(namespace, resourceName, resourceType, gracePeriodSeconds);
+        String res = kubernetesService.deleteResource(namespace, resourceName, resourceType, gracePeriodSeconds);
         ConfigMap cm1 = client.configMaps().inNamespace(namespace).withName(resourceName).get();
 
         // then
         assertNull(cm1);
+        assertEquals(String.format("Resource %s deleted", getFullResourceName(resourceType, resourceName)), res);
     }
 
     private static Stream<Arguments> testDeletingPod() {

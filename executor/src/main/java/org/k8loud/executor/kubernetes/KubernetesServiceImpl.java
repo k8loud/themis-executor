@@ -17,6 +17,7 @@ import java.util.Map;
 
 import static org.k8loud.executor.exception.code.KubernetesExceptionCode.*;
 import static org.k8loud.executor.kubernetes.ResourceType.CONFIG_MAP;
+import static org.k8loud.executor.util.Util.getFullResourceName;
 
 @SuppressWarnings("unchecked")
 @RequiredArgsConstructor
@@ -83,9 +84,5 @@ public class KubernetesServiceImpl implements KubernetesService {
             throw new KubernetesException(RESOURCE_NOT_FOUND);
         }
         return resource;
-    }
-
-    private String getFullResourceName(String resourceType, String resourceName) {
-        return String.format("%s/%s", resourceType, resourceName);
     }
 }
