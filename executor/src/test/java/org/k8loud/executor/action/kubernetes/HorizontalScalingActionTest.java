@@ -11,8 +11,7 @@ import org.k8loud.executor.exception.KubernetesException;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -31,7 +30,7 @@ class HorizontalScalingActionTest extends BaseTest {
         ExecutionRS rs = action.perform();
 
         // then
-        verify(kubernetesService).scaleHorizontally(NAMESPACE, RESOURCE_NAME, RESOURCE_TYPE, 3);
+        verify(kubernetesService).scaleHorizontally(eq(NAMESPACE), eq(RESOURCE_NAME), eq(RESOURCE_TYPE), eq(3));
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
         assertEquals(RESULT, rs.getResult());
     }

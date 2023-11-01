@@ -12,8 +12,6 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.k8loud.executor.kubernetes.ResourceType.CONFIG_MAP;
-import static org.k8loud.executor.util.Util.getFullResourceName;
 
 public class UpdateConfigMapTest extends BaseTest {
     @ParameterizedTest
@@ -42,7 +40,7 @@ public class UpdateConfigMapTest extends BaseTest {
         assertNotNull(cm1.getData());
         assertEquals(finalLength, cm1.getData().size());
         assertEquals(newData, cm1.getData());
-        assertEquals(String.format("Update of %s successful", getFullResourceName(CONFIG_MAP.toString(), resourceName)), res);
+        assertEquals(String.format("Update of %s/%s successful", "ConfigMap", resourceName), res);
     }
 
     private static Stream<Arguments> testUpdateValuesConfigMap() {

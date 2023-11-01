@@ -14,8 +14,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,7 +31,7 @@ class UpdateConfigMapActionTest extends BaseTest {
         ExecutionRS rs = action.perform();
 
         // then
-        verify(kubernetesService).updateConfigMap(NAMESPACE, RESOURCE_NAME, replacements);
+        verify(kubernetesService).updateConfigMap(eq(NAMESPACE), eq(RESOURCE_NAME), eq(replacements));
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
         assertEquals(RESULT, rs.getResult());
     }
