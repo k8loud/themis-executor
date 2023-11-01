@@ -2,7 +2,6 @@ package org.k8loud.executor.action.openstack.cinder;
 
 import data.ExecutionRS;
 import data.Params;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -10,7 +9,6 @@ import org.k8loud.executor.action.openstack.CreateVolumeSnapshotAction;
 import org.k8loud.executor.action.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.Map;
@@ -23,7 +21,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 public class CreateVolumeSnapshotActionTest extends OpenstackActionBaseTest {
     @ParameterizedTest
     @MethodSource

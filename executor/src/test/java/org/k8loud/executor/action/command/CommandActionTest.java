@@ -3,10 +3,8 @@ package org.k8loud.executor.action.command;
 import data.Params;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CommandException;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Map;
 
@@ -14,7 +12,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@ExtendWith(MockitoExtension.class)
 class CommandActionTest extends CommandActionBaseTest {
     private static final Params PARAMS = new Params(Map.of(
             "host", "192.168.13.37",

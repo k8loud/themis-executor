@@ -13,22 +13,22 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public abstract class OpenstackBaseTest extends OpenstackConstants {
     @Mock
-    Server serverMock;
+    protected Server serverMock;
     @Mock
-    OpenstackClientProvider openstackClientProviderMock;
+    protected OpenstackClientProvider openstackClientProviderMock;
     @Mock
-    OSClient.OSClientV3 clientV3Mock;
+    protected OSClient.OSClientV3 clientV3Mock;
     @Mock
-    OpenstackNovaService openstackNovaServiceMock;
+    protected OpenstackNovaService openstackNovaServiceMock;
     @Mock
-    OpenstackCinderService openstackCinderService;
+    protected OpenstackCinderService openstackCinderService;
     @Mock
-    OpenstackGlanceService openstackGlanceService;
+    protected OpenstackGlanceService openstackGlanceService;
 
-    OpenstackService openstackService;
+    protected OpenstackService openstackService;
 
     @BeforeEach
-    public void baseSetUp() throws OpenstackException {
+    protected void baseSetUp() throws OpenstackException {
         openstackService = new OpenstackServiceImpl(openstackClientProviderMock, openstackNovaServiceMock, openstackCinderService, openstackGlanceService);
         when(openstackClientProviderMock.getClientFromToken()).thenReturn(clientV3Mock);
     }

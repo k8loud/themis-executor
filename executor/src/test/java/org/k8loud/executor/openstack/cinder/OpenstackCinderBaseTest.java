@@ -23,10 +23,10 @@ public abstract class OpenstackCinderBaseTest extends OpenstackConstants {
     @Mock
     protected BlockVolumeService blockVolumeServiceMock;
 
-    OpenstackCinderService openstackCinderService;
+    protected OpenstackCinderService openstackCinderService;
 
     @BeforeEach
-    public void baseSetUp() {
+    protected void baseSetUp() {
         openstackCinderService = new OpenstackCinderServiceImpl();
         setUp();
     }

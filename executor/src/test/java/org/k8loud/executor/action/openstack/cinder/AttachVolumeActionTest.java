@@ -3,7 +3,6 @@ package org.k8loud.executor.action.openstack.cinder;
 import data.ExecutionRS;
 import data.Params;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -11,7 +10,6 @@ import org.k8loud.executor.action.openstack.AttachVolumeAction;
 import org.k8loud.executor.action.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -22,7 +20,6 @@ import static org.k8loud.executor.exception.code.ActionExceptionCode.UNPACKING_P
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 public class AttachVolumeActionTest extends OpenstackActionBaseTest {
     private static final String DEVICE = "/dev/test";
     private static final Params VALID_PARAMS = new Params(
