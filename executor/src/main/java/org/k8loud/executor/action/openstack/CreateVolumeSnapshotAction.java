@@ -22,7 +22,7 @@ public class CreateVolumeSnapshotAction extends OpenstackAction{
     }
 
     @Override
-    protected void performOpenstackAction() throws OpenstackException {
-        openstackService.createVolumeSnapshot(region, volumeId, snapshotName);
+    protected String performBody() throws OpenstackException {
+        return openstackService.createVolumeSnapshot(region, volumeId, snapshotName);
     }
 }

@@ -33,19 +33,19 @@ public class OpenstackServiceImpl implements OpenstackService {
     //TODO resize with looking for bigger/smaller available flavor
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "RESIZE_SERVER_FAILED")
-    public void resizeServerUp(String region, String serverId, String newFlavorId) throws OpenstackException {
+    public String resizeServerUp(String region, String serverId, String newFlavorId) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
         Flavor newFlavor = openstackNovaService.getFlavor(newFlavorId, client);
 
         validateFlavors(newFlavor, server.getFlavor());
 
-        resizeServer(server, newFlavor, 120, client);
+        return resizeServer(server, newFlavor, 120, client);
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "RESIZE_SERVER_FAILED")
-    public void resizeServerDown(String region, String serverId, String newFlavorId) throws OpenstackException {
+    public String resizeServerDown(String region, String serverId, String newFlavorId) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
         Flavor newFlavor = openstackNovaService.getFlavor(newFlavorId, client);
@@ -53,75 +53,72 @@ public class OpenstackServiceImpl implements OpenstackService {
         validateFlavorsDisksSizesEquals(server, newFlavor);
         validateFlavors(server.getFlavor(), newFlavor);
 
-        resizeServer(server, newFlavor, 120, client);
+        return resizeServer(server, newFlavor, 120, client);
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "COPY_SERVER_FAILED")
-    public void copyServer(String region, String serverId) throws OpenstackException {
+    public String copyServer(String region, String serverId) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
 
         openstackNovaService.createServer(server.getName() + "-copy", server.getFlavorId(), server.getImageId(), 30000,
                 client);
-        log.info("Copying a server with id={} finished with success", serverId);
+        return String.format("Copying a server with id=%s finished with success", serverId);
         //FIXME right now we are only creating a new server with same flavor and image
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "ATTACH_VOLUME_FAILED")
-    public void attachVolume(String region, String serverId, String volumeId, String device) throws OpenstackException {
+    public String attachVolume(String region, String serverId, String volumeId, String device) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
         Volume volume = openstackCinderService.getVolume(volumeId, client);
 
         //this works for volumes with multiattach=false. Our clouds version is not supporting multiattach volume type
         if (volume.getStatus() != Volume.Status.AVAILABLE) {
-            log.error("Volume {} has status {}, but available is needed", volume.getName(), volume.getStatus());
-            throw new OpenstackException(
-                    String.format("Volume %s has status %s, but available is needed",
+            throw new OpenstackException(String.format("Volume %s has status %s, but available is needed",
                             volume.getName(), volume.getStatus()), VOLUME_ERROR);
         }
 
         openstackCinderService.attachVolume(server, volume, device, client);
-        log.info("Attaching volume with id={} for a server with id={} to device={} finished with success", volumeId,
-                serverId, device);
+        return String.format("Attaching volume with id=%s for a server with id=%s to device=%s finished with success",
+                volumeId, serverId, device);
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "DETACH_VOLUME_FAILED")
-    public void detachVolume(String region, String serverId, String volumeId) throws OpenstackException {
+    public String detachVolume(String region, String serverId, String volumeId) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
         Volume volume = openstackCinderService.getVolume(volumeId, client);
 
         if (volume.getStatus() != Volume.Status.IN_USE) {
-            log.error("Volume {} has status {}, but in_use is needed", volume.getName(), volume.getStatus());
-            throw new OpenstackException(
-                    String.format("Volume %s has status %s, but in_use is needed",
+            throw new OpenstackException(String.format("Volume %s has status %s, but in_use is needed",
                             volume.getName(), volume.getStatus()), VOLUME_ERROR);
         }
 
         openstackCinderService.detachVolume(server, volume, client);
-        log.info("Detaching volume with id={} from a server with id={} finished with success", volumeId, serverId);
+        return String.format("Detached volume with id=%s from a server with id=%s finished with success",
+                volumeId, serverId);
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "PAUSE_SERVER_FAILED")
-    public void pauseServer(String region, String serverId) throws OpenstackException {
-        basicServerAction(region, serverId, PAUSE);
+    public String pauseServer(String region, String serverId) throws OpenstackException {
+        return basicServerAction(region, serverId, PAUSE);
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "UNPAUSE_SERVER_FAILED")
-    public void unpauseServer(String region, String serverId) throws OpenstackException {
-        basicServerAction(region, serverId, UNPAUSE);
+    public String unpauseServer(String region, String serverId) throws OpenstackException {
+        return basicServerAction(region, serverId, UNPAUSE);
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "CREATE_SERVER_SNAPSHOT_FAILED")
-    public void createServerSnapshot(String region, String serverId, String snapshotName,
-                                     boolean stopInstance) throws OpenstackException {
+    public String createServerSnapshot(String region, String serverId, String snapshotName,
+                                       boolean stopInstance) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
         snapshotName = Optional.ofNullable(snapshotName).filter(s -> !s.isBlank()).orElse(generateSnapshotName(server));
@@ -131,33 +128,37 @@ public class OpenstackServiceImpl implements OpenstackService {
         } else {
             createSnapshotAndWait(snapshotName, client, server);
         }
+        return String.format("Created snapshot with name %s on server %s", snapshotName, server.getName());
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "DELETE_SERVER_SNAPSHOT_FAILED")
-    public void deleteTheOldestServerSnapshot(String region, String serverId,
+    public String deleteTheOldestServerSnapshot(String region, String serverId,
                                               boolean keepOneSnapshot) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
         openstackGlanceService.deleteTheOldestSnapshot(server, keepOneSnapshot, client);
+        return String.format("Deleted the oldest snapshot from server %s", server.getName());
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "CREATE_VOLUME_SNAPSHOT_FAILED")
-    public void createVolumeSnapshot(String region, String volumeId, String snapshotName) throws OpenstackException {
+    public String createVolumeSnapshot(String region, String volumeId, String snapshotName) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Volume volume = openstackCinderService.getVolume(volumeId, client);
         snapshotName = Optional.ofNullable(snapshotName).filter(s -> !s.isBlank()).orElse(generateSnapshotName(volume));
         openstackCinderService.createVolumeSnapshot(volume, snapshotName, client);
+        return String.format("Created snapshot with name %s for volume %s", snapshotName, volume.getName());
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "DELETE_VOLUME_SNAPSHOT_FAILED")
-    public void deleteTheOldestVolumeSnapshot(String region, String volumeId,
+    public String deleteTheOldestVolumeSnapshot(String region, String volumeId,
                                               boolean keepOneSnapshot) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Volume volume = openstackCinderService.getVolume(volumeId, client);
         openstackCinderService.deleteTheOldestVolumeSnapshot(volume, keepOneSnapshot, client);
+        return String.format("Deleted the oldest snapshot from volume %s", volume.getName());
     }
 
     @NotNull
@@ -167,13 +168,13 @@ public class OpenstackServiceImpl implements OpenstackService {
         return client;
     }
 
-    private void resizeServer(Server server, Flavor newFlavor, int waitSecondsForVerifyStatus,
+    private String resizeServer(Server server, Flavor newFlavor, int waitSecondsForVerifyStatus,
                               OSClientV3 client) throws OpenstackException {
         openstackNovaService.resize(server, newFlavor, client);
         openstackNovaService.waitForServerStatus(server, Server.Status.VERIFY_RESIZE, waitSecondsForVerifyStatus,
                 client);
         openstackNovaService.confirmResize(server, client);
-        log.info("Resizing a server with id={} finished with success", server.getId());
+        return String.format("Resizing a server with id=%s finished with success", server.getId());
     }
 
     private void validateFlavorsDisksSizesEquals(Server server, Flavor newFlavor) throws OpenstackException {
@@ -191,19 +192,17 @@ public class OpenstackServiceImpl implements OpenstackService {
                 .compare(biggerFlavor, smallerFlavor);
 
         if (comparisonResult <= 0) {
-            log.error("Flavor with id={} is not bigger than Flavor with id={}",
-                    biggerFlavor.getId(), smallerFlavor.getId());
             throw new OpenstackException(
                     String.format("Flavor with id=%s is not bigger than Flavor with id=%s",
                             biggerFlavor.getId(), smallerFlavor.getId()), FLAVORS_COMPARISON);
         }
     }
 
-    private void basicServerAction(String region, String serverId, Action action) throws OpenstackException {
+    private String basicServerAction(String region, String serverId, Action action) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
         openstackNovaService.basicServerAction(server, action, client);
-        log.info("Performing action {} on server with id={} finished with success", action.name(), serverId);
+        return String.format("Performing action %s on server with id=%s finished with success", action.name(), serverId);
     }
 
     private void createSnapshotOnStoppedServer(String snapshotName, OSClientV3 client,

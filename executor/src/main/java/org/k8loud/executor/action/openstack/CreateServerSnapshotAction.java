@@ -24,7 +24,7 @@ public class CreateServerSnapshotAction extends OpenstackAction {
     }
 
     @Override
-    protected void performOpenstackAction() throws OpenstackException {
-        openstackService.createServerSnapshot(region, serverId, snapshotName, stopInstance);
+    protected String performBody() throws OpenstackException {
+        return openstackService.createServerSnapshot(region, serverId, snapshotName, stopInstance);
     }
 }

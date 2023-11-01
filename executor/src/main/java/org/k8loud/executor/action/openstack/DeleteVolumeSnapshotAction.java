@@ -22,7 +22,7 @@ public class DeleteVolumeSnapshotAction extends OpenstackAction{
     }
 
     @Override
-    protected void performOpenstackAction() throws OpenstackException {
-        openstackService.deleteTheOldestVolumeSnapshot(region, volumeId, keepOneSnapshot);
+    protected String performBody() throws OpenstackException {
+        return openstackService.deleteTheOldestVolumeSnapshot(region, volumeId, keepOneSnapshot);
     }
 }

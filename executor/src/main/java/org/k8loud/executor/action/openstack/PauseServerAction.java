@@ -20,7 +20,7 @@ public class PauseServerAction extends OpenstackAction {
     }
 
     @Override
-    protected void performOpenstackAction() throws OpenstackException {
-        openstackService.pauseServer(region, serverId);
+    protected String performBody() throws OpenstackException {
+        return openstackService.pauseServer(region, serverId);
     }
 }
