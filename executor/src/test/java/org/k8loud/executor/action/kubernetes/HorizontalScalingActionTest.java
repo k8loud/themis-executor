@@ -31,8 +31,7 @@ class HorizontalScalingActionTest extends BaseTest {
         ExecutionRS rs = action.perform();
 
         // then
-        Integer replicas = params.getRequiredParamAsInteger(REPLICAS_KEY);
-        verify(kubernetesService).scaleHorizontally(NAMESPACE, RESOURCE_NAME, RESOURCE_TYPE, replicas);
+        verify(kubernetesService).scaleHorizontally(NAMESPACE, RESOURCE_NAME, RESOURCE_TYPE, 3);
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
         assertEquals(RESULT, rs.getResult());
     }
