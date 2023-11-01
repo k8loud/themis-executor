@@ -1,6 +1,5 @@
 package org.k8loud.executor.openstack;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -11,6 +10,7 @@ import org.openstack4j.model.storage.block.Volume;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.VOLUME_ERROR;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -19,8 +19,8 @@ public class AttachVolumeTest extends OpenstackBaseTest {
     @Mock
     Volume volumeMock;
 
-    @BeforeEach
-    void setUp() throws OpenstackException {
+    @Override
+    protected void setUp() throws OpenstackException {
         when(openstackNovaServiceMock.getServer(anyString(), any(OSClient.OSClientV3.class))).thenReturn(serverMock);
         when(openstackCinderService.getVolume(anyString(), any(OSClient.OSClientV3.class))).thenReturn(volumeMock);
     }
@@ -31,7 +31,7 @@ public class AttachVolumeTest extends OpenstackBaseTest {
         when(volumeMock.getStatus()).thenReturn(Volume.Status.AVAILABLE);
 
         // when
-        openstackService.attachVolume(REGION, SERVER_ID, VOLUME_ID, DEVICE);
+        String res = openstackService.attachVolume(REGION, SERVER_ID, VOLUME_ID, DEVICE);
 
         // then
         verify(clientV3Mock).useRegion(eq(REGION));
@@ -39,6 +39,8 @@ public class AttachVolumeTest extends OpenstackBaseTest {
         verify(openstackCinderService).getVolume(eq(VOLUME_ID), eq(clientV3Mock));
         verify(volumeMock).getStatus();
         verify(openstackCinderService).attachVolume(eq(serverMock), eq(volumeMock), eq(DEVICE), eq(clientV3Mock));
+        assertEquals(String.format("Attaching volume with id=%s for a server with id=%s to device=%s finished with " +
+                        "success", VOLUME_ID, SERVER_ID, DEVICE), res);
     }
 
     @ParameterizedTest
