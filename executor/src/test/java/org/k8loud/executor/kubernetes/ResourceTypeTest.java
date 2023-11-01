@@ -39,7 +39,7 @@ class ResourceTypeTest {
 
         // then
         assertThat(e).isExactlyInstanceOf(KubernetesException.class)
-                .hasMessage("Invalid resource type MyResourceType, valid values: " +
+                .hasMessage("Invalid resource type 'MyResourceType', valid values: " +
                 "[ReplicaSet, Deployment, StatefulSet, ControllerRevision, ConfigMap, Pod]");
         assertEquals(INVALID_RESOURCE_TYPE, ((CustomException) e).getExceptionCode());
     }

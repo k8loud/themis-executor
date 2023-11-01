@@ -23,14 +23,14 @@ class HorizontalScalingActionTest extends BaseTest {
         // given
         Params params = new Params(Map.of(NAMESPACE_KEY, NAMESPACE, RESOURCE_NAME_KEY, RESOURCE_NAME, RESOURCE_TYPE_KEY,
                 RESOURCE_TYPE, REPLICAS_KEY, "3"));
-        when(kubernetesService.scaleHorizontally(anyString(), anyString(), anyString(), anyInt())).thenReturn(RESULT);
+        when(kubernetesServiceMock.scaleHorizontally(anyString(), anyString(), anyString(), anyInt())).thenReturn(RESULT);
 
         // when
-        Action action = new HorizontalScalingAction(params, kubernetesService);
+        Action action = new HorizontalScalingAction(params, kubernetesServiceMock);
         ExecutionRS rs = action.perform();
 
         // then
-        verify(kubernetesService).scaleHorizontally(eq(NAMESPACE), eq(RESOURCE_NAME), eq(RESOURCE_TYPE), eq(3));
+        verify(kubernetesServiceMock).scaleHorizontally(eq(NAMESPACE), eq(RESOURCE_NAME), eq(RESOURCE_TYPE), eq(3));
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
         assertEquals(RESULT, rs.getResult());
     }

@@ -76,22 +76,29 @@ public class KubernetesServiceImplTest extends BaseTest {
     @ParameterizedTest
     @MethodSource
     void testGetResourceShouldThrow(String namespace, String resourceType, String resourceName,
-                         KubernetesExceptionCode expectedExceptionCode) {
+                         KubernetesExceptionCode expectedExceptionCode, String expectedExceptionMessage) {
         // when
         Throwable e = catchThrowable(() -> kubernetesService.getResource(namespace, resourceType, resourceName));
 
         // then
-        assertThat(e).isExactlyInstanceOf(KubernetesException.class);
+        assertThat(e).isExactlyInstanceOf(KubernetesException.class).hasMessage(expectedExceptionMessage);
         assertThat(((KubernetesException) e).getExceptionCode()).isEqualTo(expectedExceptionCode);
     }
 
     private static Stream<Arguments> testGetResourceShouldThrow() {
-        return Stream.of(Arguments.of(NAMESPACE, "StatefulSet", "", EMPTY_OR_BLANK_RESOURCE_NAME),
-                Arguments.of(NAMESPACE, "ConfigMap", "           ", EMPTY_OR_BLANK_RESOURCE_NAME),
-                Arguments.of("", "StatefulSet", RESOURCE_NAME, EMPTY_OR_BLANK_NAMESPACE),
-                Arguments.of("  ", "ConfigMap", RESOURCE_NAME, EMPTY_OR_BLANK_NAMESPACE),
-                Arguments.of(NAMESPACE, "", RESOURCE_NAME, INVALID_RESOURCE_TYPE),
-                Arguments.of(NAMESPACE, "    ", RESOURCE_NAME, INVALID_RESOURCE_TYPE),
-                Arguments.of(NAMESPACE, "ConfigMap", RESOURCE_NAME, RESOURCE_NOT_FOUND));
+        return Stream.of(Arguments.of(NAMESPACE, "StatefulSet", "", EMPTY_OR_BLANK_RESOURCE_NAME,
+                        "resourceName '' is empty or blank"),
+                Arguments.of(NAMESPACE, "ConfigMap", "           ", EMPTY_OR_BLANK_RESOURCE_NAME,
+                        "resourceName '           ' is empty or blank"),
+                Arguments.of("", "StatefulSet", RESOURCE_NAME, EMPTY_OR_BLANK_NAMESPACE,
+                        "namespace '' is empty or blank"),
+                Arguments.of("  ", "ConfigMap", RESOURCE_NAME, EMPTY_OR_BLANK_NAMESPACE,
+                        "namespace '  ' is empty or blank"),
+                Arguments.of(NAMESPACE, "", RESOURCE_NAME, INVALID_RESOURCE_TYPE, "Invalid resource type '', " +
+                        "valid values: [ReplicaSet, Deployment, StatefulSet, ControllerRevision, ConfigMap, Pod]"),
+                Arguments.of(NAMESPACE, "    ", RESOURCE_NAME, INVALID_RESOURCE_TYPE, "Invalid resource type '    ', " +
+                        "valid values: [ReplicaSet, Deployment, StatefulSet, ControllerRevision, ConfigMap, Pod]"),
+                Arguments.of(NAMESPACE, "ConfigMap", RESOURCE_NAME, RESOURCE_NOT_FOUND,
+                        String.format("Couldn't find 'ConfigMap/%s'", RESOURCE_NAME)));
     }
 }

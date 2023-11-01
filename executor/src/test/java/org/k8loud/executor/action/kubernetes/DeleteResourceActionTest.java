@@ -25,14 +25,14 @@ public class DeleteResourceActionTest extends BaseTest {
     @MethodSource
     void testIfKubernetesServiceIsCalled(Params params) throws ActionException, KubernetesException {
         // given
-        when(kubernetesService.deleteResource(anyString(), anyString(), anyString(), anyLong())).thenReturn(RESULT);
+        when(kubernetesServiceMock.deleteResource(anyString(), anyString(), anyString(), anyLong())).thenReturn(RESULT);
 
         // when
-        Action action = new DeleteResourceAction(params, kubernetesService);
+        Action action = new DeleteResourceAction(params, kubernetesServiceMock);
         ExecutionRS rs = action.perform();
 
         // then
-        verify(kubernetesService).deleteResource(eq(NAMESPACE), eq(RESOURCE_NAME), eq(RESOURCE_TYPE), any());
+        verify(kubernetesServiceMock).deleteResource(eq(NAMESPACE), eq(RESOURCE_NAME), eq(RESOURCE_TYPE), any());
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
         assertEquals(RESULT, rs.getResult());
     }

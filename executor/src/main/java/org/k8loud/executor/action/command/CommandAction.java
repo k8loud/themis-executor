@@ -39,6 +39,7 @@ public abstract class CommandAction extends Action {
         try {
             result = performCommandAction();
         } catch (CommandException e) {
+            log.error("Error: {}" , e.toString());
             return ExecutionRS.builder()
                     .result(e.toString())
                     .exitCode(ExecutionExitCode.NOT_OK)

@@ -15,7 +15,7 @@ public class BaseTest {
     protected static final String NAMESPACE = "namespaceValue";
     protected static final String RESOURCE_NAME = "resourceNameValue";
     @Mock
-    protected KubernetesClientProvider kubernetesClientProvider;
+    protected KubernetesClientProvider kubernetesClientProviderMock;
     protected KubernetesServer server;
     protected KubernetesClient client;
     protected KubernetesService kubernetesService;
@@ -26,8 +26,8 @@ public class BaseTest {
         server.before();
         client = server.getClient();
 
-        lenient().when(kubernetesClientProvider.getClient()).thenReturn(client);
-        kubernetesService = new KubernetesServiceImpl(kubernetesClientProvider);
+        lenient().when(kubernetesClientProviderMock.getClient()).thenReturn(client);
+        kubernetesService = new KubernetesServiceImpl(kubernetesClientProviderMock);
     }
 
     @AfterEach

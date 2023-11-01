@@ -24,6 +24,7 @@ public abstract class KubernetesAction extends Action {
         try {
             result = performKubernetesAction();
         } catch (KubernetesException e) {
+            log.error("Error: {}" , e.toString());
             return ExecutionRS.builder()
                     .result(e.toString())
                     .exitCode(ExecutionExitCode.NOT_OK)

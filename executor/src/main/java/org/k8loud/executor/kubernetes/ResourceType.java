@@ -32,9 +32,8 @@ public enum ResourceType {
         String valid = String.format("[%s]", Arrays.stream(ResourceType.values())
                 .map(ResourceType::toString)
                 .collect(Collectors.joining(", ")));
-        log.error("Invalid resource type {}, valid values: {}", s, valid);
-        String exceptionMessage = String.format("Invalid resource type %s, valid values: %s", s, valid);
-        throw new KubernetesException(exceptionMessage, KubernetesExceptionCode.INVALID_RESOURCE_TYPE);
+        throw new KubernetesException(String.format("Invalid resource type '%s', valid values: %s", s, valid),
+                KubernetesExceptionCode.INVALID_RESOURCE_TYPE);
     }
 
     @Override

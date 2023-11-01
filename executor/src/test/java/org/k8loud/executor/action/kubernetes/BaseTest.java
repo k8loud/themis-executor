@@ -15,5 +15,5 @@ public class BaseTest {
     protected static final String RESOURCE_TYPE = "resourceTypeValue";
     protected static final String RESULT = "result";
     @Mock
-    KubernetesService kubernetesService;
+    KubernetesService kubernetesServiceMock;
 }

@@ -63,9 +63,11 @@ public class KubernetesServiceImpl implements KubernetesService {
             throws KubernetesException {
         log.info("Looking for {} in {}", getFullResourceName(resourceType, resourceName), namespace);
         if (Util.emptyOrBlank(namespace)) {
-            throw new KubernetesException(EMPTY_OR_BLANK_NAMESPACE);
+            throw new KubernetesException(String.format("namespace '%s' is empty or blank", namespace),
+                    EMPTY_OR_BLANK_NAMESPACE);
         } else if (Util.emptyOrBlank(resourceName)) {
-            throw new KubernetesException(EMPTY_OR_BLANK_RESOURCE_NAME);
+            throw new KubernetesException(String.format("resourceName '%s' is empty or blank", resourceName),
+                    EMPTY_OR_BLANK_RESOURCE_NAME);
         }
         ResourceType resourceTypeObj = ResourceType.fromString(resourceType);
         KubernetesClient client = clientProvider.getClient();
@@ -80,8 +82,8 @@ public class KubernetesServiceImpl implements KubernetesService {
         };
         Resource<T> resource = mixedOperation.inNamespace(namespace).withName(resourceName);
         if (resource.get() == null) {
-            log.error("Couldn't find {}", getFullResourceName(resourceType, resourceName));
-            throw new KubernetesException(RESOURCE_NOT_FOUND);
+            throw new KubernetesException(String.format("Couldn't find '%s'", getFullResourceName(resourceType, resourceName)),
+                    RESOURCE_NOT_FOUND);
         }
         return resource;
     }

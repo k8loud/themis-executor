@@ -24,14 +24,14 @@ class UpdateConfigMapActionTest extends BaseTest {
     void testIfKubernetesServiceIsCalled(Params params, Map<String, String> replacements)
             throws ActionException, KubernetesException {
         // given
-        when(kubernetesService.updateConfigMap(anyString(), anyString(), anyMap())).thenReturn(RESULT);
+        when(kubernetesServiceMock.updateConfigMap(anyString(), anyString(), anyMap())).thenReturn(RESULT);
 
         // when
-        Action action = new UpdateConfigMapAction(params, kubernetesService);
+        Action action = new UpdateConfigMapAction(params, kubernetesServiceMock);
         ExecutionRS rs = action.perform();
 
         // then
-        verify(kubernetesService).updateConfigMap(eq(NAMESPACE), eq(RESOURCE_NAME), eq(replacements));
+        verify(kubernetesServiceMock).updateConfigMap(eq(NAMESPACE), eq(RESOURCE_NAME), eq(replacements));
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
         assertEquals(RESULT, rs.getResult());
     }
