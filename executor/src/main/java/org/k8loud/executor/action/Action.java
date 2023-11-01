@@ -27,7 +27,7 @@ public abstract class Action {
     public ExecutionRS execute() {
         String result;
         try {
-            result = performBody();
+            result = executeBody();
         } catch (CustomException e) {
             log.error("Error: {}" , e.toString());
             return ExecutionRS.builder()
@@ -42,5 +42,5 @@ public abstract class Action {
                 .build();
     }
 
-    protected abstract String performBody() throws CustomException;
+    protected abstract String executeBody() throws CustomException;
 }

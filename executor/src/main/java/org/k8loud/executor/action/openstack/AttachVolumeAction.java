@@ -24,7 +24,7 @@ public class AttachVolumeAction extends OpenstackAction {
     }
 
     @Override
-    protected String performBody() throws OpenstackException {
+    protected String executeBody() throws OpenstackException {
         return this.openstackService.attachVolume(region, serverId, volumeId, device);
     }
 }

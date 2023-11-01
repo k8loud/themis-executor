@@ -32,7 +32,7 @@ public abstract class CommandAction extends Action {
     protected abstract void unpackAdditionalParams(Params params);
 
     @Override
-    protected String performBody() throws CommandException {
+    protected String executeBody() throws CommandException {
         return commandExecutionService.executeCommand(host, port, privateKey, user, buildCommand());
     }
 

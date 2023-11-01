@@ -25,7 +25,7 @@ public class DeleteResourceAction extends KubernetesAction {
     }
 
     @Override
-    public String performBody() throws KubernetesException {
+    public String executeBody() throws KubernetesException {
         return kubernetesService.deleteResource(namespace, resourceName, resourceType, gracePeriodSeconds);
     }
 }

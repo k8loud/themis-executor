@@ -8,16 +8,16 @@ import org.k8loud.executor.exception.CommandException;
 
 import java.util.Map;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 class CommandActionTest extends CommandActionBaseTest {
+    private static final String COMMAND = "echo hello";
     private static final Params PARAMS = new Params(Map.of(
-            "host", "192.168.13.37",
-            "port", "22",
-            "privateKey", "p4009jZSD+16k8xk",
-            "user", "ubuntu"
+            HOST_KEY, "192.168.13.37",
+            PORT_KEY, "22",
+            PRIVATE_KEY_KEY, "p4009jZSD+16k8xk",
+            USER_KEY, "ubuntu"
     ));
     CommandAction commandAction;
 
@@ -31,17 +31,23 @@ class CommandActionTest extends CommandActionBaseTest {
 
             @Override
             protected String buildCommand() {
-                return null;
+                return COMMAND;
             }
         };
     }
 
     @Test
     void testCommandExecutionServiceIsCalled() throws CommandException {
+        // given
+        final String host = PARAMS.getRequiredParam(HOST_KEY);
+        final Integer port = Integer.parseInt(PARAMS.getRequiredParam(PORT_KEY));
+        final String privateKey = PARAMS.getRequiredParam(PRIVATE_KEY_KEY);
+        final String user = PARAMS.getRequiredParam(USER_KEY);
+
         // when
         commandAction.execute();
 
         // then
-        verify(commandExecutionServiceMock).executeCommand(any(), anyInt(), any(), any(), any());
+        verify(commandExecutionServiceMock).executeCommand(eq(host), eq(port), eq(privateKey), eq(user), eq(COMMAND));
     }
 }

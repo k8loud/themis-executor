@@ -26,7 +26,7 @@ public class HorizontalScalingAction extends KubernetesAction {
     }
 
     @Override
-    protected String performBody() throws KubernetesException  {
+    protected String executeBody() throws KubernetesException  {
         return kubernetesService.scaleHorizontally(namespace, resourceName, resourceType, replicas);
     }
 }

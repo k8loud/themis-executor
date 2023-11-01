@@ -22,7 +22,7 @@ public class DetachVolumeAction extends OpenstackAction {
     }
 
     @Override
-    protected String performBody() throws OpenstackException {
+    protected String executeBody() throws OpenstackException {
         return this.openstackService.detachVolume(region, serverId, volumeId);
     }
 }
