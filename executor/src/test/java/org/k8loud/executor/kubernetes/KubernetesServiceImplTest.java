@@ -81,7 +81,8 @@ public class KubernetesServiceImplTest extends BaseTest {
         Throwable e = catchThrowable(() -> kubernetesService.getResource(namespace, resourceType, resourceName));
 
         // then
-        assertThat(e).isExactlyInstanceOf(KubernetesException.class).hasMessage(expectedExceptionMessage);
+        assertThat(e).isExactlyInstanceOf(KubernetesException.class)
+                .hasMessage(expectedExceptionMessage);
         assertThat(((KubernetesException) e).getExceptionCode()).isEqualTo(expectedExceptionCode);
     }
 
