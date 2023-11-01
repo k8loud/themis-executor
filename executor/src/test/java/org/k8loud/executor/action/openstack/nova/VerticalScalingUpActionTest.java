@@ -31,7 +31,7 @@ public class VerticalScalingUpActionTest extends OpenstackActionBaseTest {
         when(openstackServiceMock.resizeServerUp(anyString(), anyString(), anyString())).thenReturn(RESULT);
 
         // when
-        ExecutionRS response = verticalScalingAction.perform();
+        ExecutionRS response = verticalScalingAction.execute();
 
         // then
         verify(openstackServiceMock).resizeServerUp(eq(REGION), eq(SERVER_ID), eq(FLAVOR_ID));

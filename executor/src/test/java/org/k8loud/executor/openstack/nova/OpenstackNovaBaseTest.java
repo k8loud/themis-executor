@@ -16,17 +16,18 @@ public abstract class OpenstackNovaBaseTest extends OpenstackConstants {
     @Mock
     protected OSClient.OSClientV3 clientV3Mock;
     @Mock
-    protected Server server;
+    protected Server serverMock;
     @Mock
-    protected ComputeService computeService;
+    protected ComputeService computeServiceMock;
     @Mock
-    protected ServerService serverService;
+    protected ServerService serverServiceMock;
+
     protected OpenstackNovaService openstackNovaService = new OpenstackNovaServiceImpl();
 
     @BeforeEach
     protected void baseSetUp() {
-        when(clientV3Mock.compute()).thenReturn(computeService);
-        when(computeService.servers()).thenReturn(serverService);
+        when(clientV3Mock.compute()).thenReturn(computeServiceMock);
+        when(computeServiceMock.servers()).thenReturn(serverServiceMock);
         setUp();
     }
 

@@ -33,7 +33,7 @@ public class CreateServerSnapshotActionTest extends OpenstackActionBaseTest {
                 .thenReturn(RESULT);
 
         // when
-        ExecutionRS response = createServerSnapshotAction.perform();
+        ExecutionRS response = createServerSnapshotAction.execute();
 
         // then
         String snapshotName = params.getParams().get("snapshotName");

@@ -31,7 +31,7 @@ public class HorizontalScalingActionTest extends OpenstackActionBaseTest {
         when(openstackServiceMock.copyServer(anyString(), anyString())).thenReturn(RESULT);
 
         // when
-        ExecutionRS response = horizontalScalingAction.perform();
+        ExecutionRS response = horizontalScalingAction.execute();
 
         // then
         verify(openstackServiceMock).copyServer(eq(REGION), eq(SERVER_ID));

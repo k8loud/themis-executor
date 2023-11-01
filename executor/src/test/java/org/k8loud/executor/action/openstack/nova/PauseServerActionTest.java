@@ -30,7 +30,7 @@ public class PauseServerActionTest extends OpenstackActionBaseTest {
         when(openstackServiceMock.pauseServer(anyString(), anyString())).thenReturn(RESULT);
 
         // when
-        ExecutionRS response = pauseServerAction.perform();
+        ExecutionRS response = pauseServerAction.execute();
 
         // then
         verify(openstackServiceMock).pauseServer(eq(REGION), eq(SERVER_ID));

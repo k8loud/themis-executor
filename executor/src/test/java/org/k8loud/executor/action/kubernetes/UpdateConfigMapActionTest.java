@@ -26,7 +26,7 @@ class UpdateConfigMapActionTest extends KubernetesActionBaseTest {
 
         // when
         Action action = new UpdateConfigMapAction(params, kubernetesServiceMock);
-        ExecutionRS response = action.perform();
+        ExecutionRS response = action.execute();
 
         // then
         verify(kubernetesServiceMock).updateConfigMap(eq(NAMESPACE), eq(RESOURCE_NAME), eq(replacements));

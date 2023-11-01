@@ -25,8 +25,8 @@ public class CreateServerTest extends OpenstackNovaBaseTest {
 
     @Override
     public void setUp() {
-        when(serverService.bootAndWaitActive(any(ServerCreate.class), anyInt())).thenReturn(server);
-        when(server.getStatus()).thenReturn(ACTIVE);
+        when(serverServiceMock.bootAndWaitActive(any(ServerCreate.class), anyInt())).thenReturn(serverMock);
+        when(serverMock.getStatus()).thenReturn(ACTIVE);
     }
 
     @Test
@@ -35,7 +35,7 @@ public class CreateServerTest extends OpenstackNovaBaseTest {
         openstackNovaService.createServer(SERVER_NAME, FLAVOR_ID, SERVER_ID, WAIT_FOR_ACTIVE_SEC, clientV3Mock);
 
         // then
-        verify(serverService).bootAndWaitActive(refEq(SERVER_CREATE), eq(WAIT_FOR_ACTIVE_MILLIS));
+        verify(serverServiceMock).bootAndWaitActive(refEq(SERVER_CREATE), eq(WAIT_FOR_ACTIVE_MILLIS));
     }
 
     @Test
@@ -45,6 +45,6 @@ public class CreateServerTest extends OpenstackNovaBaseTest {
                 b -> b.addAdminPass("1234").build());
 
         // then
-        verify(serverService).bootAndWaitActive(not(refEq(SERVER_CREATE)), eq(WAIT_FOR_ACTIVE_MILLIS));
+        verify(serverServiceMock).bootAndWaitActive(not(refEq(SERVER_CREATE)), eq(WAIT_FOR_ACTIVE_MILLIS));
     }
 }

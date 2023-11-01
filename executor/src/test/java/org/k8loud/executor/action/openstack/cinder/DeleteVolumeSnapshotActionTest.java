@@ -33,7 +33,7 @@ public class DeleteVolumeSnapshotActionTest extends OpenstackActionBaseTest {
                 .thenReturn(RESULT);
 
         // when
-        ExecutionRS response = deleteVolumeSnapshotAction.perform();
+        ExecutionRS response = deleteVolumeSnapshotAction.execute();
 
         // then
         boolean keepOneSnapshot = Boolean.parseBoolean(Optional.ofNullable(params.getParams()

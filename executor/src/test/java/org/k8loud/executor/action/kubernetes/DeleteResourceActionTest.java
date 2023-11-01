@@ -27,7 +27,7 @@ public class DeleteResourceActionTest extends KubernetesActionBaseTest {
 
         // when
         Action action = new DeleteResourceAction(params, kubernetesServiceMock);
-        ExecutionRS response = action.perform();
+        ExecutionRS response = action.execute();
 
         // then
         verify(kubernetesServiceMock).deleteResource(eq(NAMESPACE), eq(RESOURCE_NAME), eq(RESOURCE_TYPE), any());

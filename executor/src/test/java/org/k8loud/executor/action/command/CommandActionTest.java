@@ -9,7 +9,7 @@ import org.k8loud.executor.exception.CommandException;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 
 class CommandActionTest extends CommandActionBaseTest {
@@ -39,9 +39,9 @@ class CommandActionTest extends CommandActionBaseTest {
     @Test
     void testCommandExecutionServiceIsCalled() throws CommandException {
         // when
-        commandAction.perform();
+        commandAction.execute();
 
         // then
-        verify(commandExecutionServiceMock, times(1)).executeCommand(any(), any(), any(), any(), any());
+        verify(commandExecutionServiceMock).executeCommand(any(), anyInt(), any(), any(), any());
     }
 }

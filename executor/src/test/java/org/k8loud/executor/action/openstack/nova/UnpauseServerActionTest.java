@@ -31,7 +31,7 @@ public class UnpauseServerActionTest extends OpenstackActionBaseTest {
         when(openstackServiceMock.unpauseServer(anyString(), anyString())).thenReturn(RESULT);
 
         // when
-        ExecutionRS response = unpauseServerAction.perform();
+        ExecutionRS response = unpauseServerAction.execute();
 
         // then
         verify(openstackServiceMock).unpauseServer(eq(REGION), eq(SERVER_ID));

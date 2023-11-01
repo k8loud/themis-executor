@@ -32,7 +32,7 @@ public class CreateVolumeSnapshotActionTest extends OpenstackActionBaseTest {
                 .thenReturn(RESULT);
 
         // when
-        ExecutionRS response = createVolumeSnapshotAction.perform();
+        ExecutionRS response = createVolumeSnapshotAction.execute();
 
         // then
         String snapshotName = params.getParams().get("snapshotName");

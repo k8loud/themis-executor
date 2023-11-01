@@ -21,34 +21,34 @@ public class BasicServerActionTest extends OpenstackNovaBaseTest {
     @EnumSource(value = Action.class, names = {"PAUSE", "UNPAUSE", "STOP", "START"})
     void testSupportedActionsSuccess(Action action) throws OpenstackException {
         // given
-        conditionalSetUp();
-        when(serverService.action(anyString(), any(Action.class))).thenReturn(ActionResponse.actionSuccess());
+        supportedActionSetUp();
+        when(serverServiceMock.action(anyString(), any(Action.class))).thenReturn(ActionResponse.actionSuccess());
 
         // when
-        openstackNovaService.basicServerAction(server, action, clientV3Mock);
+        openstackNovaService.basicServerAction(serverMock, action, clientV3Mock);
 
         // then
-        verify(serverService).action(eq(SERVER_ID), eq(action));
-        verify(server).getName();
-        verify(server).getId();
+        verify(serverServiceMock).action(eq(SERVER_ID), eq(action));
+        verify(serverMock).getName();
+        verify(serverMock).getId();
     }
 
     @ParameterizedTest
     @EnumSource(value = Action.class, names = {"PAUSE", "UNPAUSE", "STOP", "START"})
     void testSupportedActionsFailed(Action action) throws OpenstackException {
         // given
-        conditionalSetUp();
-        when(serverService.action(anyString(), any(Action.class)))
+        supportedActionSetUp();
+        when(serverServiceMock.action(anyString(), any(Action.class)))
                 .thenReturn(ActionResponse.actionFailed(EXCEPTION_MESSAGE, 123));
 
         // when
         Throwable throwable = catchThrowable(
-                () -> openstackNovaService.basicServerAction(server, action, clientV3Mock));
+                () -> openstackNovaService.basicServerAction(serverMock, action, clientV3Mock));
 
         // then
-        verify(serverService).action(eq(SERVER_ID), eq(action));
-        verify(server, times(2)).getName();
-        verify(server).getId();
+        verify(serverServiceMock).action(eq(SERVER_ID), eq(action));
+        verify(serverMock, times(2)).getName();
+        verify(serverMock).getId();
 
         assertThat(throwable).isExactlyInstanceOf(OpenstackException.class)
                 .hasMessage(EXCEPTION_MESSAGE);
@@ -60,19 +60,26 @@ public class BasicServerActionTest extends OpenstackNovaBaseTest {
     @EnumSource(value = Action.class, names = {"PAUSE", "UNPAUSE", "STOP", "START"}, mode = EnumSource.Mode.EXCLUDE)
     void testUnsupportedActions(Action action) {
         // given
-        when(server.getName()).thenReturn(SERVER_NAME);
+        when(serverMock.getName()).thenReturn(SERVER_NAME);
 
         // when
         Throwable throwable = catchThrowable(
-                () -> openstackNovaService.basicServerAction(server, action, clientV3Mock));
+                () -> openstackNovaService.basicServerAction(serverMock, action, clientV3Mock));
 
         // then
-        verifyNoInteractions(serverService);
-        verify(server).getName();
+        verifyNoInteractions(serverServiceMock);
+        verify(serverMock).getName();
 
         assertThat(throwable).isExactlyInstanceOf(OpenstackException.class)
                 .hasMessage(action.name() + " not supported");
         assertThat(((OpenstackException) throwable).getExceptionCode()).isSameAs(UNSUPPORTED_ACTION);
+    }
+
+    private void supportedActionSetUp() {
+        when(clientV3Mock.compute()).thenReturn(computeServiceMock);
+        when(computeServiceMock.servers()).thenReturn(serverServiceMock);
+        when(serverMock.getId()).thenReturn(SERVER_ID);
+        when(serverMock.getName()).thenReturn(SERVER_NAME);
     }
 
     @Override
@@ -82,12 +89,5 @@ public class BasicServerActionTest extends OpenstackNovaBaseTest {
 
     @Override
     protected void setUp() {
-    }
-
-    private void conditionalSetUp() {
-        when(clientV3Mock.compute()).thenReturn(computeService);
-        when(computeService.servers()).thenReturn(serverService);
-        when(server.getId()).thenReturn(SERVER_ID);
-        when(server.getName()).thenReturn(SERVER_NAME);
     }
 }

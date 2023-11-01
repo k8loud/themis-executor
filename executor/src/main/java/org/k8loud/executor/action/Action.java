@@ -24,7 +24,7 @@ public abstract class Action {
 
     public abstract void unpackParams(Params params) throws ActionException;
 
-    public ExecutionRS perform() {
+    public ExecutionRS execute() {
         String result;
         try {
             result = performBody();

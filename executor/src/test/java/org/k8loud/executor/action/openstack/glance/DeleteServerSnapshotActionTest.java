@@ -33,7 +33,7 @@ public class DeleteServerSnapshotActionTest extends OpenstackActionBaseTest {
                 .thenReturn(RESULT);
 
         // when
-        ExecutionRS response = deleteServerSnapshotAction.perform();
+        ExecutionRS response = deleteServerSnapshotAction.execute();
 
         // then
         boolean keepOneSnapshot = Boolean.parseBoolean(Optional.ofNullable(params.getParams()

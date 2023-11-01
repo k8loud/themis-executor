@@ -38,16 +38,17 @@ public class DeleteServerSnapshotTest extends OpenstackConstants {
     @Mock
     OSClient.OSClientV3 clientV3Mock;
     @Mock
-    Server server;
+    Server serverMock;
     @Mock
     ImageService imageServiceMock;
+
     OpenstackGlanceService openstackGlanceService = new OpenstackGlanceServiceImpl();
 
     @BeforeEach
     void setUpMocks(){
         doReturn(imageServiceMock).when(clientV3Mock).imagesV2();
-        when(server.getName()).thenReturn(SERVER_NAME);
-        when(server.getId()).thenReturn(SERVER_ID);
+        when(serverMock.getName()).thenReturn(SERVER_NAME);
+        when(serverMock.getId()).thenReturn(SERVER_ID);
     }
 
     @ParameterizedTest
@@ -58,12 +59,12 @@ public class DeleteServerSnapshotTest extends OpenstackConstants {
         doReturn(ActionResponse.actionSuccess()).when(imageServiceMock).delete(anyString());
 
         // when
-        openstackGlanceService.deleteTheOldestSnapshot(server, keepOneSnapshot, clientV3Mock);
+        openstackGlanceService.deleteTheOldestSnapshot(serverMock, keepOneSnapshot, clientV3Mock);
 
         // then
         verify(imageServiceMock).list();
         verify(imageServiceMock).delete(OLDEST_IMAGE_ID);
-        verify(server).getName();
+        verify(serverMock).getName();
     }
 
     @ParameterizedTest
@@ -75,7 +76,7 @@ public class DeleteServerSnapshotTest extends OpenstackConstants {
 
         // when
         Throwable throwable = catchThrowable(() ->
-                openstackGlanceService.deleteTheOldestSnapshot(server, keepOneSnapshot, clientV3Mock));
+                openstackGlanceService.deleteTheOldestSnapshot(serverMock, keepOneSnapshot, clientV3Mock));
 
         // then
         assertThat(throwable).isExactlyInstanceOf(OpenstackException.class)
@@ -83,7 +84,7 @@ public class DeleteServerSnapshotTest extends OpenstackConstants {
         assertThat(((OpenstackException) throwable).getExceptionCode()).isEqualTo(DELETE_SERVER_SNAPSHOT_FAILED);
         verify(imageServiceMock).list();
         verify(imageServiceMock).delete(OLDEST_IMAGE_ID);
-        verify(server, times(2)).getName();
+        verify(serverMock, times(2)).getName();
     }
 
     private static Stream<Arguments> goodParameters(){
@@ -127,7 +128,7 @@ public class DeleteServerSnapshotTest extends OpenstackConstants {
 
         // when
         Throwable throwable = catchThrowable(() ->
-                openstackGlanceService.deleteTheOldestSnapshot(server, keepOneSnapshot, clientV3Mock));
+                openstackGlanceService.deleteTheOldestSnapshot(serverMock, keepOneSnapshot, clientV3Mock));
 
         // then
         assertThat(throwable).isExactlyInstanceOf(OpenstackException.class)
@@ -135,7 +136,7 @@ public class DeleteServerSnapshotTest extends OpenstackConstants {
         assertThat(((OpenstackException) throwable).getExceptionCode()).isEqualTo(DELETE_SERVER_SNAPSHOT_FAILED);
         verify(imageServiceMock).list();
         verify(imageServiceMock, never()).delete(OLDEST_IMAGE_ID);
-        verify(server, times(3)).getName();
+        verify(serverMock, times(3)).getName();
     }
 
     private static Stream<Arguments> badParameters(){
