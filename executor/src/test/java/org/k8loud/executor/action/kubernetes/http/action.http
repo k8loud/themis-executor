@@ -1,3 +1,4 @@
+### horiziontal scaling
 POST localhost:8080/execute
 Content-Type: application/json
 
@@ -5,14 +6,16 @@ Content-Type: application/json
   "collectionName": "kubernetes",
   "actionName": "HorizontalScalingAction",
   "params": {
-    "resource-type": "Deployment",
-    "resource-name": "nginx-deployment",
-    "namespace": "default",
-    "replicas": "1"
+    "params": {
+      "resourceType": "Deployment",
+      "resourceName": "nginx-deployment",
+      "namespace": "default",
+      "replicas": "1"
+    }
   }
 }
 
-###
+### update config map
 POST localhost:8080/execute
 Content-Type: application/json
 
@@ -20,24 +23,46 @@ Content-Type: application/json
   "collectionName": "kubernetes",
   "actionName": "UpdateConfigMapAction",
   "params": {
-    "resource-name": "cm1",
-    "namespace": "default",
-    "k1": "k55",
-    "v1": "v55"
+    "params": {
+      "resourceName": "cm1",
+      "namespace": "default",
+      "replacements": {
+        "k1": "k55",
+        "v1": "v55"
+      }
+    }
   }
 }
 
-###
+### delete pod
 POST localhost:8080/execute
 Content-Type: application/json
 
 {
   "collectionName": "kubernetes",
-  "actionName": "UpdateConfigMapAction",
+  "actionName": "DeleteResourceAction",
   "params": {
-    "resource-name": "cm1",
-    "namespace": "default",
-    "k1": "k1",
-    "v1": "v100"
+    "params": {
+      "resourceType": "Pod",
+      "resourceName": "nginx",
+      "namespace": "default",
+      "gracePeriodSeconds": "60"
+    }
+  }
+}
+
+### delete config map
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "kubernetes",
+  "actionName": "DeleteResourceAction",
+  "params": {
+    "params": {
+      "resourceType": "ConfigMap",
+      "resourceName": "cm1",
+      "namespace": "default"
+    }
   }
 }

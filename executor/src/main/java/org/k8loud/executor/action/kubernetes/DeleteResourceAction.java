@@ -5,14 +5,14 @@ import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.KubernetesException;
 import org.k8loud.executor.kubernetes.KubernetesService;
 
-import java.util.Map;
 
-public class UpdateConfigMapAction extends KubernetesAction {
+public class DeleteResourceAction extends KubernetesAction {
     private String namespace;
     private String resourceName;
-    private Map<String, String> replacements;
+    private String resourceType;
+    private Long gracePeriodSeconds;
 
-    public UpdateConfigMapAction(Params params, KubernetesService kubernetesService) throws ActionException {
+    public DeleteResourceAction(Params params, KubernetesService kubernetesService) throws ActionException {
         super(params, kubernetesService);
     }
 
@@ -20,19 +20,12 @@ public class UpdateConfigMapAction extends KubernetesAction {
     public void unpackParams(Params params) {
         namespace = params.getRequiredParam("namespace");
         resourceName = params.getRequiredParam("resourceName");
-        // FIXME more than 1 param change pls
-        replacements = Map.of(params.getRequiredParam("k1"), params.getRequiredParam("v1"));
+        resourceType = params.getRequiredParam("resourceType");
+        gracePeriodSeconds = params.getOptionalParamAsLong("gracePeriodSeconds", 0L);
     }
-
-    /**
-     * namespace:
-     * resource-name:
-     * operation-type: { replace | change-value }
-     * replacements: { key: value }
-     */
 
     @Override
     public String performKubernetesAction() throws KubernetesException {
-        return kubernetesService.updateConfigMap(namespace, resourceName, replacements);
+        return kubernetesService.deleteResource(namespace, resourceName, resourceType, gracePeriodSeconds);
     }
 }
