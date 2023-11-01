@@ -5,8 +5,8 @@ public final class Util {
         // Meant for static methods only, don't instantiate
     }
 
-    public static boolean notEmptyBlank(String s) {
-        return s != null && !s.isBlank();
+    public static boolean emptyOrBlank(String s) {
+        return s == null || s.isBlank();
     }
 
     public static String getFullResourceName(String resourceType, String resourceName) {

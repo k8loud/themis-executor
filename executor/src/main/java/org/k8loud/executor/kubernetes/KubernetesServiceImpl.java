@@ -62,9 +62,9 @@ public class KubernetesServiceImpl implements KubernetesService {
     public <T> Resource<T> getResource(String namespace, String resourceType, String resourceName)
             throws KubernetesException {
         log.info("Looking for {} in {}", getFullResourceName(resourceType, resourceName), namespace);
-        if (!Util.notEmptyBlank(namespace)) {
+        if (Util.emptyOrBlank(namespace)) {
             throw new KubernetesException(EMPTY_OR_BLANK_NAMESPACE);
-        } else if (!Util.notEmptyBlank(resourceName)) {
+        } else if (Util.emptyOrBlank(resourceName)) {
             throw new KubernetesException(EMPTY_OR_BLANK_RESOURCE_NAME);
         }
         ResourceType resourceTypeObj = ResourceType.fromString(resourceType);
