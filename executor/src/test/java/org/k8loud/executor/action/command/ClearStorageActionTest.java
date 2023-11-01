@@ -4,9 +4,7 @@ import data.Params;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.k8loud.executor.command.CommandExecutionService;
 import org.k8loud.executor.exception.ActionException;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Map;
@@ -14,7 +12,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-class ClearStorageActionTest {
+class ClearStorageActionTest extends CommandActionBaseTest {
     private static final Params PARAMS = new Params(Map.of(
             "host", "192.168.13.37",
             "port", "22",
@@ -25,13 +23,11 @@ class ClearStorageActionTest {
             "dateFrom", "2022-01-05T10:25:33",
             "dateTo", "2024-01-05T10:25:33"
     ));
-    @Mock
-    CommandExecutionService commandExecutionService;
     ClearStorageAction clearStorageAction;
 
     @BeforeEach
     public void setUp() throws ActionException {
-        clearStorageAction = new ClearStorageAction(PARAMS, commandExecutionService);
+        clearStorageAction = new ClearStorageAction(PARAMS, commandExecutionServiceMock);
     }
 
     @Test

@@ -1,6 +1,5 @@
 package org.k8loud.executor.action.kubernetes;
 
-import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
 import org.junit.jupiter.api.Test;
@@ -10,12 +9,11 @@ import org.k8loud.executor.exception.KubernetesException;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class HorizontalScalingActionTest extends BaseTest {
+class HorizontalScalingActionTest extends KubernetesActionBaseTest {
     private static final String REPLICAS_KEY = "replicas";
 
     @Test
@@ -27,11 +25,10 @@ class HorizontalScalingActionTest extends BaseTest {
 
         // when
         Action action = new HorizontalScalingAction(params, kubernetesServiceMock);
-        ExecutionRS rs = action.perform();
+        ExecutionRS response = action.perform();
 
         // then
         verify(kubernetesServiceMock).scaleHorizontally(eq(NAMESPACE), eq(RESOURCE_NAME), eq(RESOURCE_TYPE), eq(3));
-        assertEquals(ExecutionExitCode.OK, rs.getExitCode());
-        assertEquals(RESULT, rs.getResult());
+        checkResponse(response);
     }
 }

@@ -1,12 +1,13 @@
 package org.k8loud.executor.action.kubernetes;
 
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.k8loud.executor.action.ActionBaseTest;
 import org.k8loud.executor.kubernetes.KubernetesService;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class BaseTest {
+public class KubernetesActionBaseTest extends ActionBaseTest {
     protected static final String NAMESPACE_KEY = "namespace";
     protected static final String RESOURCE_NAME_KEY = "resourceName";
     protected static final String RESOURCE_TYPE_KEY = "resourceType";

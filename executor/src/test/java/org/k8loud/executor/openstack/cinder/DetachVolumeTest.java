@@ -1,19 +1,12 @@
 package org.k8loud.executor.openstack.cinder;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.openstack.OpenstackCinderService;
 import org.k8loud.executor.openstack.OpenstackCinderServiceImpl;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openstack4j.api.OSClient;
-import org.openstack4j.api.storage.BlockStorageService;
-import org.openstack4j.api.storage.BlockVolumeService;
 import org.openstack4j.model.common.ActionResponse;
-import org.openstack4j.model.compute.Server;
-import org.openstack4j.model.storage.block.Volume;
 import org.openstack4j.model.storage.block.VolumeAttachment;
 
 import java.util.List;
@@ -23,36 +16,17 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.DETACH_VOLUME_FAILED;
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.VOLUME_ERROR;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class DetachVolumeTest {
-    private static final String VOLUME_ID = "volumeId";
-    private static final String VOLUME_NAME = "volumeName";
-    private static final String SERVER_ID = "serverId";
-    private static final String SERVER_NAME = "serverName";
+public class DetachVolumeTest extends OpenstackCinderBaseTest {
     public static final String ATTACHMENT_ID = "attachmentId";
-    public static final String EXCEPTION_MESSAGE = "Whatever message";
 
-    @Mock
-    OSClient.OSClientV3 clientV3Mock;
-    @Mock
-    Server serverMock;
-    @Mock
-    Volume volumeMock;
-    @Mock
-    BlockStorageService blockStorageServiceMock;
-    @Mock
-    BlockVolumeService blockVolumeServiceMock;
     @Mock
     VolumeAttachment volumeAttachmentMock;
 
-    OpenstackCinderService openstackCinderService;
-
-    @BeforeEach
-    public void setup() {
+    @Override
+    public void setUp() {
         openstackCinderService = new OpenstackCinderServiceImpl();
 
         when(serverMock.getName()).thenReturn(SERVER_NAME);

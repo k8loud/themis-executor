@@ -6,13 +6,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.exception.OpenstackException;
+import org.k8loud.executor.openstack.OpenstackConstants;
 import org.k8loud.executor.openstack.OpenstackGlanceService;
 import org.k8loud.executor.openstack.OpenstackGlanceServiceImpl;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openstack4j.api.OSClient;
-import org.openstack4j.api.compute.ServerService;
 import org.openstack4j.api.image.v2.ImageService;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.compute.Server;
@@ -31,24 +31,16 @@ import static org.k8loud.executor.exception.code.OpenstackExceptionCode.DELETE_S
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class DeleteServerSnapshotTest {
-    private static final String SERVER_NAME = "serverName";
-    private static final String SERVER_ID = "serverId";
+public class DeleteServerSnapshotTest extends OpenstackConstants {
     private static final String OLDEST_IMAGE_ID = "oldestImageId";
     private static final String OLDEST_IMAGE_NAME = "oldestImageName";
-    private static final String EXCEPTION_MESSAGE = "Whatever message";
+
     @Mock
     OSClient.OSClientV3 clientV3Mock;
     @Mock
     Server server;
     @Mock
-    Server serverId;
-    @Mock
     ImageService imageServiceMock;
-    @Mock
-    List<Image> imageList;
-    @Mock
-    ServerService serverService;
     OpenstackGlanceService openstackGlanceService = new OpenstackGlanceServiceImpl();
 
     @BeforeEach

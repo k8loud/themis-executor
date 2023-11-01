@@ -2,22 +2,14 @@ package org.k8loud.executor.openstack;
 
 import org.junit.jupiter.api.Test;
 import org.k8loud.executor.exception.OpenstackException;
-import org.mockito.Mock;
 import org.openstack4j.api.OSClient;
-import org.openstack4j.model.compute.Server;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-public class CopyServerTest extends BaseTest {
-    private static final String REGION = "region";
+public class CopyServerTest extends OpenstackBaseTest {
     private static final String FLAVOR_ID = "flavorId";
-    private static final String IMAGE_ID = "flavorId";
-    private static final String SERVER_ID = "serverId";
-    private static final String SERVER_NAME = "server-name";
-
-    @Mock
-    Server server;
+    private static final String IMAGE_ID = "imageId";
 
     @Test
     void testCopyServerSuccess() throws OpenstackException {
@@ -52,10 +44,10 @@ public class CopyServerTest extends BaseTest {
     private void setUpMocks() throws OpenstackException {
         when(openstackClientProviderMock.getClientFromToken()).thenReturn(clientV3Mock);
 
-        when(openstackNovaServiceMock.getServer(anyString(), any(OSClient.OSClientV3.class))).thenReturn(server);
-        when(server.getName()).thenReturn(SERVER_NAME);
-        when(server.getFlavorId()).thenReturn(FLAVOR_ID);
-        when(server.getImageId()).thenReturn(IMAGE_ID);
+        when(openstackNovaServiceMock.getServer(anyString(), any(OSClient.OSClientV3.class))).thenReturn(serverMock);
+        when(serverMock.getName()).thenReturn(SERVER_NAME);
+        when(serverMock.getFlavorId()).thenReturn(FLAVOR_ID);
+        when(serverMock.getImageId()).thenReturn(IMAGE_ID);
 
         doNothing().when(openstackNovaServiceMock)
                 .createServer(anyString(), anyString(), anyString(), anyInt(), any(OSClient.OSClientV3.class));

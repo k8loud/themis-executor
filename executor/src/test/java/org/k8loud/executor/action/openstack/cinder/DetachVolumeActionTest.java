@@ -1,6 +1,5 @@
 package org.k8loud.executor.action.openstack.cinder;
 
-import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
 import org.junit.jupiter.api.Test;
@@ -9,10 +8,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.openstack.DetachVolumeAction;
+import org.k8loud.executor.action.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.openstack.OpenstackService;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
@@ -26,30 +24,23 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class DetachVolumeActionTest {
-    private static final String REGION = "regionTest";
-    private static final String SERVER_ID = "123-server-id-123";
-    private static final String VOLUME_ID = "123-volume-id-123";
+public class DetachVolumeActionTest extends OpenstackActionBaseTest {
     private static final Params VALID_PARAMS = new Params(
             Map.of("region", REGION, "serverId", SERVER_ID, "volumeId", VOLUME_ID));
-    @Mock
-    OpenstackService openstackServiceMock;
 
     @Test
     void testDetachSuccess() throws ActionException, OpenstackException {
         // given
         DetachVolumeAction detachVolumeAction = new DetachVolumeAction(VALID_PARAMS,
                 openstackServiceMock);
-
-        doNothing().when(openstackServiceMock).detachVolume(anyString(), anyString(), anyString());
+        when(openstackServiceMock.detachVolume(anyString(), anyString(), anyString())).thenReturn(RESULT);
 
         // when
         ExecutionRS response = detachVolumeAction.perform();
 
         // then
         verify(openstackServiceMock).detachVolume(eq(REGION), eq(SERVER_ID), eq(VOLUME_ID));
-        assertThat(response.getResult()).isEqualTo("Success");
-        assertThat(response.getExitCode()).isSameAs(ExecutionExitCode.OK);
+        checkResponse(response);
     }
 
     @ParameterizedTest

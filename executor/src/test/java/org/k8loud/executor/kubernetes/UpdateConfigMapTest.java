@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class UpdateConfigMapTest extends BaseTest {
+public class UpdateConfigMapTest extends KubernetesBaseTest {
     @ParameterizedTest
     @MethodSource
     void testUpdateValuesConfigMap(String namespace, String resourceName, Map<String, String> replacements,

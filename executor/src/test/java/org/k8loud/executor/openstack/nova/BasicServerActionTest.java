@@ -5,16 +5,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.exception.code.OpenstackExceptionCode;
-import org.k8loud.executor.openstack.OpenstackNovaService;
-import org.k8loud.executor.openstack.OpenstackNovaServiceImpl;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openstack4j.api.OSClient;
-import org.openstack4j.api.compute.ComputeService;
-import org.openstack4j.api.compute.ServerService;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.compute.Action;
-import org.openstack4j.model.compute.Server;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -23,27 +16,12 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class BasicServerActionTest {
-    private static final String SERVER_NAME = "new-server-name";
-    private static final String SERVER_ID = "serverId";
-    private static final String EXCEPTION_MESSAGE = "Whatever message";
-
-
-    @Mock
-    OSClient.OSClientV3 clientV3Mock;
-    @Mock
-    Server server;
-    @Mock
-    ComputeService computeService;
-    @Mock
-    ServerService serverService;
-    OpenstackNovaService openstackNovaService = new OpenstackNovaServiceImpl();
-
+public class BasicServerActionTest extends OpenstackNovaBaseTest {
     @ParameterizedTest
     @EnumSource(value = Action.class, names = {"PAUSE", "UNPAUSE", "STOP", "START"})
     void testSupportedActionsSuccess(Action action) throws OpenstackException {
         // given
-        setup();
+        conditionalSetUp();
         when(serverService.action(anyString(), any(Action.class))).thenReturn(ActionResponse.actionSuccess());
 
         // when
@@ -59,7 +37,7 @@ public class BasicServerActionTest {
     @EnumSource(value = Action.class, names = {"PAUSE", "UNPAUSE", "STOP", "START"})
     void testSupportedActionsFailed(Action action) throws OpenstackException {
         // given
-        setup();
+        conditionalSetUp();
         when(serverService.action(anyString(), any(Action.class)))
                 .thenReturn(ActionResponse.actionFailed(EXCEPTION_MESSAGE, 123));
 
@@ -97,7 +75,16 @@ public class BasicServerActionTest {
         assertThat(((OpenstackException) throwable).getExceptionCode()).isSameAs(UNSUPPORTED_ACTION);
     }
 
-    public void setup() {
+    @Override
+    protected void baseSetUp() {
+        // testUnsupportedActions omits baseSetUp
+    }
+
+    @Override
+    protected void setUp() {
+    }
+
+    private void conditionalSetUp() {
         when(clientV3Mock.compute()).thenReturn(computeService);
         when(computeService.servers()).thenReturn(serverService);
         when(server.getId()).thenReturn(SERVER_ID);

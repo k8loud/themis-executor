@@ -1,6 +1,5 @@
 package org.k8loud.executor.action.openstack.cinder;
 
-import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
 import org.junit.jupiter.api.Test;
@@ -9,11 +8,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.openstack.AttachVolumeAction;
+import org.k8loud.executor.action.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.openstack.OpenstackService;
-import org.k8loud.executor.openstack.OpenstackServiceImpl;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Map;
@@ -26,31 +23,24 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AttachVolumeActionTest {
-    private static final String REGION = "regionTest";
-    private static final String SERVER_ID = "123-server-id-123";
-    private static final String VOLUME_ID = "123-volume-id-123";
+public class AttachVolumeActionTest extends OpenstackActionBaseTest {
     private static final String DEVICE = "/dev/test";
     private static final Params VALID_PARAMS = new Params(
             Map.of("region", REGION, "serverId", SERVER_ID, "volumeId", VOLUME_ID, "device", DEVICE));
-    @Mock
-    OpenstackService openstackServiceMock;
 
     @Test
     void testAttachVolumeAction() throws ActionException, OpenstackException {
         // given
         AttachVolumeAction attachVolumeAction = new AttachVolumeAction(VALID_PARAMS,
                 openstackServiceMock);
-
-        doNothing().when(openstackServiceMock).attachVolume(anyString(), anyString(), anyString(), anyString());
+        when(openstackServiceMock.attachVolume(anyString(), anyString(), anyString(), anyString())).thenReturn(RESULT);
 
         // when
         ExecutionRS response = attachVolumeAction.perform();
 
         // then
         verify(openstackServiceMock).attachVolume(eq(REGION), eq(SERVER_ID), eq(VOLUME_ID), eq(DEVICE));
-        assertThat(response.getResult()).isEqualTo("Success");
-        assertThat(response.getExitCode()).isSameAs(ExecutionExitCode.OK);
+        checkResponse(response);
     }
 
     @ParameterizedTest

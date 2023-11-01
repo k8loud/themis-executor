@@ -1,6 +1,5 @@
 package org.k8loud.executor.action.openstack.glance;
 
-import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,11 +7,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.openstack.DeleteServerSnapshotAction;
-import org.k8loud.executor.action.openstack.DeleteVolumeSnapshotAction;
+import org.k8loud.executor.action.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.openstack.OpenstackService;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
@@ -28,21 +25,15 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class DeleteServerSnapshotActionTest {
-    private static final String REGION = "regionTest";
-    private static final String SERVER_ID = "123-server-id-123";
-
-    @Mock
-    OpenstackService openstackServiceMock;
-
+public class DeleteServerSnapshotActionTest extends OpenstackActionBaseTest {
     @ParameterizedTest
     @MethodSource
     void testDeleteServerSnapshotSuccess(Params params) throws ActionException, OpenstackException {
         // given
         DeleteServerSnapshotAction deleteServerSnapshotAction = new DeleteServerSnapshotAction(
                 params, openstackServiceMock);
-
-        doNothing().when(openstackServiceMock).deleteTheOldestServerSnapshot(anyString(), anyString(), anyBoolean());
+        when(openstackServiceMock.deleteTheOldestServerSnapshot(anyString(), anyString(), anyBoolean()))
+                .thenReturn(RESULT);
 
         // when
         ExecutionRS response = deleteServerSnapshotAction.perform();
@@ -51,8 +42,7 @@ public class DeleteServerSnapshotActionTest {
         boolean keepOneSnapshot = Boolean.parseBoolean(Optional.ofNullable(params.getParams()
                 .get("keepOneSnapshot")).orElse("true"));
         verify(openstackServiceMock).deleteTheOldestServerSnapshot(eq(REGION), eq(SERVER_ID), eq(keepOneSnapshot));
-        assertThat(response.getResult()).isEqualTo("Success");
-        assertThat(response.getExitCode()).isSameAs(ExecutionExitCode.OK);
+        checkResponse(response);
     }
 
     private static Stream<Params> testDeleteServerSnapshotSuccess() {

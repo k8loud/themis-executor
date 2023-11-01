@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
-public class BaseTest {
+public class KubernetesBaseTest {
     protected static final String NAMESPACE = "namespaceValue";
     protected static final String RESOURCE_NAME = "resourceNameValue";
     @Mock

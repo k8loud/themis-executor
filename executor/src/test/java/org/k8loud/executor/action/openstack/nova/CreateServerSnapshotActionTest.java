@@ -1,6 +1,5 @@
 package org.k8loud.executor.action.openstack.nova;
 
-import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,11 +7,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.openstack.CreateServerSnapshotAction;
-import org.k8loud.executor.action.openstack.CreateVolumeSnapshotAction;
+import org.k8loud.executor.action.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.openstack.OpenstackService;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
@@ -28,21 +25,15 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CreateServerSnapshotActionTest {
-    private static final String REGION = "regionTest";
-    private static final String SERVER_ID = "123-server-id-123";
-    @Mock
-    OpenstackService openstackServiceMock;
-
+public class CreateServerSnapshotActionTest extends OpenstackActionBaseTest {
     @ParameterizedTest
     @MethodSource
     void testCreateServerSnapshotSuccess(Params params) throws ActionException, OpenstackException {
         // given
         CreateServerSnapshotAction createServerSnapshotAction = new CreateServerSnapshotAction(
                 params, openstackServiceMock);
-
-        doNothing().when(openstackServiceMock).createServerSnapshot(
-                anyString(), anyString(), nullable(String.class), anyBoolean());
+        when(openstackServiceMock.createServerSnapshot(anyString(), anyString(), nullable(String.class), anyBoolean()))
+                .thenReturn(RESULT);
 
         // when
         ExecutionRS response = createServerSnapshotAction.perform();
@@ -53,8 +44,7 @@ public class CreateServerSnapshotActionTest {
                 .get("stopInstance")).orElse("false"));
 
         verify(openstackServiceMock).createServerSnapshot(eq(REGION), eq(SERVER_ID), eq(snapshotName), eq(stopInstance));
-        assertThat(response.getResult()).isEqualTo("Success");
-        assertThat(response.getExitCode()).isSameAs(ExecutionExitCode.OK);
+        checkResponse(response);
     }
 
     private static Stream<Params> testCreateServerSnapshotSuccess(){
