@@ -13,6 +13,7 @@ public class BaseTest {
     protected static final String NAMESPACE = "namespaceValue";
     protected static final String RESOURCE_NAME = "resourceNameValue";
     protected static final String RESOURCE_TYPE = "resourceTypeValue";
+    protected static final String RESULT = "result";
     @Mock
     KubernetesService kubernetesService;
 }

@@ -14,13 +14,19 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class UpdateConfigMapActionTest extends BaseTest {
     @ParameterizedTest
     @MethodSource
     void testIfKubernetesServiceIsCalled(Params params, Map<String, String> replacements)
             throws ActionException, KubernetesException {
+        // given
+        when(kubernetesService.updateConfigMap(anyString(), anyString(), anyMap())).thenReturn(RESULT);
+
         // when
         Action action = new UpdateConfigMapAction(params, kubernetesService);
         ExecutionRS rs = action.perform();
@@ -28,6 +34,7 @@ class UpdateConfigMapActionTest extends BaseTest {
         // then
         verify(kubernetesService).updateConfigMap(NAMESPACE, RESOURCE_NAME, replacements);
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
+        assertEquals(RESULT, rs.getResult());
     }
 
     private static Stream<Arguments> testIfKubernetesServiceIsCalled() {

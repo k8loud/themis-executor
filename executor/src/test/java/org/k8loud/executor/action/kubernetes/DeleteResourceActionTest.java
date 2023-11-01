@@ -13,9 +13,9 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class DeleteResourceActionTest extends BaseTest {
     private static final String GRACE_PERIOD_SECONDS = "5";
@@ -24,6 +24,9 @@ public class DeleteResourceActionTest extends BaseTest {
     @ParameterizedTest
     @MethodSource
     void testIfKubernetesServiceIsCalled(Params params) throws ActionException, KubernetesException {
+        // given
+        when(kubernetesService.deleteResource(anyString(), anyString(), anyString(), anyLong())).thenReturn(RESULT);
+
         // when
         Action action = new DeleteResourceAction(params, kubernetesService);
         ExecutionRS rs = action.perform();
@@ -31,6 +34,7 @@ public class DeleteResourceActionTest extends BaseTest {
         // then
         verify(kubernetesService).deleteResource(eq(NAMESPACE), eq(RESOURCE_NAME), eq(RESOURCE_TYPE), any());
         assertEquals(ExecutionExitCode.OK, rs.getExitCode());
+        assertEquals(RESULT, rs.getResult());
     }
 
     private static Stream<Params> testIfKubernetesServiceIsCalled() {
