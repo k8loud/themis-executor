@@ -35,7 +35,7 @@ public abstract class Action {
                     .exitCode(ExecutionExitCode.NOT_OK)
                     .build();
         }
-        log.info("Result: {}", result);
+        log.info("Result: {} [{}]", getClass().getName(), result);
         return ExecutionRS.builder()
                 .result(result)
                 .exitCode(ExecutionExitCode.OK)

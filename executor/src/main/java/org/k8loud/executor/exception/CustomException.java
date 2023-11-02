@@ -25,7 +25,7 @@ public class CustomException extends Exception {
 
     @Override
     public String toString() {
-        String classAndExceptionCode = getClass().getName() + String.format("[%s]", exceptionCode);
+        String classAndExceptionCode = String.format("%s [%s]", getClass().getName(), exceptionCode);
         String message = getLocalizedMessage();
         return (message != null) ? (classAndExceptionCode + ": " + message) : classAndExceptionCode;
     }
