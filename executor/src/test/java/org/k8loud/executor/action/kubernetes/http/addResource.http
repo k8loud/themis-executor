@@ -7,9 +7,8 @@ Content-Type: application/json
   "actionName": "AddResourceAction",
   "params": {
     "params": {
-      "resourceType": "Pod",
-      "resourceName": "nginx",
-      "namespace": "default"
+      "namespace": "default",
+      "resourceDescription": ""
     }
   }
 }

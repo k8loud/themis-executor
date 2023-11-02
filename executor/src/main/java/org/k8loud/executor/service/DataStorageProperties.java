@@ -9,4 +9,5 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "data-storage")
 public class DataStorageProperties {
     private String rootPath;
+    private boolean removalPermitted;
 }

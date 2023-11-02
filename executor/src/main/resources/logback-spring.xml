@@ -25,6 +25,8 @@
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </logger>
+
+    <!-- TRACE can be enabled -->
     <logger name="org.k8loud.executor.kubernetes.KubernetesResourceType" level="DEBUG" additivity="false">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>

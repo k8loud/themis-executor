@@ -10,18 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AddResourceAction extends KubernetesAction {
-    private static final String DUMMY_RESOURCE_DESCRIPTION = """
-            apiVersion: v1
-            kind: Pod
-            metadata:
-              name: nginx
-            spec:
-              containers:
-              - name: nginx
-                image: nginx:1.14.2
-                ports:
-                - containerPort: 80
-            """;
     private String namespace;
     private String resourceType;
     private String resourceDescription;
@@ -33,7 +21,7 @@ public class AddResourceAction extends KubernetesAction {
     @Override
     public void unpackParams(Params params) {
         namespace = params.getRequiredParam("namespace"); // May be optional since resourceDescription can hold that information
-        resourceDescription = params.getOptionalParam("resourceDescription", DUMMY_RESOURCE_DESCRIPTION);
+        resourceDescription = params.getRequiredParam("resourceDescription");
         resourceType = extractResourceType(resourceDescription);
     }
 

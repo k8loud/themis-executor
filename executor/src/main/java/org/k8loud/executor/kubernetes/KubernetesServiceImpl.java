@@ -54,10 +54,14 @@ public class KubernetesServiceImpl implements KubernetesService {
             throw new KubernetesException(String.format("Resource %s already exists",
                     getFullResourceName(resourceType, resourceName)), RESOURCE_ALREADY_EXISTS);
         } catch (KubernetesException e) {
-            getMixedOperation(resourceType)
-                    .inNamespace(namespace)
-                    .resource(resource.item())
-                    .create();
+            if (e.getExceptionCode() == RESOURCE_NOT_FOUND) {
+                getMixedOperation(resourceType)
+                        .inNamespace(namespace)
+                        .resource(resource.item())
+                        .create();
+            } else if (e.getExceptionCode() == RESOURCE_ALREADY_EXISTS) {
+                throw e;
+            }
         }
         try {
             getResource(namespace, resourceType, resourceName);
@@ -117,12 +121,14 @@ public class KubernetesServiceImpl implements KubernetesService {
             throws KubernetesException {
         log.info("Loading resource of type {} from description", resourceType);
         MixedOperation<T, ?, ?> mixedOperation = getMixedOperation(resourceType);
-        String resourceDescriptionPath = dataStorageService.storeAsFile(resourceType, resourceDescription);
+        String resourceDescriptionPath = dataStorageService.store(resourceType, resourceDescription);
         if (resourceDescriptionPath == null) {
             throw new KubernetesException(String.format("Resource file '%s' doesn't exist or isn't a file",
                     resourceDescriptionPath), RESOURCE_FILE_NOT_EXISTS);
         }
-        return mixedOperation.load(resourceDescriptionPath);
+        Resource<T> resource = mixedOperation.load(resourceDescriptionPath);
+        dataStorageService.remove(resourceDescriptionPath);
+        return resource;
     }
 
     private <T> MixedOperation<T, ?, ?> getMixedOperation(String resourceType) throws KubernetesException {

@@ -18,27 +18,60 @@ import java.time.format.DateTimeFormatter;
 @Service
 @RequiredArgsConstructor
 public class DataStorageServiceImpl implements DataStorageService {
-    private static final DateTimeFormatter UNIQUE_PATH_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+    private static final DateTimeFormatter UNIQUE_FILE_NAME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
     private final DataStorageProperties dataStorageProperties;
 
     @Nullable
     @Override
-    public String storeAsFile(String fileName, String content) {
-        log.info("Storing as file the passed fileName: '{}'", fileName);
+    public String store(String fileName, String content) {
+        log.debug("Storing in file, the passed fileName is '{}'", fileName);
         fileName = assureFileName(fileName);
         String uniqueFullPath = getUniqueFullPath(fileName);
-        log.info("Actual path: '{}'", uniqueFullPath);
+        log.debug("Actual path '{}'", uniqueFullPath);
         File file = new File(uniqueFullPath);
         return safelyCreateFile(file) && writeToFile(file, content) ? uniqueFullPath : null;
+    }
+
+    @Override
+    public boolean remove(String path) {
+        return remove(path, dataStorageProperties.isRemovalPermitted());
+    }
+
+    @Override
+    public boolean forceRemove(String path) {
+        return remove(path, true);
+    }
+
+    private boolean remove(String path, boolean permit) {
+        boolean result = false;
+        if (permit) {
+            log.debug("Removing '{}'", path);
+            // Rebuild path to disallow path that resolves to a file outside rootPath
+            String fileName = assureFileName(path);
+            path = getFullPath(fileName);
+            log.trace("Actual path '{}'", path);
+            if (fileExists(path)) {
+                try {
+                    Files.delete(Paths.get(path));
+                    result = true;
+                    log.debug("Removed '{}'", path);
+                } catch (IOException e) {
+                    log.error("Failed to remove '{}'", path);
+                }
+            }
+        } else {
+            log.debug("Removal of '{}' is not permitted", path);
+        }
+        return result;
     }
 
     private boolean fileExists(String path) {
         Path pathObj = Paths.get(path);
         boolean result = Files.isRegularFile(pathObj);
         if (result) {
-            log.debug("File in path '{}' exists", path);
+            log.trace("File in path '{}' exists", path);
         } else {
-            log.debug("File in path '{}' doesn't exist", path);
+            log.trace("File in path '{}' doesn't exist", path);
         }
         return result;
     }
@@ -55,15 +88,18 @@ public class DataStorageServiceImpl implements DataStorageService {
     private String getUniqueFullPath(String fileName) {
         String uniqueFullPath;
         do {
-            String uniquePath = getUniquePath(fileName);
-            uniqueFullPath = Paths.get(dataStorageProperties.getRootPath(), uniquePath).normalize().toString();
+            uniqueFullPath = getFullPath(getUniqueFileName(fileName));
         } while(fileExists(uniqueFullPath));
         return uniqueFullPath;
     }
 
-    private String getUniquePath(String fileName) {
+    private String getFullPath(String fileName) {
+        return Paths.get(dataStorageProperties.getRootPath(), fileName).normalize().toString();
+    }
+
+    private String getUniqueFileName(String fileName) {
         LocalDateTime currentDateTime = LocalDateTime.now();
-        String timestamp = currentDateTime.format(UNIQUE_PATH_DATE_FORMATTER);
+        String timestamp = currentDateTime.format(UNIQUE_FILE_NAME_FORMATTER);
         return String.format("%s_%s", fileName, timestamp);
     }
 
@@ -75,7 +111,7 @@ public class DataStorageServiceImpl implements DataStorageService {
             // Fail by default
         }
         if (result) {
-            log.debug("Created file '{}'", file.getPath());
+            log.trace("Created file '{}'", file.getPath());
         } else {
             log.error("Failed to create file '{}'", file.getPath());
         }
@@ -85,7 +121,7 @@ public class DataStorageServiceImpl implements DataStorageService {
     private boolean writeToFile(File file, String content) {
         try (FileWriter fileWriter = new FileWriter(file)) {
             fileWriter.write(content);
-            log.debug("Written content to file '{}'", file.getPath());
+            log.trace("Written content to file '{}'", file.getPath());
             return true;
         } catch (IOException e) {
             log.error("Failed to write to '{}', ex message: '{}'", file.getPath(), e.getMessage());

@@ -25,7 +25,7 @@ public enum KubernetesResourceType {
     public static KubernetesResourceType fromString(String s) throws KubernetesException {
         for (KubernetesResourceType resourceType : KubernetesResourceType.values()) {
             if (resourceType.toString().equalsIgnoreCase(s)) {
-                log.debug("{} parsed to {}", s, resourceType.name());
+                log.trace("{} parsed to {}", s, resourceType.name());
                 return resourceType;
             }
         }
