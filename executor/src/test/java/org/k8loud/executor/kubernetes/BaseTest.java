@@ -5,6 +5,7 @@ import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.k8loud.executor.service.DataStorageService;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -16,6 +17,8 @@ public class BaseTest {
     protected static final String RESOURCE_NAME = "resourceNameValue";
     @Mock
     protected KubernetesClientProvider kubernetesClientProviderMock;
+    @Mock
+    protected DataStorageService dataStorageServiceMock;
     protected KubernetesServer server;
     protected KubernetesClient client;
     protected KubernetesService kubernetesService;
@@ -27,7 +30,7 @@ public class BaseTest {
         client = server.getClient();
 
         lenient().when(kubernetesClientProviderMock.getClient()).thenReturn(client);
-        kubernetesService = new KubernetesServiceImpl(kubernetesClientProviderMock);
+        kubernetesService = new KubernetesServiceImpl(kubernetesClientProviderMock, dataStorageServiceMock);
     }
 
     @AfterEach

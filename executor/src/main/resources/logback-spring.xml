@@ -25,7 +25,11 @@
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </logger>
-    <logger name="org.k8loud.executor.kubernetes.ResourceType" level="DEBUG" additivity="false">
+    <logger name="org.k8loud.executor.kubernetes.KubernetesResourceType" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+    <logger name="org.k8loud.executor.service.DataStorageServiceImpl" level="DEBUG" additivity="false">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </logger>

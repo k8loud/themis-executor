@@ -1,0 +1,16 @@
+### horiziontal scaling
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "kubernetes",
+  "actionName": "HorizontalScalingAction",
+  "params": {
+    "params": {
+      "resourceType": "Deployment",
+      "resourceName": "nginx-deployment",
+      "namespace": "default",
+      "replicas": "1"
+    }
+  }
+}

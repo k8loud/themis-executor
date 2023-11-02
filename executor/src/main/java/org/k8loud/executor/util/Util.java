@@ -9,7 +9,11 @@ public final class Util {
         return s == null || s.isBlank();
     }
 
+    public static String getFullResourceName(String resourceType, String resourceName, String delimiter) {
+        return String.format("%s%s%s", resourceType, delimiter, resourceName);
+    }
+
     public static String getFullResourceName(String resourceType, String resourceName) {
-        return String.format("%s/%s", resourceType, resourceName);
+        return getFullResourceName(resourceType, resourceName, "/");
     }
 }

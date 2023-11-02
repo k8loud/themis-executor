@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @Slf4j
-public enum ResourceType {
+public enum KubernetesResourceType {
     REPLICA_SET("ReplicaSet"),
     DEPLOYMENT("Deployment"),
     STATEFUL_SET("StatefulSet"),
@@ -18,19 +18,19 @@ public enum ResourceType {
 
     private final String asString;
 
-    ResourceType(String asString) {
+    KubernetesResourceType(String asString) {
         this.asString = asString;
     }
 
-    public static ResourceType fromString(String s) throws KubernetesException {
-        for (ResourceType resourceType : ResourceType.values()) {
+    public static KubernetesResourceType fromString(String s) throws KubernetesException {
+        for (KubernetesResourceType resourceType : KubernetesResourceType.values()) {
             if (resourceType.toString().equalsIgnoreCase(s)) {
                 log.debug("{} parsed to {}", s, resourceType.name());
                 return resourceType;
             }
         }
-        String valid = String.format("[%s]", Arrays.stream(ResourceType.values())
-                .map(ResourceType::toString)
+        String valid = String.format("[%s]", Arrays.stream(KubernetesResourceType.values())
+                .map(KubernetesResourceType::toString)
                 .collect(Collectors.joining(", ")));
         throw new KubernetesException(String.format("Invalid resource type '%s', valid values: %s", s, valid),
                 KubernetesExceptionCode.INVALID_RESOURCE_TYPE);

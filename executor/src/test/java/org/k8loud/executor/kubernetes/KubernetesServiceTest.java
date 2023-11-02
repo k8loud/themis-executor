@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.k8loud.executor.exception.code.KubernetesExceptionCode.*;
 
-public class KubernetesServiceImplTest extends BaseTest {
+public class KubernetesServiceTest extends BaseTest {
     @Test
     void testGetConfigMap() throws KubernetesException {
         // given
@@ -32,7 +32,7 @@ public class KubernetesServiceImplTest extends BaseTest {
         assertNotNull(cmExpected);
 
         // when
-        ConfigMap cm1 = (ConfigMap) kubernetesService.getResource(NAMESPACE, ResourceType.CONFIG_MAP.toString(),
+        ConfigMap cm1 = (ConfigMap) kubernetesService.getResource(NAMESPACE, KubernetesResourceType.CONFIG_MAP.toString(),
                 RESOURCE_NAME).get();
 
         // then
@@ -49,7 +49,7 @@ public class KubernetesServiceImplTest extends BaseTest {
         assertNotNull(podExpected);
 
         // when
-        Pod pod1 = (Pod) kubernetesService.getResource(NAMESPACE, ResourceType.POD.toString(), RESOURCE_NAME).get();
+        Pod pod1 = (Pod) kubernetesService.getResource(NAMESPACE, KubernetesResourceType.POD.toString(), RESOURCE_NAME).get();
 
         // then
         assertNotNull(pod1);
@@ -65,7 +65,7 @@ public class KubernetesServiceImplTest extends BaseTest {
         assertNotNull(deploymentExpected);
 
         // when
-        Deployment deployment1 = (Deployment) kubernetesService.getResource(NAMESPACE, ResourceType.DEPLOYMENT.toString(),
+        Deployment deployment1 = (Deployment) kubernetesService.getResource(NAMESPACE, KubernetesResourceType.DEPLOYMENT.toString(),
                 RESOURCE_NAME).get();
 
         // then
