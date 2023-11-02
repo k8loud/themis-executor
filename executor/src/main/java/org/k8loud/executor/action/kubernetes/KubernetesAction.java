@@ -16,4 +16,13 @@ public abstract class KubernetesAction extends Action {
         super(params);
         this.kubernetesService = kubernetesService;
     }
+
+    @Override
+    public void unpackParams(Params params) {
+        namespace = params.getRequiredParam("namespace");
+        resourceName = params.getRequiredParam("resourceName");
+        unpackAdditionalParams(params);
+    }
+
+    protected abstract void unpackAdditionalParams(Params params);
 }

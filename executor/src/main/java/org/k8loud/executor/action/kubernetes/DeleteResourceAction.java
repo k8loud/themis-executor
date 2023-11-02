@@ -15,9 +15,7 @@ public class DeleteResourceAction extends KubernetesAction {
     }
 
     @Override
-    public void unpackParams(Params params) {
-        namespace = params.getRequiredParam("namespace");
-        resourceName = params.getRequiredParam("resourceName");
+    public void unpackAdditionalParams(Params params) {
         resourceType = params.getRequiredParam("resourceType");
         gracePeriodSeconds = params.getOptionalParamAsLong("gracePeriodSeconds", 0L);
     }
