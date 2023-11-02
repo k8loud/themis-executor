@@ -1,20 +1,16 @@
 package org.k8loud.executor.action.openstack.nova;
 
-import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.k8loud.executor.action.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.action.openstack.PauseServerAction;
 import org.k8loud.executor.action.openstack.UnpauseServerAction;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.openstack.OpenstackService;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -25,28 +21,21 @@ import static org.k8loud.executor.exception.code.ActionExceptionCode.UNPACKING_P
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class UnpauseServerActionTest {
-    private static final String REGION = "regionTest";
-    private static final String SERVER_ID = "123-server-id-123";
+public class UnpauseServerActionTest extends OpenstackActionBaseTest {
     private static final Params VALID_PARAMS = new Params(Map.of("region", REGION, "serverId", SERVER_ID));
-    @Mock
-    OpenstackService openstackServiceMock;
 
     @Test
     void testUnpauseServerAction() throws ActionException, OpenstackException {
         // given
         UnpauseServerAction unpauseServerAction = new UnpauseServerAction(VALID_PARAMS, openstackServiceMock);
-
-        doNothing().when(openstackServiceMock).unpauseServer(anyString(), anyString());
+        when(openstackServiceMock.unpauseServer(anyString(), anyString())).thenReturn(RESULT);
 
         // when
-        ExecutionRS response = unpauseServerAction.perform();
+        ExecutionRS response = unpauseServerAction.execute();
 
         // then
         verify(openstackServiceMock).unpauseServer(eq(REGION), eq(SERVER_ID));
-        assertThat(response.getResult()).isEqualTo("Success");
-        assertThat(response.getExitCode()).isSameAs(ExecutionExitCode.OK);
+        assertSuccessRespone(response);
     }
 
     @ParameterizedTest

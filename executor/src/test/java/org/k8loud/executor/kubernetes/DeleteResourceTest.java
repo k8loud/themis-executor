@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DeleteResourceTest extends BaseTest {
+class DeleteResourceTest extends KubernetesBaseTest {
     private static final Long GRACE_PERIOD_SECONDS = 5L;
 
     @ParameterizedTest

@@ -1,22 +1,17 @@
 package org.k8loud.executor.openstack.cinder;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.openstack.OpenstackCinderService;
 import org.k8loud.executor.openstack.OpenstackCinderServiceImpl;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openstack4j.api.OSClient;
-import org.openstack4j.api.storage.BlockStorageService;
 import org.openstack4j.api.storage.BlockVolumeSnapshotService;
 import org.openstack4j.model.common.ActionResponse;
-import org.openstack4j.model.storage.block.Volume;
 import org.openstack4j.model.storage.block.VolumeSnapshot;
 
 import java.time.Instant;
@@ -32,30 +27,17 @@ import static org.k8loud.executor.exception.code.OpenstackExceptionCode.DELETE_V
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class DeleteVolumeSnapshotTest {
-    private static final String VOLUME_ID = "volumeId";
-    private static final String VOLUME_NAME = "volumeName";
-    private static final String SNAPSHOT_NAME = "snapshotName";
+public class DeleteVolumeSnapshotTest extends OpenstackCinderBaseTest {
     private static final String OLDEST_SNAPSHOT_NAME = "oldest";
     private static final String OLDEST_SNAPSHOT_ID = "oldestId";
-    public static final String EXCEPTION_MESSAGE = "message";
 
-
-    @Mock
-    OSClient.OSClientV3 clientV3Mock;
-    @Mock
-    Volume volumeMock;
-    @Mock
-    VolumeSnapshot volumeSnapshotMock;
-    @Mock
-    BlockStorageService blockStorageServiceMock;
     @Mock
     BlockVolumeSnapshotService blockVolumeSnapshotServiceMock;
 
-    OpenstackCinderService openstackCinderService;
     ArgumentCaptor<VolumeSnapshot> volumeSnapshotArgumentCaptor;
-    @BeforeEach
-    public void setup() {
+
+    @Override
+    public void setUp() {
         openstackCinderService = new OpenstackCinderServiceImpl();
 
         when(volumeMock.getName()).thenReturn(VOLUME_NAME);

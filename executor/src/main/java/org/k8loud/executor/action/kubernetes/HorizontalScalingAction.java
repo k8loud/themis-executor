@@ -8,8 +8,6 @@ import org.k8loud.executor.kubernetes.KubernetesService;
 
 @Slf4j
 public class HorizontalScalingAction extends KubernetesAction {
-    private String namespace;
-    private String resourceName;
     private String resourceType;
     private int replicas;
 
@@ -18,15 +16,13 @@ public class HorizontalScalingAction extends KubernetesAction {
     }
 
     @Override
-    public void unpackParams(Params params) {
-        namespace = params.getRequiredParam("namespace");
-        resourceName = params.getRequiredParam("resourceName");
+    public void unpackAdditionalParams(Params params) {
         resourceType = params.getRequiredParam("resourceType");
         replicas = params.getRequiredParamAsInteger("replicas");
     }
 
     @Override
-    protected String performKubernetesAction() throws KubernetesException  {
+    protected String executeBody() throws KubernetesException  {
         return kubernetesService.scaleHorizontally(namespace, resourceName, resourceType, replicas);
     }
 }

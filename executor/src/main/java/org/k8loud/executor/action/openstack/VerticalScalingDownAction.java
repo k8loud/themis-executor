@@ -22,7 +22,7 @@ public class VerticalScalingDownAction extends OpenstackAction {
     }
 
     @Override
-    protected void performOpenstackAction() throws OpenstackException {
-        this.openstackService.resizeServerDown(region, serverId, flavorId);
+    protected String executeBody() throws OpenstackException {
+        return this.openstackService.resizeServerDown(region, serverId, flavorId);
     }
 }

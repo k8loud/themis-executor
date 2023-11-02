@@ -1,19 +1,15 @@
 package org.k8loud.executor.action.openstack.nova;
 
-import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.openstack.HorizontalScalingAction;
+import org.k8loud.executor.action.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.openstack.OpenstackService;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -24,29 +20,22 @@ import static org.k8loud.executor.exception.code.ActionExceptionCode.UNPACKING_P
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class HorizontalScalingActionTest {
-    private static final String REGION = "regionTest";
-    private static final String SERVER_ID = "123-server-id-123";
+public class HorizontalScalingActionTest extends OpenstackActionBaseTest {
     private static final Params VALID_PARAMS = new Params(Map.of("region", REGION, "serverId", SERVER_ID));
-    @Mock
-    OpenstackService openstackServiceMock;
 
     @Test
     void testHorizontalScalingAction() throws ActionException, OpenstackException {
         // given
         HorizontalScalingAction horizontalScalingAction = new HorizontalScalingAction(VALID_PARAMS,
                 openstackServiceMock);
-
-        doNothing().when(openstackServiceMock).copyServer(anyString(), anyString());
+        when(openstackServiceMock.copyServer(anyString(), anyString())).thenReturn(RESULT);
 
         // when
-        ExecutionRS response = horizontalScalingAction.perform();
+        ExecutionRS response = horizontalScalingAction.execute();
 
         // then
         verify(openstackServiceMock).copyServer(eq(REGION), eq(SERVER_ID));
-        assertThat(response.getResult()).isEqualTo("Success");
-        assertThat(response.getExitCode()).isSameAs(ExecutionExitCode.OK);
+        assertSuccessRespone(response);
     }
 
     @ParameterizedTest

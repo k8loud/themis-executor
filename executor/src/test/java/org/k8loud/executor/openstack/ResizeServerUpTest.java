@@ -5,50 +5,49 @@ import org.k8loud.executor.exception.OpenstackException;
 import org.mockito.Mock;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.model.compute.Flavor;
-import org.openstack4j.model.compute.Server;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.openstack4j.model.compute.Server.Status.VERIFY_RESIZE;
 
-public class ResizeServerUpTest extends BaseTest {
-    private static final String REGION = "region";
+public class ResizeServerUpTest extends OpenstackBaseTest {
     private static final String NEW_FLAVOR_ID = "flavorId";
-    private static final String SERVER_ID = "serverId";
     private static final int CURRENT_FLAVOR_VCPUS = 4;
 
     @Mock
-    Server server;
+    Flavor currentFlavorMock;
     @Mock
-    Flavor currentFlavor;
-    @Mock
-    Flavor newFlavor;
+    Flavor newFlavorMock;
+
+    @Override
+    protected void setUp() throws OpenstackException {
+        when(openstackClientProviderMock.getClientFromToken()).thenReturn(clientV3Mock);
+
+        when(serverMock.getId()).thenReturn(SERVER_ID);
+
+        when(openstackNovaServiceMock.getServer(anyString(), any(OSClient.OSClientV3.class))).thenReturn(serverMock);
+        when(openstackNovaServiceMock.getFlavor(anyString(), any(OSClient.OSClientV3.class))).thenReturn(newFlavorMock);
+
+        when(serverMock.getFlavor()).thenReturn(currentFlavorMock);
+        when(currentFlavorMock.getVcpus()).thenReturn(CURRENT_FLAVOR_VCPUS);
+    }
 
     @Test
     void testResizeServerSuccess() throws OpenstackException {
         // given
-        setUpMocks();
-        when(newFlavor.getVcpus()).thenReturn(CURRENT_FLAVOR_VCPUS + 1);
+        when(newFlavorMock.getVcpus()).thenReturn(CURRENT_FLAVOR_VCPUS + 1);
 
         // when
-        openstackService.resizeServerUp(REGION, SERVER_ID, NEW_FLAVOR_ID);
+        String res = openstackService.resizeServerUp(REGION, SERVER_ID, NEW_FLAVOR_ID);
 
         // then
         verify(clientV3Mock).useRegion(eq(REGION));
         verify(openstackNovaServiceMock).getServer(eq(SERVER_ID), eq(clientV3Mock));
         verify(openstackNovaServiceMock).getFlavor(eq(NEW_FLAVOR_ID), eq(clientV3Mock));
-        verify(openstackNovaServiceMock).resize(eq(server), eq(newFlavor), eq(clientV3Mock));
-        verify(openstackNovaServiceMock).confirmResize(eq(server), eq(clientV3Mock));
-        verify(openstackNovaServiceMock).waitForServerStatus(eq(server), eq(VERIFY_RESIZE), anyInt(), eq(clientV3Mock));
-    }
-
-    private void setUpMocks() throws OpenstackException {
-        when(openstackClientProviderMock.getClientFromToken()).thenReturn(clientV3Mock);
-
-        when(openstackNovaServiceMock.getServer(anyString(), any(OSClient.OSClientV3.class))).thenReturn(server);
-        when(openstackNovaServiceMock.getFlavor(anyString(), any(OSClient.OSClientV3.class))).thenReturn(newFlavor);
-
-        when(server.getFlavor()).thenReturn(currentFlavor);
-        when(currentFlavor.getVcpus()).thenReturn(CURRENT_FLAVOR_VCPUS);
+        verify(openstackNovaServiceMock).resize(eq(serverMock), eq(newFlavorMock), eq(clientV3Mock));
+        verify(openstackNovaServiceMock).confirmResize(eq(serverMock), eq(clientV3Mock));
+        verify(openstackNovaServiceMock).waitForServerStatus(eq(serverMock), eq(VERIFY_RESIZE), anyInt(), eq(clientV3Mock));
+        assertEquals(String.format("Resizing a server with id=%s finished with success", SERVER_ID), res);
     }
 }

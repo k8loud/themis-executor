@@ -2,6 +2,7 @@ package org.k8loud.executor.service;
 
 import data.ExecutionRQ;
 import data.Params;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -28,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 class MapperServiceImplTest {
     private static final String INVALID = "invalidName";
     private static final Params VALID_PARAMS = new Params(Map.of("param1", "val1"));
-    public static final Params EMPTY_PARAMS = new Params(Collections.emptyMap());
 
     @Autowired
     private MapperServiceImpl mapperService;
@@ -67,16 +66,20 @@ class MapperServiceImplTest {
         Params deleteResourceActionParams = new Params(Map.of("resourceName", "nameVal", "resourceType",
                 "typeVal", "namespace", "namespaceVal"));
         Params horizontalKubernetesScalingParams = new Params(
-                Map.of("resourceName", "nameVal", "resourceType", "typeVal", "namespace", "namespaceVal", "replicas",
-                        "420"));
+                Map.of("resourceName", "nameVal", "resourceType", "typeVal", "namespace",
+                        "namespaceVal", "replicas", "420"));
         Params horizontalOpenstackScalingParams = new Params(Map.of("region", "regionVal", "serverId", "EUNE"));
         Params verticalOpenstackScalingParams = new Params(
                 Map.of("region", "regionVal", "serverId", "EUNE", "flavorId", "asdad123312"));
+        Params customScriptParams = new Params(Map.of("host", "127.0.0.1", "port", "1337",
+                "privateKey", "a#$t9hgfd1", "user", "root", "command", "echo hello"));
 
-        return Stream.of(Arguments.of("kubernetes", "DeleteResourceAction", deleteResourceActionParams),
+        return Stream.of(
+                Arguments.of("kubernetes", "DeleteResourceAction", deleteResourceActionParams),
                 Arguments.of("kubernetes", "HorizontalScalingAction", horizontalKubernetesScalingParams),
                 Arguments.of("openstack", "HorizontalScalingAction", horizontalOpenstackScalingParams),
-                Arguments.of("openstack", "VerticalScalingUpAction", verticalOpenstackScalingParams)
+                Arguments.of("openstack", "VerticalScalingUpAction", verticalOpenstackScalingParams),
+                Arguments.of("command", "CustomScriptAction", customScriptParams)
 // TODO: How to handle map?
 //                Arguments.of("kubernetes", "UpdateConfigMapAction", Map.of("namespace", "nameVal",
 //                        "resourceName", "typeVal", "replacements", Map.of("k1", "v1")))
@@ -92,27 +95,25 @@ class MapperServiceImplTest {
                         ActionExceptionCode.ACTION_CLASS_NOT_FOUND));
     }
 
-    private void checkFieldValue(Object object, String fieldName, String expectedValue) {
+    private void checkFieldValue(Object object, @NotNull Class<?> clazz, String fieldName, String expectedValue) {
         try {
-            Field field = object.getClass().getDeclaredField(fieldName);
+            Field field = clazz.getDeclaredField(fieldName);
             field.setAccessible(true);
-            // FIXME: Handling doubles
-            String typeName = field.getType().getName();
-            if (typeName.equals("double") || typeName.equals("float")) {
-                Assertions.assertEquals(Double.valueOf(expectedValue), field.get(object));
-            } else {
-                String value = String.valueOf(field.get(object));
-                Assertions.assertEquals(expectedValue, value);
-            }
+            String value = String.valueOf(field.get(object));
+            Assertions.assertEquals(expectedValue, value);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            fail();
+            Class<?> superClazz = clazz.getSuperclass();
+            if (superClazz != null) {
+                checkFieldValue(object, superClazz, fieldName, expectedValue);
+            } else {
+                fail();
+            }
         }
     }
 
     private void checkFieldsValues(Object object, Params params) {
         for (Map.Entry<String, String> entry : params.getParams().entrySet()) {
-            checkFieldValue(object, entry.getKey(), entry.getValue());
+            checkFieldValue(object, object.getClass(), entry.getKey(), entry.getValue());
         }
     }
 }
-

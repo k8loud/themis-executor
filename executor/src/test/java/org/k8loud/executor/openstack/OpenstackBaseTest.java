@@ -6,28 +6,33 @@ import org.k8loud.executor.exception.OpenstackException;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openstack4j.api.OSClient;
+import org.openstack4j.model.compute.Server;
 
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public abstract class BaseTest {
+public abstract class OpenstackBaseTest extends OpenstackConstants {
     @Mock
-    OpenstackClientProvider openstackClientProviderMock;
+    protected Server serverMock;
     @Mock
-    OSClient.OSClientV3 clientV3Mock;
+    protected OpenstackClientProvider openstackClientProviderMock;
     @Mock
-    OpenstackNovaService openstackNovaServiceMock;
+    protected OSClient.OSClientV3 clientV3Mock;
     @Mock
-    OpenstackCinderService openstackCinderService;
+    protected OpenstackNovaService openstackNovaServiceMock;
     @Mock
-    OpenstackGlanceService openstackGlanceService;
+    protected OpenstackCinderService openstackCinderService;
+    @Mock
+    protected OpenstackGlanceService openstackGlanceService;
 
-    OpenstackService openstackService;
-
+    protected OpenstackService openstackService;
 
     @BeforeEach
-    void baseSetUp() throws OpenstackException {
+    protected void baseSetUp() throws OpenstackException {
         openstackService = new OpenstackServiceImpl(openstackClientProviderMock, openstackNovaServiceMock, openstackCinderService, openstackGlanceService);
         when(openstackClientProviderMock.getClientFromToken()).thenReturn(clientV3Mock);
+        setUp();
     }
+
+    protected abstract void setUp() throws OpenstackException;
 }
