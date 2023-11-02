@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class HorizontalScalingTest extends BaseTest {
+public class HorizontalScalingTest extends KubernetesBaseTest {
     @ParameterizedTest
     @MethodSource
     void testScalingStatefulSet(String namespace, String resourceName, String resourceType, Integer replicas)

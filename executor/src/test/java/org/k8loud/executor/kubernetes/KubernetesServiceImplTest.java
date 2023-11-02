@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.k8loud.executor.exception.code.KubernetesExceptionCode.*;
 
-public class KubernetesServiceImplTest extends BaseTest {
+public class KubernetesServiceImplTest extends KubernetesBaseTest {
     @Test
     void testGetConfigMap() throws KubernetesException {
         // given

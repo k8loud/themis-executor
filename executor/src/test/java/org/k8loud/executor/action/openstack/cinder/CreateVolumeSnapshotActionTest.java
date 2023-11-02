@@ -1,18 +1,14 @@
 package org.k8loud.executor.action.openstack.cinder;
 
-import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.openstack.CreateVolumeSnapshotAction;
+import org.k8loud.executor.action.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.openstack.OpenstackService;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.Map;
@@ -25,30 +21,23 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class CreateVolumeSnapshotActionTest {
-    private static final String REGION = "regionTest";
-    private static final String VOLUME_ID = "123-volume-id-123";
-    @Mock
-    OpenstackService openstackServiceMock;
-
+public class CreateVolumeSnapshotActionTest extends OpenstackActionBaseTest {
     @ParameterizedTest
     @MethodSource
     void testCreateVolumeSnapshot(Params params) throws ActionException, OpenstackException {
         // given
         CreateVolumeSnapshotAction createVolumeSnapshotAction = new CreateVolumeSnapshotAction(
                 params, openstackServiceMock);
-
-        doNothing().when(openstackServiceMock).createVolumeSnapshot(anyString(), anyString(), nullable(String.class));
+        when(openstackServiceMock.createVolumeSnapshot(anyString(), anyString(), nullable(String.class)))
+                .thenReturn(RESULT);
 
         // when
-        ExecutionRS response = createVolumeSnapshotAction.perform();
+        ExecutionRS response = createVolumeSnapshotAction.execute();
 
         // then
         String snapshotName = params.getParams().get("snapshotName");
         verify(openstackServiceMock).createVolumeSnapshot(eq(REGION), eq(VOLUME_ID), eq(snapshotName));
-        assertThat(response.getResult()).isEqualTo("Success");
-        assertThat(response.getExitCode()).isSameAs(ExecutionExitCode.OK);
+        assertSuccessRespone(response);
     }
 
     private static Stream<Params> testCreateVolumeSnapshot(){

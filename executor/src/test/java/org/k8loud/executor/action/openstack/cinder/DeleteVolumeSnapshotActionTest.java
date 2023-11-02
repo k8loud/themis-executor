@@ -1,18 +1,14 @@
 package org.k8loud.executor.action.openstack.cinder;
 
-import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.action.openstack.DeleteVolumeSnapshotAction;
+import org.k8loud.executor.action.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.openstack.OpenstackService;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.Map;
@@ -26,32 +22,24 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class DeleteVolumeSnapshotActionTest {
-    private static final String REGION = "regionTest";
-    private static final String VOLUME_ID = "123-volume-id-123";
-
-    @Mock
-    OpenstackService openstackServiceMock;
-
+public class DeleteVolumeSnapshotActionTest extends OpenstackActionBaseTest {
     @ParameterizedTest
     @MethodSource
     void testDeleteVolumeSnapshotSuccess(Params params) throws ActionException, OpenstackException {
         // given
         DeleteVolumeSnapshotAction deleteVolumeSnapshotAction = new DeleteVolumeSnapshotAction(
                 params, openstackServiceMock);
-
-        doNothing().when(openstackServiceMock).deleteTheOldestVolumeSnapshot(anyString(), anyString(), anyBoolean());
+        when(openstackServiceMock.deleteTheOldestVolumeSnapshot(anyString(), anyString(), anyBoolean()))
+                .thenReturn(RESULT);
 
         // when
-        ExecutionRS response = deleteVolumeSnapshotAction.perform();
+        ExecutionRS response = deleteVolumeSnapshotAction.execute();
 
         // then
         boolean keepOneSnapshot = Boolean.parseBoolean(Optional.ofNullable(params.getParams()
                 .getOrDefault("keepOneSnapshot", "true")).orElse("true"));
         verify(openstackServiceMock).deleteTheOldestVolumeSnapshot(eq(REGION), eq(VOLUME_ID), eq(keepOneSnapshot));
-        assertThat(response.getResult()).isEqualTo("Success");
-        assertThat(response.getExitCode()).isSameAs(ExecutionExitCode.OK);
+        assertSuccessRespone(response);
     }
 
     private static Stream<Params> testDeleteVolumeSnapshotSuccess() {

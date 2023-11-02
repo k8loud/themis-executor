@@ -22,7 +22,7 @@ public class DeleteServerSnapshotAction extends OpenstackAction {
     }
 
     @Override
-    protected void performOpenstackAction() throws OpenstackException {
-        openstackService.deleteTheOldestServerSnapshot(region, serverId, keepOneSnapshot);
+    protected String executeBody() throws OpenstackException {
+        return openstackService.deleteTheOldestServerSnapshot(region, serverId, keepOneSnapshot);
     }
 }

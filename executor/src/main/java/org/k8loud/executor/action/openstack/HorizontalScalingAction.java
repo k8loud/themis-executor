@@ -20,8 +20,8 @@ public class HorizontalScalingAction extends OpenstackAction {
     }
 
     @Override
-    protected void performOpenstackAction() throws OpenstackException {
-        openstackService.copyServer(region, serverId);
+    protected String executeBody() throws OpenstackException {
+        return openstackService.copyServer(region, serverId);
         //FIXME this only create a server with same flavor and image
         //TODO HorizontalScalingDown add (delete server and extra actions to be done before)
     }

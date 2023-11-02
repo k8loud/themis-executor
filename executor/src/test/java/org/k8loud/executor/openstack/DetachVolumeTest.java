@@ -1,60 +1,54 @@
 package org.k8loud.executor.openstack;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.k8loud.executor.exception.OpenstackException;
 import org.mockito.Mock;
 import org.openstack4j.api.OSClient;
-import org.openstack4j.model.compute.Server;
 import org.openstack4j.model.storage.block.Volume;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.VOLUME_ERROR;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-public class DetachVolumeTest extends BaseTest {
-    private static final String REGION = "region";
-    private static final String SERVER_ID = "serverId";
-    private static final String VOLUME_ID = "volumeId";
-    private static final String VOLUME_NAME = "volumeName";
-
+public class DetachVolumeTest extends OpenstackBaseTest {
     @Mock
-    Server server;
-    @Mock
-    Volume volume;
+    Volume volumeMock;
 
-    @BeforeEach
-    void setUp() throws OpenstackException {
-        when(openstackNovaServiceMock.getServer(anyString(), any(OSClient.OSClientV3.class))).thenReturn(server);
-        when(openstackCinderService.getVolume(anyString(), any(OSClient.OSClientV3.class))).thenReturn(volume);
+    @Override
+    protected void setUp() throws OpenstackException {
+        when(openstackNovaServiceMock.getServer(anyString(), any(OSClient.OSClientV3.class))).thenReturn(serverMock);
+        when(openstackCinderService.getVolume(anyString(), any(OSClient.OSClientV3.class))).thenReturn(volumeMock);
     }
 
     @Test
     void testDetachVolumeSuccess() throws OpenstackException {
         // given
-        when(volume.getStatus()).thenReturn(Volume.Status.IN_USE);
+        when(volumeMock.getStatus()).thenReturn(Volume.Status.IN_USE);
 
         // when
-        openstackService.detachVolume(REGION, SERVER_ID, VOLUME_ID);
+        String res = openstackService.detachVolume(REGION, SERVER_ID, VOLUME_ID);
 
         // then
         verify(clientV3Mock).useRegion(eq(REGION));
         verify(openstackNovaServiceMock).getServer(eq(SERVER_ID), eq(clientV3Mock));
         verify(openstackCinderService).getVolume(eq(VOLUME_ID), eq(clientV3Mock));
-        verify(volume).getStatus();
-        verify(openstackCinderService).detachVolume(eq(server), eq(volume), eq(clientV3Mock));
+        verify(volumeMock).getStatus();
+        verify(openstackCinderService).detachVolume(eq(serverMock), eq(volumeMock), eq(clientV3Mock));
+        assertEquals(String.format("Detached volume with id=%s from a server with id=%s finished with success",
+                VOLUME_ID, SERVER_ID), res);
     }
 
     @ParameterizedTest
     @EnumSource(value = Volume.Status.class, names = "IN_USE", mode = EnumSource.Mode.EXCLUDE)
     void testDetachVolumeFailed(Volume.Status status) throws OpenstackException {
         // given
-        when(volume.getStatus()).thenReturn(status);
-        when(volume.getName()).thenReturn(VOLUME_NAME);
+        when(volumeMock.getStatus()).thenReturn(status);
+        when(volumeMock.getName()).thenReturn(VOLUME_NAME);
 
         // when
         Throwable throwable = catchThrowable(() -> openstackService.detachVolume(REGION, SERVER_ID, VOLUME_ID));
@@ -63,8 +57,8 @@ public class DetachVolumeTest extends BaseTest {
         verify(clientV3Mock).useRegion(eq(REGION));
         verify(openstackNovaServiceMock).getServer(eq(SERVER_ID), eq(clientV3Mock));
         verify(openstackCinderService).getVolume(eq(VOLUME_ID), eq(clientV3Mock));
-        verify(volume, times(3)).getStatus();
-        verify(volume, times(2)).getName();
+        verify(volumeMock, times(2)).getStatus();
+        verify(volumeMock).getName();
 
         assertThat(throwable).isExactlyInstanceOf(OpenstackException.class)
                 .hasMessage("Volume %s has status %s, but in_use is needed", VOLUME_NAME, status);

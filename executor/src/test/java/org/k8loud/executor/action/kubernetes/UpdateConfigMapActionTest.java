@@ -1,6 +1,5 @@
 package org.k8loud.executor.action.kubernetes;
 
-import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,12 +12,11 @@ import org.k8loud.executor.exception.KubernetesException;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class UpdateConfigMapActionTest extends BaseTest {
+class UpdateConfigMapActionTest extends KubernetesActionBaseTest {
     @ParameterizedTest
     @MethodSource
     void testIfKubernetesServiceIsCalled(Params params, Map<String, String> replacements)
@@ -28,12 +26,11 @@ class UpdateConfigMapActionTest extends BaseTest {
 
         // when
         Action action = new UpdateConfigMapAction(params, kubernetesServiceMock);
-        ExecutionRS rs = action.perform();
+        ExecutionRS response = action.execute();
 
         // then
         verify(kubernetesServiceMock).updateConfigMap(eq(NAMESPACE), eq(RESOURCE_NAME), eq(replacements));
-        assertEquals(ExecutionExitCode.OK, rs.getExitCode());
-        assertEquals(RESULT, rs.getResult());
+        assertSuccessRespone(response);
     }
 
     private static Stream<Arguments> testIfKubernetesServiceIsCalled() {

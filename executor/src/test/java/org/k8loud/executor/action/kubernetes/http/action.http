@@ -26,10 +26,8 @@ Content-Type: application/json
     "params": {
       "resourceName": "cm1",
       "namespace": "default",
-      "replacements": {
-        "k1": "k55",
-        "v1": "v55"
-      }
+      "k1": "k55",
+      "v1": "v55"
     }
   }
 }

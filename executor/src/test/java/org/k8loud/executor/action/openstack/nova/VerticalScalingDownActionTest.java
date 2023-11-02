@@ -1,19 +1,15 @@
 package org.k8loud.executor.action.openstack.nova;
 
-import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.k8loud.executor.action.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.action.openstack.VerticalScalingDownAction;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.openstack.OpenstackService;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -24,31 +20,23 @@ import static org.k8loud.executor.exception.code.ActionExceptionCode.UNPACKING_P
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class VerticalScalingDownActionTest {
-    private static final String REGION = "regionTest";
-    private static final String SERVER_ID = "123-server-id-123";
-    private static final String FLAVOR_ID = "123-flavor-id-123";
+public class VerticalScalingDownActionTest extends OpenstackActionBaseTest {
     private static final Params VALID_PARAMS = new Params(
             Map.of("region", REGION, "serverId", SERVER_ID, "flavorId", FLAVOR_ID));
-    @Mock
-    OpenstackService openstackServiceMock;
 
     @Test
     void testVerticalScalingAction() throws ActionException, OpenstackException {
         // given
         VerticalScalingDownAction verticalScalingAction = new VerticalScalingDownAction(VALID_PARAMS,
                 openstackServiceMock);
-
-        doNothing().when(openstackServiceMock).resizeServerDown(anyString(), anyString(), anyString());
+        when(openstackServiceMock.resizeServerDown(anyString(), anyString(), anyString())).thenReturn(RESULT);
 
         // when
-        ExecutionRS response = verticalScalingAction.perform();
+        ExecutionRS response = verticalScalingAction.execute();
 
         // then
         verify(openstackServiceMock).resizeServerDown(eq(REGION), eq(SERVER_ID), eq(FLAVOR_ID));
-        assertThat(response.getResult()).isEqualTo("Success");
-        assertThat(response.getExitCode()).isSameAs(ExecutionExitCode.OK);
+        assertSuccessRespone(response);
     }
 
     @ParameterizedTest

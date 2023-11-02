@@ -1,6 +1,5 @@
 package org.k8loud.executor.action.kubernetes;
 
-import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,12 +11,11 @@ import org.k8loud.executor.exception.KubernetesException;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class DeleteResourceActionTest extends BaseTest {
+public class DeleteResourceActionTest extends KubernetesActionBaseTest {
     private static final String GRACE_PERIOD_SECONDS = "5";
     private static final String GRACE_PERIOD_SECONDS_KEY = "gracePeriodSeconds";
 
@@ -29,12 +27,11 @@ public class DeleteResourceActionTest extends BaseTest {
 
         // when
         Action action = new DeleteResourceAction(params, kubernetesServiceMock);
-        ExecutionRS rs = action.perform();
+        ExecutionRS response = action.execute();
 
         // then
         verify(kubernetesServiceMock).deleteResource(eq(NAMESPACE), eq(RESOURCE_NAME), eq(RESOURCE_TYPE), any());
-        assertEquals(ExecutionExitCode.OK, rs.getExitCode());
-        assertEquals(RESULT, rs.getResult());
+        assertSuccessRespone(response);
     }
 
     private static Stream<Params> testIfKubernetesServiceIsCalled() {
