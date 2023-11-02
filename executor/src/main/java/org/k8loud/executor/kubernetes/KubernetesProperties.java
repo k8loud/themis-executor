@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "kubernetes")
 public class KubernetesProperties {
-    private String master; // server ex. https://150.27.9.124:6443
-    private String caCertData; // certificate-authority-data
-    private String clientCertData; // client-certificate-data
-    private String clientKeyData; // client-key-data
+    private String master = "https://150.27.9.124:6443"; // server
+    private String caCertData= "certificate-authority-data"; // certificate-authority-data
+    private String clientCertData = "client-certificate-data"; // client-certificate-data
+    private String clientKeyData = "client-key-data"; // client-key-data
 
     public Config toConfig() {
         // Without Config.empty() .kube/config is loaded

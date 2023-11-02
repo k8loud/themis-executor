@@ -8,6 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "data-storage")
 public class DataStorageProperties {
-    private String rootPath;
-    private boolean removalPermitted;
+    private String rootPath = "/tmp";
+    private boolean removalPermitted = true;
 }

@@ -26,7 +26,12 @@ public class AddResourceAction extends KubernetesAction {
     }
 
     @Override
-    public String performKubernetesAction() throws KubernetesException {
+    protected void unpackAdditionalParams(Params params) {
+        // empty
+    }
+
+    @Override
+    public String executeBody() throws KubernetesException {
         return kubernetesService.addResource(namespace, resourceType, resourceDescription);
     }
 
