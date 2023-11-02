@@ -31,7 +31,7 @@ public class DeleteResourceActionTest extends KubernetesActionBaseTest {
 
         // then
         verify(kubernetesServiceMock).deleteResource(eq(NAMESPACE), eq(RESOURCE_NAME), eq(RESOURCE_TYPE), any());
-        checkResponse(response);
+        assertSuccessRespone(response);
     }
 
     private static Stream<Params> testIfKubernetesServiceIsCalled() {

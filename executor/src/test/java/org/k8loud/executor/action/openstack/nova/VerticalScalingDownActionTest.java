@@ -36,7 +36,7 @@ public class VerticalScalingDownActionTest extends OpenstackActionBaseTest {
 
         // then
         verify(openstackServiceMock).resizeServerDown(eq(REGION), eq(SERVER_ID), eq(FLAVOR_ID));
-        checkResponse(response);
+        assertSuccessRespone(response);
     }
 
     @ParameterizedTest

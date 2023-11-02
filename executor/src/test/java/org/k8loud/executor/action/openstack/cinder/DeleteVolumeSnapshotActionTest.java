@@ -39,7 +39,7 @@ public class DeleteVolumeSnapshotActionTest extends OpenstackActionBaseTest {
         boolean keepOneSnapshot = Boolean.parseBoolean(Optional.ofNullable(params.getParams()
                 .getOrDefault("keepOneSnapshot", "true")).orElse("true"));
         verify(openstackServiceMock).deleteTheOldestVolumeSnapshot(eq(REGION), eq(VOLUME_ID), eq(keepOneSnapshot));
-        checkResponse(response);
+        assertSuccessRespone(response);
     }
 
     private static Stream<Params> testDeleteVolumeSnapshotSuccess() {

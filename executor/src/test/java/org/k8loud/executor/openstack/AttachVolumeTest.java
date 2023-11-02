@@ -58,7 +58,7 @@ public class AttachVolumeTest extends OpenstackBaseTest {
         verify(openstackNovaServiceMock).getServer(eq(SERVER_ID), eq(clientV3Mock));
         verify(openstackCinderService).getVolume(eq(VOLUME_ID), eq(clientV3Mock));
         verify(volumeMock, times(2)).getStatus();
-        verify(volumeMock, times(1)).getName();
+        verify(volumeMock).getName();
 
         assertThat(throwable).isExactlyInstanceOf(OpenstackException.class)
                 .hasMessage("Volume %s has status %s, but available is needed", VOLUME_NAME, status);

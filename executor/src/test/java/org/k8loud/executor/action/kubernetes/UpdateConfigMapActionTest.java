@@ -30,7 +30,7 @@ class UpdateConfigMapActionTest extends KubernetesActionBaseTest {
 
         // then
         verify(kubernetesServiceMock).updateConfigMap(eq(NAMESPACE), eq(RESOURCE_NAME), eq(replacements));
-        checkResponse(response);
+        assertSuccessRespone(response);
     }
 
     private static Stream<Arguments> testIfKubernetesServiceIsCalled() {

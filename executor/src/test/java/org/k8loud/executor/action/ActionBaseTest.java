@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public abstract class ActionBaseTest {
     protected static final String RESULT = "result";
 
-    protected void checkResponse(ExecutionRS response) {
+    protected void assertSuccessRespone(ExecutionRS response) {
         assertEquals(ExecutionExitCode.OK, response.getExitCode());
         assertEquals(RESULT, response.getResult());
     }

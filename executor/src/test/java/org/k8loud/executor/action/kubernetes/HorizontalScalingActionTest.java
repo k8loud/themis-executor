@@ -29,6 +29,6 @@ class HorizontalScalingActionTest extends KubernetesActionBaseTest {
 
         // then
         verify(kubernetesServiceMock).scaleHorizontally(eq(NAMESPACE), eq(RESOURCE_NAME), eq(RESOURCE_TYPE), eq(3));
-        checkResponse(response);
+        assertSuccessRespone(response);
     }
 }

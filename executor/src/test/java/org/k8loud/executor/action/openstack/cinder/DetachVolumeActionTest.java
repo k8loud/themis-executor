@@ -37,7 +37,7 @@ public class DetachVolumeActionTest extends OpenstackActionBaseTest {
 
         // then
         verify(openstackServiceMock).detachVolume(eq(REGION), eq(SERVER_ID), eq(VOLUME_ID));
-        checkResponse(response);
+        assertSuccessRespone(response);
     }
 
     @ParameterizedTest

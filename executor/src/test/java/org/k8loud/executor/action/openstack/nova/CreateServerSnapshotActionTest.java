@@ -41,7 +41,7 @@ public class CreateServerSnapshotActionTest extends OpenstackActionBaseTest {
                 .get("stopInstance")).orElse("false"));
 
         verify(openstackServiceMock).createServerSnapshot(eq(REGION), eq(SERVER_ID), eq(snapshotName), eq(stopInstance));
-        checkResponse(response);
+        assertSuccessRespone(response);
     }
 
     private static Stream<Params> testCreateServerSnapshotSuccess(){
