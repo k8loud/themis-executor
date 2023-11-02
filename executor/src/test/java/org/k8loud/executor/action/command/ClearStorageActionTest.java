@@ -12,15 +12,19 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 class ClearStorageActionTest extends CommandActionBaseTest {
+    private static final String PATHS = "/home/ubuntu /dev/null";
+    private static final String REGEX_PATTERN = "to_delete*";
+    private static final String DATE_FROM = "2022-01-05T10:25:33";
+    private static final String DATE_TO = "2024-01-05T10:25:33";
     private static final Params PARAMS = new Params(Map.of(
-            HOST_KEY, "192.168.13.37",
-            PORT_KEY, "22",
-            PRIVATE_KEY_KEY, "p4009jZSD+16k8xk",
-            USER_KEY, "ubuntu",
-            "paths", "/home/ubuntu /dev/null",
-            "regexPattern", "to_delete*",
-            "dateFrom", "2022-01-05T10:25:33",
-            "dateTo", "2024-01-05T10:25:33"
+            HOST_KEY, HOST,
+            PORT_KEY, PORT,
+            PRIVATE_KEY_KEY, PRIVATE_KEY,
+            USER_KEY, USER,
+            "paths", PATHS,
+            "regexPattern", REGEX_PATTERN,
+            "dateFrom", DATE_FROM,
+            "dateTo", DATE_TO
     ));
     ClearStorageAction clearStorageAction;
 
@@ -32,17 +36,14 @@ class ClearStorageActionTest extends CommandActionBaseTest {
     @Test
     void testCommandExecutionServiceIsCalled() throws CommandException {
         // given
-        final String host = PARAMS.getRequiredParam(HOST_KEY);
-        final Integer port = Integer.parseInt(PARAMS.getRequiredParam(PORT_KEY));
-        final String privateKey = PARAMS.getRequiredParam(PRIVATE_KEY_KEY);
-        final String user = PARAMS.getRequiredParam(USER_KEY);
-        final String command = "find /home/ubuntu /dev/null -name 'to_delete*' -newermt 2022-01-05T10:25:33 ! " +
-                "-newermt 2024-01-05T10:25:33 -depth -exec rm -rf {} \\;";
+        final String command = String.format("find %s -name '%s' -newermt %s ! -newermt %s -depth -exec rm -rf {} \\;",
+                PATHS, REGEX_PATTERN, DATE_FROM, DATE_TO);
 
         // when
         clearStorageAction.execute();
 
         // then
-        verify(commandExecutionServiceMock).executeCommand(eq(host), eq(port), eq(privateKey), eq(user), eq(command));
+        verify(commandExecutionServiceMock).executeCommand(eq(HOST), eq(Integer.parseInt(PORT)), eq(PRIVATE_KEY),
+                eq(USER), eq(command));
     }
 }
