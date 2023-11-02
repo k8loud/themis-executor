@@ -7,8 +7,6 @@ import org.k8loud.executor.kubernetes.KubernetesService;
 
 
 public class DeleteResourceAction extends KubernetesAction {
-    private String namespace;
-    private String resourceName;
     private String resourceType;
     private Long gracePeriodSeconds;
 

@@ -8,8 +8,6 @@ import org.k8loud.executor.kubernetes.KubernetesService;
 import java.util.Map;
 
 public class UpdateConfigMapAction extends KubernetesAction {
-    private String namespace;
-    private String resourceName;
     private Map<String, String> replacements;
 
     public UpdateConfigMapAction(Params params, KubernetesService kubernetesService) throws ActionException {

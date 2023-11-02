@@ -8,8 +8,6 @@ import org.k8loud.executor.kubernetes.KubernetesService;
 
 @Slf4j
 public class HorizontalScalingAction extends KubernetesAction {
-    private String namespace;
-    private String resourceName;
     private String resourceType;
     private int replicas;
 

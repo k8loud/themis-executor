@@ -9,6 +9,8 @@ import org.k8loud.executor.kubernetes.KubernetesService;
 @Slf4j
 public abstract class KubernetesAction extends Action {
     protected KubernetesService kubernetesService;
+    protected String namespace;
+    protected String resourceName;
 
     protected KubernetesAction(Params params, KubernetesService kubernetesService) throws ActionException {
         super(params);
