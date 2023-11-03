@@ -20,4 +20,11 @@ public class DataStorageTestUtil {
         Files.delete(Paths.get(path));
         return true;
     }
+
+    public static void safeRemove(String path) {
+        try {
+            remove(path);
+        } catch (IOException ignored) {
+        }
+    }
 }

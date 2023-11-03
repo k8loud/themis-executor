@@ -37,11 +37,6 @@ public class DataStorageServiceImpl implements DataStorageService {
         return remove(path, dataStorageProperties.isRemovalPermitted());
     }
 
-    @Override
-    public boolean forceRemove(String path) {
-        return remove(path, true);
-    }
-
     private boolean remove(String path, boolean permit) {
         boolean result = false;
         if (permit) {
