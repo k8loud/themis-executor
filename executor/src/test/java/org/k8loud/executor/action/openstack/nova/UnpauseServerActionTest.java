@@ -15,9 +15,7 @@ import org.k8loud.executor.exception.OpenstackException;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.k8loud.executor.exception.code.ActionExceptionCode.UNPACKING_PARAMS_FAILURE;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -35,7 +33,7 @@ public class UnpauseServerActionTest extends OpenstackActionBaseTest {
 
         // then
         verify(openstackServiceMock).unpauseServer(eq(REGION), eq(SERVER_ID));
-        assertSuccessRespone(response);
+        assertSuccessResponse(response);
     }
 
     @ParameterizedTest
@@ -46,11 +44,7 @@ public class UnpauseServerActionTest extends OpenstackActionBaseTest {
                 () -> new PauseServerAction(invalidParams, openstackServiceMock));
 
         // then
-        assertThat(throwable).isExactlyInstanceOf(ActionException.class)
-                .hasMessage("Param '%s' is declared as " + "required and was not found", missingParam);
-        assertThat(((ActionException) throwable).getExceptionCode()).isEqualTo(UNPACKING_PARAMS_FAILURE);
-
-        verifyNoInteractions(openstackServiceMock);
+        assertMissingParamException(throwable, missingParam);
     }
 
     private static Stream<Arguments> testUnpauseServerActionWrongParams() {

@@ -80,7 +80,8 @@ public class DeleteServerSnapshotTest extends OpenstackConstants {
 
         // then
         assertThat(throwable).isExactlyInstanceOf(OpenstackException.class)
-                .hasMessage(EXCEPTION_MESSAGE);
+                .hasMessage("Failed to delete server %s snapshot %s. Reason: %s",
+                        SERVER_NAME, OLDEST_IMAGE_NAME, EXCEPTION_MESSAGE);
         assertThat(((OpenstackException) throwable).getExceptionCode()).isEqualTo(DELETE_SERVER_SNAPSHOT_FAILED);
         verify(imageServiceMock).list();
         verify(imageServiceMock).delete(OLDEST_IMAGE_ID);
@@ -136,7 +137,7 @@ public class DeleteServerSnapshotTest extends OpenstackConstants {
         assertThat(((OpenstackException) throwable).getExceptionCode()).isEqualTo(DELETE_SERVER_SNAPSHOT_FAILED);
         verify(imageServiceMock).list();
         verify(imageServiceMock, never()).delete(OLDEST_IMAGE_ID);
-        verify(serverMock, times(3)).getName();
+        verify(serverMock, times(2)).getName();
     }
 
     private static Stream<Arguments> badParameters(){

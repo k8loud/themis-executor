@@ -32,8 +32,8 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
         log.debug("Resizing server {} to flavor {}", server.getName(), newFlavor.getId());
         ActionResponse response = client.compute().servers().resize(server.getId(), newFlavor.getId());
         if (!response.isSuccess()) {
-            log.error("Failed to resize server (id={}). Reason: {}", server.getId(), response.getFault());
-            throw new OpenstackException(response.getFault(), RESIZE_SERVER_FAILED);
+            throw new OpenstackException(RESIZE_SERVER_FAILED,
+                    "Failed to resize server with name %s. Reason: %s", server.getName(), response.getFault());
         }
     }
 
@@ -46,8 +46,7 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
 
     @Override
     public void waitForServerTaskEnd(Server server, int waitingTimeSec, OSClient.OSClientV3 client) {
-        log.debug("Waiting for server {} task state \"null\" for maximally {} sec",
-                server.getName(), waitingTimeSec);
+        log.debug("Waiting for server {} task state \"null\" for maximally {} sec", server.getName(), waitingTimeSec);
         serverConditionalWait(server, s -> Objects.isNull(s.getTaskState()), waitingTimeSec, client);
     }
 
@@ -56,8 +55,8 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
         log.debug("Confirming resizing server {}", server.getName());
         ActionResponse response = client.compute().servers().confirmResize(server.getId());
         if (!response.isSuccess()) {
-            log.error("Failed to confirm resize server (id={}). Reason: {}", server.getId(), response.getFault());
-            throw new OpenstackException(response.getFault(), RESIZE_SERVER_FAILED);
+            throw new OpenstackException(RESIZE_SERVER_FAILED,
+                    "Failed to confirm resize server with name %s. Reason: %s", server.getName(), response.getFault());
         }
     }
 
@@ -66,8 +65,7 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
         log.debug("Getting server object from serverID {}", serverId);
         Server server = client.compute().servers().get(serverId);
         if (server == null) {
-            log.error("Failed to find server with id={}", serverId);
-            throw new OpenstackException(SERVER_NOT_EXISTS);
+            throw new OpenstackException(SERVER_NOT_EXISTS, "Failed to find server with id '%s'", serverId);
         }
         return server;
     }
@@ -77,8 +75,7 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
         log.debug("Getting flavor object from flavorID {}", flavorId);
         Flavor flavor = client.compute().flavors().get(flavorId);
         if (flavor == null) {
-            log.error("Failed to find flavor with id={}", flavorId);
-            throw new OpenstackException(FLAVOR_NOT_EXITS);
+            throw new OpenstackException(FLAVOR_NOT_EXITS, "Failed to find flavor with id '%s'", flavorId);
         }
         return flavor;
     }
@@ -89,9 +86,8 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
         OpenstackExceptionCode code = OpenstackExceptionCode.getNovaExceptionCode(action);
         ActionResponse response = client.compute().servers().action(server.getId(), action);
         if (!response.isSuccess()) {
-            log.error("Failed to perform action {} on server {}. Reason: {}",
+            throw new OpenstackException(code, "Failed to perform action %s on server %s. Reason: %s",
                     action.name(), server.getName(), response.getFault());
-            throw new OpenstackException(response.getFault(), code);
         }
     }
 
@@ -102,7 +98,6 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
         String snapshotId = client.compute().servers().createSnapshot(server.getId(), snapshotName);
 
         if (snapshotId == null) {
-            log.error("Failed to create snapshot with name \"{}\" on server {}", snapshotName, server.getName());
             throw new OpenstackException(String.format("Failed to create snapshot with name \"%s\" on server %s",
                     snapshotName, server.getName()), CREATE_SERVER_SNAPSHOT_FAILED);
         }

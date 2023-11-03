@@ -49,7 +49,7 @@ public class CreateServerSnapshotTest extends OpenstackNovaBaseTest {
                         SNAPSHOT_NAME, SERVER_NAME));
         assertThat(((OpenstackException) throwable).getExceptionCode()).isEqualTo(CREATE_SERVER_SNAPSHOT_FAILED);
         verify(serverServiceMock).createSnapshot(SERVER_ID, SNAPSHOT_NAME);
-        verify(serverMock, times(3)).getName();
+        verify(serverMock, times(2)).getName();
         verify(serverMock).getId();
     }
 }

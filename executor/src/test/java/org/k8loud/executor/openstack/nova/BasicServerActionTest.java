@@ -51,7 +51,8 @@ public class BasicServerActionTest extends OpenstackNovaBaseTest {
         verify(serverMock).getId();
 
         assertThat(throwable).isExactlyInstanceOf(OpenstackException.class)
-                .hasMessage(EXCEPTION_MESSAGE);
+                .hasMessage("Failed to perform action %s on server %s. Reason: %s",
+                        action.name(), SERVER_NAME, EXCEPTION_MESSAGE);
         assertThat(((OpenstackException) throwable).getExceptionCode())
                 .isSameAs(OpenstackExceptionCode.getNovaExceptionCode(action));
     }

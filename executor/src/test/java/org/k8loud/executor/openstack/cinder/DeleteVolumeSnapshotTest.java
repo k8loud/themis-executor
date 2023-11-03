@@ -128,7 +128,7 @@ public class DeleteVolumeSnapshotTest extends OpenstackCinderBaseTest {
 
         // then
         verify(blockVolumeSnapshotServiceMock).list();
-        verify(volumeMock, times(3)).getName();
+        verify(volumeMock, times(2)).getName();
         verify(volumeMock, times(snapshots.size())).getId();
         verify(blockVolumeSnapshotServiceMock, never()).delete(anyString());
 

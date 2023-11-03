@@ -1,0 +1,15 @@
+### create SecurityGroup
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "openstack",
+  "actionName": "CreateSecurityGroupAction",
+  "params": {
+    "params": {
+      "region": "RegionOne",
+      "name": "security-group-test",
+      "description": "some description"
+    }
+  }
+}

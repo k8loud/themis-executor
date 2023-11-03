@@ -25,4 +25,6 @@ public interface OpenstackService {
     String createVolumeSnapshot(String region, String volumeId, String snapshotName) throws OpenstackException;
 
     String deleteTheOldestVolumeSnapshot(String region, String volumeId, boolean keepOneSnapshot) throws OpenstackException;
+
+    String createSecurityGroup(String region, String name, String description) throws OpenstackException;
 }

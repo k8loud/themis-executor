@@ -23,9 +23,9 @@ public class OpenstackGlanceServiceImpl implements OpenstackGlanceService {
         Image imageToDelete = getTheOldestSnapshot(server, keepOneSnapshot, client);
         ActionResponse response = client.imagesV2().delete(imageToDelete.getId());
         if (!response.isSuccess()) {
-            log.error("Failed to delete server (name={}) snapshot (name={}). Reason: {}",
+            throw new OpenstackException(DELETE_SERVER_SNAPSHOT_FAILED,
+                    "Failed to delete server %s snapshot %s. Reason: %s",
                     server.getName(), imageToDelete.getName(), response.getFault());
-            throw new OpenstackException(response.getFault(), DELETE_SERVER_SNAPSHOT_FAILED);
         }
     }
 
@@ -39,11 +39,9 @@ public class OpenstackGlanceServiceImpl implements OpenstackGlanceService {
                 .toList();
 
         if (a.isEmpty()) {
-            log.error("Server {} does not have any snapshots", server.getName());
             throw new OpenstackException(DELETE_SERVER_SNAPSHOT_FAILED, "Server %s does not have any snapshots",
                     server.getName());
         } else if (a.size() == 1 && keepOneSnapshot) {
-            log.error("Server {} has 1 snapshots, and keepOneSnapshot was set on true", server.getName());
             throw new OpenstackException(DELETE_SERVER_SNAPSHOT_FAILED,
                     "Server %s has 1 snapshots, and keepOneSnapshot was set on true", server.getName());
         }
