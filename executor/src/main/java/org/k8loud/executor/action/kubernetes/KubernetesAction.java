@@ -10,7 +10,6 @@ import org.k8loud.executor.kubernetes.KubernetesService;
 public abstract class KubernetesAction extends Action {
     protected KubernetesService kubernetesService;
     protected String namespace;
-    protected String resourceName;
 
     protected KubernetesAction(Params params, KubernetesService kubernetesService) throws ActionException {
         super(params);
@@ -20,7 +19,6 @@ public abstract class KubernetesAction extends Action {
     @Override
     public void unpackParams(Params params) {
         namespace = params.getRequiredParam("namespace");
-        resourceName = params.getRequiredParam("resourceName");
         unpackAdditionalParams(params);
     }
 

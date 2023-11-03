@@ -7,6 +7,7 @@ import org.k8loud.executor.kubernetes.KubernetesService;
 
 
 public class DeleteResourceAction extends KubernetesAction {
+    private String resourceName;
     private String resourceType;
     private Long gracePeriodSeconds;
 
@@ -16,6 +17,7 @@ public class DeleteResourceAction extends KubernetesAction {
 
     @Override
     public void unpackAdditionalParams(Params params) {
+        resourceName = params.getRequiredParam("resourceName");
         resourceType = params.getRequiredParam("resourceType");
         gracePeriodSeconds = params.getOptionalParamAsLong("gracePeriodSeconds", 0L);
     }

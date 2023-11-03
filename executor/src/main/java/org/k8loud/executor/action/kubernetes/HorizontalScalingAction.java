@@ -8,6 +8,7 @@ import org.k8loud.executor.kubernetes.KubernetesService;
 
 @Slf4j
 public class HorizontalScalingAction extends KubernetesAction {
+    private String resourceName;
     private String resourceType;
     private int replicas;
 
@@ -17,6 +18,7 @@ public class HorizontalScalingAction extends KubernetesAction {
 
     @Override
     public void unpackAdditionalParams(Params params) {
+        resourceName = params.getRequiredParam("resourceName");
         resourceType = params.getRequiredParam("resourceType");
         replicas = params.getRequiredParamAsInteger("replicas");
     }

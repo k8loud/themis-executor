@@ -81,7 +81,7 @@ public class KubernetesServiceImpl implements KubernetesService {
         getResource(namespace, resourceType, resourceName)
                 .withGracePeriod(gracePeriodSeconds)
                 .delete();
-        return String.format("Resource %s deleted", getFullResourceName(resourceType, resourceName));
+        return String.format("Deleted resource %s", getFullResourceName(resourceType, resourceName));
     }
 
     @Override
