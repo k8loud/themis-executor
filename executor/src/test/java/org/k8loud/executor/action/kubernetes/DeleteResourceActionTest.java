@@ -21,7 +21,7 @@ public class DeleteResourceActionTest extends KubernetesActionBaseTest {
 
     @ParameterizedTest
     @MethodSource
-    void testIfKubernetesServiceIsCalled(Params params) throws ActionException, KubernetesException {
+    void testValidParams(Params params) throws ActionException, KubernetesException {
         // given
         when(kubernetesServiceMock.deleteResource(anyString(), anyString(), anyString(), anyLong())).thenReturn(RESULT);
 
@@ -34,7 +34,7 @@ public class DeleteResourceActionTest extends KubernetesActionBaseTest {
         assertSuccessRespone(response);
     }
 
-    private static Stream<Params> testIfKubernetesServiceIsCalled() {
+    private static Stream<Params> testValidParams() {
         return Stream.of(new Params(Map.of(NAMESPACE_KEY, NAMESPACE, RESOURCE_NAME_KEY, RESOURCE_NAME, RESOURCE_TYPE_KEY,
                         RESOURCE_TYPE, GRACE_PERIOD_SECONDS_KEY, GRACE_PERIOD_SECONDS)),
                 new Params(Map.of(NAMESPACE_KEY, NAMESPACE, RESOURCE_NAME_KEY, RESOURCE_NAME, RESOURCE_TYPE_KEY,

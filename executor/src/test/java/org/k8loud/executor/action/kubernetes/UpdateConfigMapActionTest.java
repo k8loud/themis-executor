@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 class UpdateConfigMapActionTest extends KubernetesActionBaseTest {
     @ParameterizedTest
     @MethodSource
-    void testIfKubernetesServiceIsCalled(Params params, Map<String, String> replacements)
+    void testValidParams(Params params, Map<String, String> replacements)
             throws ActionException, KubernetesException {
         // given
         when(kubernetesServiceMock.updateConfigMap(anyString(), anyString(), anyMap())).thenReturn(RESULT);
@@ -33,7 +33,7 @@ class UpdateConfigMapActionTest extends KubernetesActionBaseTest {
         assertSuccessRespone(response);
     }
 
-    private static Stream<Arguments> testIfKubernetesServiceIsCalled() {
+    private static Stream<Arguments> testValidParams() {
         return Stream.of(Arguments.of(new Params(Map.of(NAMESPACE_KEY, NAMESPACE, RESOURCE_NAME_KEY, RESOURCE_NAME, RESOURCE_TYPE_KEY,
                         RESOURCE_TYPE, "k1", "k1", "v1", "v2")), Map.of("k1", "v2")),
                 Arguments.of(new Params(Map.of(NAMESPACE_KEY, NAMESPACE, RESOURCE_NAME_KEY, RESOURCE_NAME, RESOURCE_TYPE_KEY,

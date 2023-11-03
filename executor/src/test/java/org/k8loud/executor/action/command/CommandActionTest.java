@@ -1,7 +1,7 @@
 package org.k8loud.executor.action.command;
 
+import data.ExecutionRS;
 import data.Params;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CommandException;
@@ -19,11 +19,11 @@ class CommandActionTest extends CommandActionBaseTest {
             PRIVATE_KEY_KEY, PRIVATE_KEY,
             USER_KEY, USER
     ));
-    CommandAction commandAction;
 
-    @BeforeEach
-    public void setUp() throws ActionException {
-        commandAction = new CommandAction(PARAMS, commandExecutionServiceMock) {
+    @Test
+    void testValidParams() throws CommandException, ActionException {
+        // given
+        CommandAction commandAction = new CommandAction(PARAMS, commandExecutionServiceMock) {
             @Override
             protected void unpackAdditionalParams(Params params) {
 
@@ -34,15 +34,13 @@ class CommandActionTest extends CommandActionBaseTest {
                 return COMMAND;
             }
         };
-    }
 
-    @Test
-    void testCommandExecutionServiceIsCalled() throws CommandException {
         // when
-        commandAction.execute();
+        ExecutionRS response = commandAction.execute();
 
         // then
         verify(commandExecutionServiceMock).executeCommand(eq(HOST), eq(Integer.parseInt(PORT)), eq(PRIVATE_KEY),
                 eq(USER), eq(COMMAND));
+        assertSuccessRespone(response);
     }
 }

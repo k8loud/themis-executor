@@ -1,7 +1,7 @@
 package org.k8loud.executor.action.command;
 
+import data.ExecutionRS;
 import data.Params;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CommandException;
@@ -26,24 +26,20 @@ class ClearStorageActionTest extends CommandActionBaseTest {
             "dateFrom", DATE_FROM,
             "dateTo", DATE_TO
     ));
-    ClearStorageAction clearStorageAction;
-
-    @BeforeEach
-    public void setUp() throws ActionException {
-        clearStorageAction = new ClearStorageAction(PARAMS, commandExecutionServiceMock);
-    }
 
     @Test
-    void testCommandExecutionServiceIsCalled() throws CommandException {
+    void testValidParams() throws CommandException, ActionException {
         // given
+        ClearStorageAction clearStorageAction = new ClearStorageAction(PARAMS, commandExecutionServiceMock);
         final String command = String.format("find %s -name '%s' -newermt %s ! -newermt %s -depth -exec rm -rf {} \\;",
                 PATHS, REGEX_PATTERN, DATE_FROM, DATE_TO);
 
         // when
-        clearStorageAction.execute();
+        ExecutionRS response = clearStorageAction.execute();
 
         // then
         verify(commandExecutionServiceMock).executeCommand(eq(HOST), eq(Integer.parseInt(PORT)), eq(PRIVATE_KEY),
                 eq(USER), eq(command));
+        assertSuccessRespone(response);
     }
 }
