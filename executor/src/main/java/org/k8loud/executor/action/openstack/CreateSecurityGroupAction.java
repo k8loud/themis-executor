@@ -5,7 +5,7 @@ import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.openstack.OpenstackService;
 
-public class CreateSecurityGroupAction extends OpenstackAction{
+public class CreateSecurityGroupAction extends OpenstackAction {
     private String region;
     private String name;
     private String description;
