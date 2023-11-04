@@ -11,8 +11,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class KubernetesClientProvider {
     private final KubernetesProperties kubernetesProperties;
+    private KubernetesClient kubernetesClient;
 
     public KubernetesClient getClient() {
-        return new KubernetesClientImpl(kubernetesProperties.toConfig());
+        if (kubernetesClient == null) {
+            kubernetesClient = new KubernetesClientImpl(kubernetesProperties.toConfig());
+        }
+        return kubernetesClient;
     }
 }

@@ -1,0 +1,17 @@
+### add pod
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "kubernetes",
+  "actionName": "AddResourceAction",
+  "params": {
+    "params": {
+      "namespace": "default",
+      "resourceDescription": ""
+    }
+  }
+}
+
+### sending YAML in JSON is a pain, all whitechars need to be escaped
+### not bothering with solving this issue since we're getting rid of REST

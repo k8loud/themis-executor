@@ -20,8 +20,14 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.k8loud.executor.exception.code.KubernetesExceptionCode.*;
+import static org.mockito.Mockito.lenient;
 
-public class KubernetesServiceImplTest extends KubernetesBaseTest {
+public class GetResourceTest extends KubernetesBaseTest {
+    @Override
+    public void additionalSetUp() {
+        lenient().when(kubernetesClientProviderMock.getClient()).thenReturn(client);
+    }
+
     @Test
     void testGetConfigMap() throws KubernetesException {
         // given
@@ -32,7 +38,7 @@ public class KubernetesServiceImplTest extends KubernetesBaseTest {
         assertNotNull(cmExpected);
 
         // when
-        ConfigMap cm1 = (ConfigMap) kubernetesService.getResource(NAMESPACE, ResourceType.CONFIG_MAP.toString(),
+        ConfigMap cm1 = (ConfigMap) kubernetesService.getResource(NAMESPACE, KubernetesResourceType.CONFIG_MAP.toString(),
                 RESOURCE_NAME).get();
 
         // then
@@ -49,7 +55,7 @@ public class KubernetesServiceImplTest extends KubernetesBaseTest {
         assertNotNull(podExpected);
 
         // when
-        Pod pod1 = (Pod) kubernetesService.getResource(NAMESPACE, ResourceType.POD.toString(), RESOURCE_NAME).get();
+        Pod pod1 = (Pod) kubernetesService.getResource(NAMESPACE, KubernetesResourceType.POD.toString(), RESOURCE_NAME).get();
 
         // then
         assertNotNull(pod1);
@@ -65,7 +71,7 @@ public class KubernetesServiceImplTest extends KubernetesBaseTest {
         assertNotNull(deploymentExpected);
 
         // when
-        Deployment deployment1 = (Deployment) kubernetesService.getResource(NAMESPACE, ResourceType.DEPLOYMENT.toString(),
+        Deployment deployment1 = (Deployment) kubernetesService.getResource(NAMESPACE, KubernetesResourceType.DEPLOYMENT.toString(),
                 RESOURCE_NAME).get();
 
         // then

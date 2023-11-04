@@ -1,7 +1,7 @@
 package org.k8loud.executor.action.command;
 
+import data.ExecutionRS;
 import data.Params;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CommandException;
@@ -20,20 +20,18 @@ public class CustomScriptActionTest extends CommandActionBaseTest {
             USER_KEY, USER,
             "command", COMMAND
     ));
-    CustomScriptAction customScriptAction;
-
-    @BeforeEach
-    public void setUp() throws ActionException {
-        customScriptAction = new CustomScriptAction(PARAMS, commandExecutionServiceMock);
-    }
 
     @Test
-    void testCommandExecutionServiceIsCalled() throws CommandException {
+    void testValidParams() throws CommandException, ActionException {
+        // given
+        CustomScriptAction customScriptAction = new CustomScriptAction(PARAMS, commandExecutionServiceMock);
+
         // when
-        customScriptAction.execute();
+        ExecutionRS response = customScriptAction.execute();
 
         // then
         verify(commandExecutionServiceMock).executeCommand(eq(HOST), eq(Integer.parseInt(PORT)), eq(PRIVATE_KEY),
                 eq(USER), eq(COMMAND));
+        assertSuccessResponse(response);
     }
 }

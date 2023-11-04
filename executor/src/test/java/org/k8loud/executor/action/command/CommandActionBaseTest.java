@@ -1,8 +1,14 @@
 package org.k8loud.executor.action.command;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.k8loud.executor.action.ActionBaseTest;
 import org.k8loud.executor.command.CommandExecutionService;
+import org.k8loud.executor.exception.CommandException;
 import org.mockito.Mock;
+
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 public abstract class CommandActionBaseTest extends ActionBaseTest {
     protected final static String HOST_KEY = "host";
@@ -16,4 +22,10 @@ public abstract class CommandActionBaseTest extends ActionBaseTest {
 
     @Mock
     protected CommandExecutionService commandExecutionServiceMock;
+
+    @BeforeEach
+    protected void setUp() throws CommandException {
+        when(commandExecutionServiceMock.executeCommand(anyString(), anyInt(), anyString(), anyString(), anyString()))
+                .thenReturn(RESULT);
+    }
 }

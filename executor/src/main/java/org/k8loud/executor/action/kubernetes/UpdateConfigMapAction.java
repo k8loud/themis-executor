@@ -8,6 +8,7 @@ import org.k8loud.executor.kubernetes.KubernetesService;
 import java.util.Map;
 
 public class UpdateConfigMapAction extends KubernetesAction {
+    private String resourceName;
     private Map<String, String> replacements;
 
     public UpdateConfigMapAction(Params params, KubernetesService kubernetesService) throws ActionException {
@@ -16,6 +17,7 @@ public class UpdateConfigMapAction extends KubernetesAction {
 
     @Override
     public void unpackAdditionalParams(Params params) {
+        resourceName = params.getRequiredParam("resourceName");
         // FIXME more than 1 param change pls
         replacements = Map.of(params.getRequiredParam("k1"), params.getRequiredParam("v1"));
     }

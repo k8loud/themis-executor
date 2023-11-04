@@ -17,7 +17,7 @@ class HorizontalScalingActionTest extends KubernetesActionBaseTest {
     private static final String REPLICAS_KEY = "replicas";
 
     @Test
-    void testIfKubernetesServiceIsCalled() throws ActionException, KubernetesException {
+    void testValidParams() throws ActionException, KubernetesException {
         // given
         Params params = new Params(Map.of(NAMESPACE_KEY, NAMESPACE, RESOURCE_NAME_KEY, RESOURCE_NAME, RESOURCE_TYPE_KEY,
                 RESOURCE_TYPE, REPLICAS_KEY, "3"));

@@ -41,7 +41,7 @@ class DeleteResourceTest extends KubernetesBaseTest {
 
         // then
         assertNull(pod1);
-        assertEquals(String.format("Resource %s/%s deleted", resourceType, resourceName), res);
+        assertEquals(String.format("Deleted resource %s/%s", resourceType, resourceName), res);
     }
 
     @ParameterizedTest
@@ -73,7 +73,7 @@ class DeleteResourceTest extends KubernetesBaseTest {
 
         // then
         assertNull(deployment1);
-        assertEquals(String.format("Resource %s/%s deleted", resourceType, resourceName), res);
+        assertEquals(String.format("Deleted resource %s/%s", resourceType, resourceName), res);
     }
 
     @ParameterizedTest
@@ -95,7 +95,7 @@ class DeleteResourceTest extends KubernetesBaseTest {
 
         // then
         assertNull(cm1);
-        assertEquals(String.format("Resource %s/%s deleted", resourceType, resourceName), res);
+        assertEquals(String.format("Deleted resource %s/%s", resourceType, resourceName), res);
     }
 
     private static Stream<Arguments> testDeletingPod() {
