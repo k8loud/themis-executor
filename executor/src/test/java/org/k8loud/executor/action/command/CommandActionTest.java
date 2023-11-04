@@ -41,6 +41,6 @@ class CommandActionTest extends CommandActionBaseTest {
         // then
         verify(commandExecutionServiceMock).executeCommand(eq(HOST), eq(Integer.parseInt(PORT)), eq(PRIVATE_KEY),
                 eq(USER), eq(COMMAND));
-        assertSuccessRespone(response);
+        assertSuccessResponse(response);
     }
 }

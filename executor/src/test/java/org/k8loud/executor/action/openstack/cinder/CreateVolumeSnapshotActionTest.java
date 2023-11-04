@@ -37,7 +37,7 @@ public class CreateVolumeSnapshotActionTest extends OpenstackActionBaseTest {
         // then
         String snapshotName = params.getParams().get("snapshotName");
         verify(openstackServiceMock).createVolumeSnapshot(eq(REGION), eq(VOLUME_ID), eq(snapshotName));
-        assertSuccessRespone(response);
+        assertSuccessResponse(response);
     }
 
     private static Stream<Params> testCreateVolumeSnapshot(){

@@ -40,7 +40,7 @@ public class AddResourceActionTest extends KubernetesActionBaseTest {
         // then
         verify(kubernetesServiceMock).addResource(eq(expectedNamespace), eq(expectedResourceType),
                 eq(RESOURCE_DESCRIPTION_WITH_NAMESPACE));
-        assertSuccessRespone(response);
+        assertSuccessResponse(response);
     }
 
     @Test
@@ -73,7 +73,7 @@ public class AddResourceActionTest extends KubernetesActionBaseTest {
         // then
         verify(kubernetesServiceMock).addResource(eq(NAMESPACE), eq(expectedResourceType),
                 eq(RESOURCE_DESCRIPTION_WITH_NAMESPACE));
-        assertSuccessRespone(response);
+        assertSuccessResponse(response);
     }
 
     @Test
@@ -104,7 +104,7 @@ public class AddResourceActionTest extends KubernetesActionBaseTest {
         // then
         verify(kubernetesServiceMock).addResource(eq(expectedNamespace), eq(expectedResourceType),
                 eq(expectedResourceDescription));
-        assertSuccessRespone(response);
+        assertSuccessResponse(response);
     }
 
     private static Stream<Arguments> testValidParams() {

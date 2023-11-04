@@ -34,7 +34,7 @@ public class PauseServerActionTest extends OpenstackActionBaseTest {
 
         // then
         verify(openstackServiceMock).pauseServer(eq(REGION), eq(SERVER_ID));
-        assertSuccessRespone(response);
+        assertSuccessResponse(response);
     }
 
     @ParameterizedTest

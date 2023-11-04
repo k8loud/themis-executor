@@ -37,7 +37,7 @@ public class AttachVolumeActionTest extends OpenstackActionBaseTest {
 
         // then
         verify(openstackServiceMock).attachVolume(eq(REGION), eq(SERVER_ID), eq(VOLUME_ID), eq(DEVICE));
-        assertSuccessRespone(response);
+        assertSuccessResponse(response);
     }
 
     @ParameterizedTest

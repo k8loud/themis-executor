@@ -39,7 +39,7 @@ public class DeleteServerSnapshotActionTest extends OpenstackActionBaseTest {
         boolean keepOneSnapshot = Boolean.parseBoolean(Optional.ofNullable(params.getParams()
                 .get("keepOneSnapshot")).orElse("true"));
         verify(openstackServiceMock).deleteTheOldestServerSnapshot(eq(REGION), eq(SERVER_ID), eq(keepOneSnapshot));
-        assertSuccessRespone(response);
+        assertSuccessResponse(response);
     }
 
     private static Stream<Params> testDeleteServerSnapshotSuccess() {

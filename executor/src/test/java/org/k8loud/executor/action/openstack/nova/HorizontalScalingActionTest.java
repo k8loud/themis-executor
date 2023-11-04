@@ -35,7 +35,7 @@ public class HorizontalScalingActionTest extends OpenstackActionBaseTest {
 
         // then
         verify(openstackServiceMock).copyServer(eq(REGION), eq(SERVER_ID));
-        assertSuccessRespone(response);
+        assertSuccessResponse(response);
     }
 
     @ParameterizedTest
