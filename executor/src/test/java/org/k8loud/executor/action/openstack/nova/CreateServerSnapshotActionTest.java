@@ -15,9 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.k8loud.executor.exception.code.ActionExceptionCode.UNPACKING_PARAMS_FAILURE;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -40,16 +38,18 @@ public class CreateServerSnapshotActionTest extends OpenstackActionBaseTest {
         boolean stopInstance = Boolean.parseBoolean(Optional.ofNullable(params.getParams()
                 .get("stopInstance")).orElse("false"));
 
-        verify(openstackServiceMock).createServerSnapshot(eq(REGION), eq(SERVER_ID), eq(snapshotName), eq(stopInstance));
+        verify(openstackServiceMock).createServerSnapshot(eq(REGION), eq(SERVER_ID), eq(snapshotName),
+                eq(stopInstance));
         assertSuccessResponse(response);
     }
 
-    private static Stream<Params> testCreateServerSnapshotSuccess(){
+    private static Stream<Params> testCreateServerSnapshotSuccess() {
         return Stream.of(
                 new Params(Map.of("region", REGION, "serverId", SERVER_ID)),
                 new Params(Map.of("region", REGION, "serverId", SERVER_ID, "stopInstance", "true")),
                 new Params(Map.of("region", REGION, "serverId", SERVER_ID, "snapshotName", "null")),
-                new Params(Map.of("region", REGION, "serverId", SERVER_ID, "snapshotName", "mySnapshot", "stopInstance", "notTrue"))
+                new Params(Map.of("region", REGION, "serverId", SERVER_ID, "snapshotName", "mySnapshot", "stopInstance",
+                        "notTrue"))
         );
     }
 
@@ -61,11 +61,7 @@ public class CreateServerSnapshotActionTest extends OpenstackActionBaseTest {
                 () -> new CreateServerSnapshotAction(invalidParams, openstackServiceMock));
 
         // then
-        assertThat(throwable).isExactlyInstanceOf(ActionException.class)
-                .hasMessage("Param '%s' is declared as " + "required and was not found", missingParam);
-        assertThat(((ActionException) throwable).getExceptionCode()).isEqualTo(UNPACKING_PARAMS_FAILURE);
-
-        verifyNoInteractions(openstackServiceMock);
+        assertMissingParamException(throwable, missingParam);
     }
 
     private static Stream<Arguments> testCreateServerSnapshotWrongParams() {

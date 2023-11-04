@@ -24,12 +24,15 @@ public abstract class OpenstackBaseTest extends OpenstackConstants {
     protected OpenstackCinderService openstackCinderService;
     @Mock
     protected OpenstackGlanceService openstackGlanceService;
+    @Mock
+    protected OpenstackNeutronService openstackNeutronService;
 
     protected OpenstackService openstackService;
 
     @BeforeEach
     protected void baseSetUp() throws OpenstackException {
-        openstackService = new OpenstackServiceImpl(openstackClientProviderMock, openstackNovaServiceMock, openstackCinderService, openstackGlanceService);
+        openstackService = new OpenstackServiceImpl(openstackClientProviderMock, openstackNovaServiceMock,
+                openstackCinderService, openstackGlanceService, openstackNeutronService);
         when(openstackClientProviderMock.getClientFromToken()).thenReturn(clientV3Mock);
         setUp();
     }

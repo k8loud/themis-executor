@@ -4,6 +4,8 @@ import org.k8loud.executor.action.ActionBaseTest;
 import org.k8loud.executor.openstack.OpenstackService;
 import org.mockito.Mock;
 
+import static org.mockito.Mockito.verifyNoInteractions;
+
 public abstract class OpenstackActionBaseTest extends ActionBaseTest {
     protected static final String REGION = "regionTest";
     protected static final String SERVER_ID = "123-server-id-123";
@@ -12,4 +14,10 @@ public abstract class OpenstackActionBaseTest extends ActionBaseTest {
 
     @Mock
     protected OpenstackService openstackServiceMock;
+
+    @Override
+    protected void assertMissingParamException(Throwable throwable, String missingParam) {
+        super.assertMissingParamException(throwable, missingParam);
+        verifyNoInteractions(openstackServiceMock);
+    }
 }
