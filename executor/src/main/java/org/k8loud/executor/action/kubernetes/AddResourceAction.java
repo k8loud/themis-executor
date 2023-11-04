@@ -44,7 +44,7 @@ public class AddResourceAction extends KubernetesAction {
     private Optional<String> extractNamespace(String resourceDescription) {
         Pattern pattern = Pattern.compile("namespace: (\\b[a-z0-9][a-z0-9-]*[a-z0-9]\\b)");
         Matcher matcher = pattern.matcher(resourceDescription);
-        if (matcher.find() && matcher.groupCount() > 0) {
+        if (matcher.find()) {
             String namespace = matcher.group(1);
             if (namespace.length() < 64) {
                 return Optional.of(namespace);
@@ -56,7 +56,7 @@ public class AddResourceAction extends KubernetesAction {
     private String extractResourceType(String resourceDescription) {
         Pattern pattern = Pattern.compile("kind: (\\w+)");
         Matcher matcher = pattern.matcher(resourceDescription);
-        if (matcher.find() && matcher.groupCount() > 0) {
+        if (matcher.find()) {
             return matcher.group(1);
         }
         throw new ParamNotFoundException("kind in resourceDescription hasn't been found");

@@ -20,8 +20,14 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.k8loud.executor.exception.code.KubernetesExceptionCode.*;
+import static org.mockito.Mockito.lenient;
 
 public class GetResourceTest extends KubernetesBaseTest {
+    @Override
+    public void additionalSetUp() {
+        lenient().when(kubernetesClientProviderMock.getClient()).thenReturn(client);
+    }
+
     @Test
     void testGetConfigMap() throws KubernetesException {
         // given

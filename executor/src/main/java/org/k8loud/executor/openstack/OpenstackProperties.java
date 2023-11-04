@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "openstack")
 public class OpenstackProperties {
-    private String endpoint = "https://127.0.0.1:5000";
-    private String username = "username";
-    private String password = "password";
-    private String domainName = "domainName";
-    private String domainID = "domainID";
-    private String projectID = "projectID";
-    private String openstackAuth = "PROJECT_SCOPED";
+    private String endpoint;
+    private String username;
+    private String password;
+    private String domainName;
+    private String domainID;
+    private String projectID;
+    private String openstackAuth;
 
     public OpenstackAuth getApiConfig() {
         return OpenstackAuth.valueOf(openstackAuth);

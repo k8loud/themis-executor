@@ -5,13 +5,11 @@ import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.k8loud.executor.common.testutil.DataStorageTestUtil;
 import org.k8loud.executor.service.DataStorageService;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class KubernetesBaseTest {
@@ -31,12 +29,14 @@ public class KubernetesBaseTest {
         server.before();
         client = server.getClient();
 
-        lenient().when(kubernetesClientProviderMock.getClient()).thenReturn(client);
-        lenient().doAnswer(i -> DataStorageTestUtil.store(i.getArgument(0), i.getArgument(1)))
-                .when(dataStorageServiceMock).store(anyString(), anyString());
-        lenient().doAnswer(i -> DataStorageTestUtil.remove(i.getArgument(0)))
-                .when(dataStorageServiceMock).remove(anyString());
+        when(kubernetesClientProviderMock.getClient()).thenReturn(client);
         kubernetesService = new KubernetesServiceImpl(kubernetesClientProviderMock, dataStorageServiceMock);
+
+        additionalSetUp();
+    }
+
+    public void additionalSetUp() {
+        // empty
     }
 
     @AfterEach

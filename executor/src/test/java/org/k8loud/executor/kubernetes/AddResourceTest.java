@@ -3,6 +3,7 @@ package org.k8loud.executor.kubernetes;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.Pod;
 import org.junit.jupiter.api.Test;
+import org.k8loud.executor.common.testutil.DataStorageTestUtil;
 import org.k8loud.executor.exception.KubernetesException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,8 +15,20 @@ import static org.k8loud.executor.common.testdata.ResourceDescriptionTestData.RE
 import static org.k8loud.executor.exception.code.KubernetesExceptionCode.RESOURCE_ALREADY_EXISTS;
 import static org.k8loud.executor.kubernetes.KubernetesResourceType.CONFIG_MAP;
 import static org.k8loud.executor.kubernetes.KubernetesResourceType.POD;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 
 public class AddResourceTest extends KubernetesBaseTest {
+    DataStorageTestUtil dataStorageTestUtil = new DataStorageTestUtil();
+
+    @Override
+    public void additionalSetUp() {
+        doAnswer(i -> dataStorageTestUtil.store(i.getArgument(0), i.getArgument(1)))
+                .when(dataStorageServiceMock).store(anyString(), anyString());
+        doAnswer(i -> dataStorageTestUtil.remove(i.getArgument(0)))
+                .when(dataStorageServiceMock).remove(anyString());
+    }
+
     @Test
     void testAddingPod() throws KubernetesException {
         // given
