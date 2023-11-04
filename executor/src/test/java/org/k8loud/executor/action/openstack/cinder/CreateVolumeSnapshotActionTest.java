@@ -14,9 +14,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.k8loud.executor.exception.code.ActionExceptionCode.UNPACKING_PARAMS_FAILURE;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -37,10 +35,10 @@ public class CreateVolumeSnapshotActionTest extends OpenstackActionBaseTest {
         // then
         String snapshotName = params.getParams().get("snapshotName");
         verify(openstackServiceMock).createVolumeSnapshot(eq(REGION), eq(VOLUME_ID), eq(snapshotName));
-        assertSuccessRespone(response);
+        assertSuccessResponse(response);
     }
 
-    private static Stream<Params> testCreateVolumeSnapshot(){
+    private static Stream<Params> testCreateVolumeSnapshot() {
         return Stream.of(
                 new Params(Map.of("region", REGION, "volumeId", VOLUME_ID)),
                 new Params(Map.of("region", REGION, "volumeId", VOLUME_ID)),
@@ -57,11 +55,7 @@ public class CreateVolumeSnapshotActionTest extends OpenstackActionBaseTest {
                 () -> new CreateVolumeSnapshotAction(invalidParams, openstackServiceMock));
 
         // then
-        assertThat(throwable).isExactlyInstanceOf(ActionException.class)
-                .hasMessage("Param '%s' is declared as " + "required and was not found", missingParam);
-        assertThat(((ActionException) throwable).getExceptionCode()).isEqualTo(UNPACKING_PARAMS_FAILURE);
-
-        verifyNoInteractions(openstackServiceMock);
+        assertMissingParamException(throwable, missingParam);
     }
 
     private static Stream<Arguments> testCreateVolumeSnapshotWrongParams() {

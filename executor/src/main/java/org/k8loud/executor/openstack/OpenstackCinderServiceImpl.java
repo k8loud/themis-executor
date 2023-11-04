@@ -98,11 +98,9 @@ public class OpenstackCinderServiceImpl implements OpenstackCinderService {
                 .toList();
 
         if (snapshots.isEmpty()) {
-            log.error("Volume {} does not have any snapshots", volume.getName());
             throw new OpenstackException(DELETE_VOLUME_SNAPSHOT_FAILED, "Volume %s does not have any snapshots",
                     volume.getName());
         } else if (snapshots.size() == 1 && keepOneSnapshot) {
-            log.error("Volume {} has 1 snapshot, and keepOneSnapshot was set on true", volume.getName());
             throw new OpenstackException(DELETE_VOLUME_SNAPSHOT_FAILED,
                     "Volume %s has 1 snapshot, and keepOneSnapshot was set on true", volume.getName());
         }
@@ -117,9 +115,8 @@ public class OpenstackCinderServiceImpl implements OpenstackCinderService {
                 .toList();
 
         if (filteredAttachments.isEmpty()) {
-            throw new OpenstackException(
-                    String.format("Volume %s has 0 attachments to server %s", volume.getName(), server.getName()),
-                    VOLUME_ERROR);
+            throw new OpenstackException(VOLUME_ERROR, "Volume %s has 0 attachments to server %s",
+                    volume.getName(), server.getName());
         }
 
         return filteredAttachments.get(0).getAttachmentId();

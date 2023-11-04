@@ -15,9 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.k8loud.executor.exception.code.ActionExceptionCode.UNPACKING_PARAMS_FAILURE;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -39,7 +37,7 @@ public class DeleteVolumeSnapshotActionTest extends OpenstackActionBaseTest {
         boolean keepOneSnapshot = Boolean.parseBoolean(Optional.ofNullable(params.getParams()
                 .getOrDefault("keepOneSnapshot", "true")).orElse("true"));
         verify(openstackServiceMock).deleteTheOldestVolumeSnapshot(eq(REGION), eq(VOLUME_ID), eq(keepOneSnapshot));
-        assertSuccessRespone(response);
+        assertSuccessResponse(response);
     }
 
     private static Stream<Params> testDeleteVolumeSnapshotSuccess() {
@@ -58,11 +56,7 @@ public class DeleteVolumeSnapshotActionTest extends OpenstackActionBaseTest {
                 () -> new DeleteVolumeSnapshotAction(invalidParams, openstackServiceMock));
 
         // then
-        assertThat(throwable).isExactlyInstanceOf(ActionException.class)
-                .hasMessage("Param '%s' is declared as " + "required and was not found", missingParam);
-        assertThat(((ActionException) throwable).getExceptionCode()).isEqualTo(UNPACKING_PARAMS_FAILURE);
-
-        verifyNoInteractions(openstackServiceMock);
+        assertMissingParamException(throwable, missingParam);
     }
 
     private static Stream<Arguments> testDeleteVolumeSnapshotWrongParams() {
