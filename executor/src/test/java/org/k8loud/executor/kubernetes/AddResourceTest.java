@@ -19,13 +19,11 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 
 public class AddResourceTest extends KubernetesBaseTest {
-    DataStorageTestUtil dataStorageTestUtil = new DataStorageTestUtil();
-
     @Override
     public void additionalSetUp() {
-        doAnswer(i -> dataStorageTestUtil.store(i.getArgument(0), i.getArgument(1)))
+        doAnswer(i -> DataStorageTestUtil.store(i.getArgument(0), i.getArgument(1)))
                 .when(dataStorageServiceMock).store(anyString(), anyString());
-        doAnswer(i -> dataStorageTestUtil.remove(i.getArgument(0)))
+        doAnswer(i -> DataStorageTestUtil.remove(i.getArgument(0)))
                 .when(dataStorageServiceMock).remove(anyString());
     }
 
