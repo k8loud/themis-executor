@@ -29,6 +29,7 @@ public class OpenstackServiceImpl implements OpenstackService {
     private final OpenstackNovaService openstackNovaService;
     private final OpenstackCinderService openstackCinderService;
     private final OpenstackGlanceService openstackGlanceService;
+    private final OpenstackNeutronService openstackNeutronService;
 
     //TODO resize with looking for bigger/smaller available flavor
     @Override
@@ -159,6 +160,14 @@ public class OpenstackServiceImpl implements OpenstackService {
         Volume volume = openstackCinderService.getVolume(volumeId, client);
         openstackCinderService.deleteTheOldestVolumeSnapshot(volume, keepOneSnapshot, client);
         return String.format("Deleted the oldest snapshot from volume %s", volume.getName());
+    }
+
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "CREATE_SECURITY_GROUP_FAILED")
+    public String createSecurityGroup(String region, String name, String description) throws OpenstackException {
+        OSClientV3 client = openstackClientWithRegion(region);
+        openstackNeutronService.createSecurityGroup(name, description, client);
+        return String.format("Created security group named %s with description %s", name, description);
     }
 
     @NotNull
