@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: executor-rules-cm
+  namespace: themis-executor
+data:
+  test.drl: |
+    import io.github.hephaestusmetrics.model.metrics.Metric;
+    import org.k8loud.executor.actions.kubernetes.*
+    import org.k8loud.executor.util.MetricLabels;
+    import java.util.List;
+    global org.k8loud.executor.model.ActionList actions;
+    global io.fabric8.kubernetes.client.KubernetesClient client;
+    dialect "mvel"
+    rule "carts_cpu"
+        dialect "mvel"
+        when
+            cup_time_m : Metric(
+                queryTag == "carts-cpu",
+                labels["container"] == "carts",
+                cpu_time : value
+            )
+            eval(cpu_time > 0.1)
+        then
+            System.out.println("carts scaled");
+            actions.add(HorizontalScalingAction.builder()
+                            .namespace("sock-shop")
+                            .resourceName("carts")
+                            .resourceType("Deployment")
+                            .replicas(2)
+                            .client(client)
+                            .build());
+    end
+    
+    rule "orders_cpu"
+        dialect "mvel"
+        when
+            cup_time_m : Metric(
+                queryTag == "orders-cpu",
+                labels["container"] == "orders",
+                cpu_time : value
+            )
+            eval(cpu_time > 0.1)
+        then
+            System.out.println("carts scaled");
+            actions.add(HorizontalScalingAction.builder()
+                            .namespace("sock-shop")
+                            .resourceName("orders")
+                            .resourceType("Deployment")
+                            .replicas(2)
+                            .client(client)
+                            .build());
+    end
+    /**
+    * TAG: front-end-cpu
+      QUERY: avg(rate(container_cpu_usage_seconds_total{container="front-end"}[1m])) by (container)
+    **/
+    rule "front-end_cpu_procentage"
+        dialect "mvel"
+        when
+            cup_time_m : Metric(
+                queryTag == "front-end-cpu",
+                labels["container"] == "front-end",
+                cpu_time : value
+            )
+            cpu_quota_m : Metric(
+                name == "container_spec_cpu_quota",
+                labels["container"] == "front-end",
+                cpu_quota : value
+            )
+            eval((cpu_time * 100000) / cpu_quota > 0.80)
+        then
+            System.out.println((cpu_time * 100000) / cpu_quota);
+            actions.add(HorizontalScalingAction.builder()
+                            .namespace("sock-shop")
+                            .resourceName("front-end")
+                            .resourceType("Deployment")
+                            .replicas(2)
+                            .client(client)
+                            .build());
+    end

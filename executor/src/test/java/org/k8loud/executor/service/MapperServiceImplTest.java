@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.k8loud.executor.action.Action;
+import org.k8loud.executor.actions.Action;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CustomException;
 import org.k8loud.executor.exception.MapperException;

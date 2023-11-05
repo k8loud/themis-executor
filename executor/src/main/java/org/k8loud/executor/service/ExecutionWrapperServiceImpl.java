@@ -4,7 +4,7 @@ import data.ExecutionRQ;
 import data.ExecutionRS;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.k8loud.executor.action.Action;
+import org.k8loud.executor.actions.Action;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.MapperException;
 import org.k8loud.executor.exception.ValidationException;

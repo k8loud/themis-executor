@@ -2,7 +2,7 @@ package org.k8loud.executor.service;
 
 import data.ExecutionRS;
 import org.jetbrains.annotations.NotNull;
-import org.k8loud.executor.action.Action;
+import org.k8loud.executor.actions.Action;
 
 public interface ExecutionService {
     @NotNull
