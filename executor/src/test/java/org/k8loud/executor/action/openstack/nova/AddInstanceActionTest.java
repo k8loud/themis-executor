@@ -22,7 +22,6 @@ public class AddInstanceActionTest extends OpenstackActionBaseTest {
     private static final String NAME = "name";
     private static final String SECURITY_GROUP = "sec-group";
     private static final String USER_DATA = "user-data";
-
     private static final String COUNT = "3";
 
 
