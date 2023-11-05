@@ -15,6 +15,7 @@
 
     <properties>
         <openstack4j.version>3.11</openstack4j.version>
+        <drools.version>8.35.0.Final</drools.version>
     </properties>
 
     <dependencies>
@@ -26,6 +27,27 @@
         <dependency>
             <groupId>org.springframework.retry</groupId>
             <artifactId>spring-retry</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-core</artifactId>
+            <version>${drools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-compiler</artifactId>
+            <version>${drools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-mvel</artifactId>
+            <version>${drools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-spring</artifactId>
+            <version>7.73.0.Final</version>
         </dependency>
 
         <!--    COMPILE DEPENDENCIES    -->
@@ -62,6 +84,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.github.hephaestus-metrics</groupId>
+            <artifactId>translator</artifactId>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

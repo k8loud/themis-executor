@@ -1,0 +1,43 @@
+POST localhost:8082/execute
+Content-Type: application/json
+
+{
+  "collectionName": "kubernetes",
+  "actionName": "HorizontalScalingAction",
+  "params": {
+    "resource-type": "Deployment",
+    "resource-name": "load-test",
+    "namespace": "loadtest",
+    "replicas": "1"
+  }
+}
+
+###
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "kubernetes",
+  "actionName": "UpdateConfigMapAction",
+  "params": {
+    "resource-name": "cm1",
+    "namespace": "default",
+    "k1": "k55",
+    "v1": "v55"
+  }
+}
+
+###
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "kubernetes",
+  "actionName": "UpdateConfigMapAction",
+  "params": {
+    "resource-name": "cm1",
+    "namespace": "default",
+    "k1": "k1",
+    "v1": "v100"
+  }
+}
