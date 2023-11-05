@@ -8,7 +8,7 @@ public interface OpenstackService {
 
     String resizeServerDown(String region, String serverId, String newFlavorId) throws OpenstackException;
 
-    String copyServer(String region, String serverId) throws OpenstackException;
+    String createServers(String region, String name, String imageId, String flavorId, String keypairName, String securityGroup, String userData, int count) throws OpenstackException;
 
     String attachVolume(String region, String serverId, String volumeId, String device) throws OpenstackException;
 

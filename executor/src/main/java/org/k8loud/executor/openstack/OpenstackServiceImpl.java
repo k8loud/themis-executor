@@ -9,6 +9,7 @@ import org.openstack4j.api.OSClient.OSClientV3;
 import org.openstack4j.model.compute.Action;
 import org.openstack4j.model.compute.Flavor;
 import org.openstack4j.model.compute.Server;
+import org.openstack4j.model.image.v2.Image;
 import org.openstack4j.model.storage.block.Volume;
 import org.springframework.stereotype.Service;
 
@@ -58,15 +59,14 @@ public class OpenstackServiceImpl implements OpenstackService {
     }
 
     @Override
-    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "COPY_SERVER_FAILED")
-    public String copyServer(String region, String serverId) throws OpenstackException {
+    public String createServers(String region, String name, String imageId, String flavorId, String keypairName,
+                                String securityGroup, String userData, int count) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
-        Server server = openstackNovaService.getServer(serverId, client);
+        Image image = openstackGlanceService.getImage(imageId, client);
+        Flavor flavor = openstackNovaService.getFlavor(flavorId, client);
 
-        openstackNovaService.createServer(server.getName() + "-copy", server.getFlavorId(), server.getImageId(), 30000,
-                client);
-        return String.format("Copying a server with id=%s finished with success", serverId);
-        //FIXME right now we are only creating a new server with same flavor and image
+        openstackNovaService.createServers(name, image, flavor, keypairName, securityGroup, userData, count, client);
+        return String.format("Creating %s instances finished with success", count);
     }
 
     @Override

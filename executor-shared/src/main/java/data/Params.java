@@ -48,6 +48,10 @@ public class Params {
     public Long getOptionalParamAsLong(String param, Long defaultValue) {
         return Optional.ofNullable(params.get(param)).map(Long::parseLong).orElseGet(() -> defaultValue);
     }
+
+    public Integer getOptionalParamAsInt(String param, Integer defaultValue) {
+        return Optional.ofNullable(params.get(param)).map(Integer::parseInt).orElseGet(() -> defaultValue);
+    }
       
     public boolean getOptionalParamAsBoolean(String param, String defaultValue) {
         return Boolean.parseBoolean(getOptionalParam(param, defaultValue));

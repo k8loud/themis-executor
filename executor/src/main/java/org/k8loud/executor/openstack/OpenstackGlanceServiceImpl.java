@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.exception.OpenstackException;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.model.common.ActionResponse;
+import org.openstack4j.model.compute.Flavor;
 import org.openstack4j.model.compute.Server;
 import org.openstack4j.model.image.v2.Image;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.k8loud.executor.exception.code.OpenstackExceptionCode.DELETE_SERVER_SNAPSHOT_FAILED;
+import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
 
 @Service
 @Slf4j
@@ -27,6 +28,16 @@ public class OpenstackGlanceServiceImpl implements OpenstackGlanceService {
                     "Failed to delete server %s snapshot %s. Reason: %s",
                     server.getName(), imageToDelete.getName(), response.getFault());
         }
+    }
+
+    @Override
+    public Image getImage(String imageId, OSClient.OSClientV3 client) throws OpenstackException {
+        log.debug("Getting Image object from imageID {}", imageId);
+        Image image = client.imagesV2().get(imageId);
+        if (image == null) {
+            throw new OpenstackException(IMAGE_NOT_EXISTS, "Failed to find image with id '%s'", imageId);
+        }
+        return image;
     }
 
     private Image getTheOldestSnapshot(Server server, boolean keepOneSnapshot,
