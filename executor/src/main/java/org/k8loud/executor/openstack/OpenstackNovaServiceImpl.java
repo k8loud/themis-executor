@@ -18,15 +18,14 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
-import static org.openstack4j.model.compute.Server.Status.ACTIVE;
 
 @Service
 @Slf4j
@@ -109,14 +108,14 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
 
     @Override
     public String createServers(String name, Image image, Flavor flavor, String keypairName, String securityGroup,
-                                String userData, int count, OSClient.OSClientV3 client) throws OpenstackException {
-        List<Server> createdServers = new ArrayList<>(count);
+                                String userData, int count, int waitActiveSec,
+                                Supplier<OSClient.OSClientV3> clientSupplier) throws OpenstackException {
         List<String> results = IntStream.rangeClosed(1, count)
+                .parallel()
                 .mapToObj(i -> {
                     try {
                         Server server = spawnServer(Util.nameWithUuid(name), flavor, image, keypairName,
-                                securityGroup, userData, client);
-                        createdServers.add(server);
+                                securityGroup, userData, waitActiveSec, clientSupplier.get());
                         return String.format("Successful creation of server %s", server.getName());
                     } catch (OpenstackException e) {
                         return e.toString();
@@ -125,18 +124,18 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
                 .toList();
 
         if (results.stream().anyMatch(s -> s.contains("Failed to create server"))) {
-            throw new OpenstackException(CREATE_SERVER_FAILED, "Failed to create %s servers. List of results: %s",
-                    count, results);
+            throw new OpenstackException(CREATE_SERVER_FAILED,
+                    "Failed to create %s servers named %s. List of results: %s", count, name, results);
         }
 
-        createdServers.forEach(s -> waitForServerStatus(s, ACTIVE, 300, client));
-
-        return String.format("Successfully created %s servers named %s<id>", count, name);
+        return String.format("Successfully created %s servers named %s", count, name);
     }
 
     private Server spawnServer(String name, Flavor flavor, Image image, String keypairName, String securityGroup,
-                               String userData, OSClient.OSClientV3 client) throws OpenstackException {
-        log.debug("Spawning new server. Name={}, flavor={}, image={}", name, flavor.getName(), image.getName());
+                               String userData, int waitActiveSec,
+                               OSClient.OSClientV3 client) throws OpenstackException {
+        log.debug("Spawning new server with waiting for ACTIVE state for {}. Name={}, flavor={}, image={}",
+                waitActiveSec, name, flavor.getName(), image.getName());
         if (userData != null) {
             userData = Base64.getEncoder().encodeToString(userData.getBytes());
         }
@@ -150,7 +149,7 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
                 .userData(userData)
                 .build();
 
-        Server server = client.compute().servers().boot(serverCreate);
+        Server server = client.compute().servers().bootAndWaitActive(serverCreate, waitActiveSec * 1000);
         if (server == null) {
             throw new OpenstackException(CREATE_SERVER_FAILED, "Failed to create server '%s'", name);
         }

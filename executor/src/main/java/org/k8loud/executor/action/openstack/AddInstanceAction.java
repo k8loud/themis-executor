@@ -14,6 +14,7 @@ public class AddInstanceAction extends OpenstackAction {
     private String securityGroup;
     private String userData;
     private int count;
+    private int waitActiveSec;
 
     public AddInstanceAction(Params params, OpenstackService openstackService) throws ActionException {
         super(params, openstackService);
@@ -29,12 +30,13 @@ public class AddInstanceAction extends OpenstackAction {
         securityGroup = params.getOptionalParam("securityGroup", null);
         userData = params.getOptionalParam("userData", null);
         count = params.getOptionalParamAsInt("count", 1);
+        waitActiveSec = params.getOptionalParamAsInt("waitActiveSec", 300);
     }
 
     @Override
     protected String executeBody() throws OpenstackException {
         return openstackService.createServers(region, name, imageId, flavorId, keypairName, securityGroup, userData,
-                count);
+                count, waitActiveSec);
     }
 
 }

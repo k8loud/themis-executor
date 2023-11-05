@@ -27,14 +27,12 @@ public class CreateServersTest extends OpenstackNovaBaseTest {
     private static final String FLAVOR_ID = "flavorId";
     private static final String KEYPAIR = "default";
     private static final String USER_DATA = "script";
+    public static final int WAIT_ACTIVE = 150;
 
     @Override
     public void setUp() {
-        when(serverServiceMock.boot(any(ServerCreate.class))).thenReturn(serverMock);
-        when(serverServiceMock.get(SERVER_ID)).thenReturn(serverMock);
-        when(serverMock.getStatus()).thenReturn(ACTIVE);
+        when(serverServiceMock.bootAndWaitActive(any(ServerCreate.class), anyInt())).thenReturn(serverMock);
         when(serverMock.getName()).thenReturn(SERVER_NAME + 1);
-        when(serverMock.getId()).thenReturn(SERVER_ID);
         when(imageMock.getId()).thenReturn(IMAGE_ID);
         when(flavorMock.getId()).thenReturn(FLAVOR_ID);
     }
@@ -45,10 +43,10 @@ public class CreateServersTest extends OpenstackNovaBaseTest {
         ArgumentCaptor<ServerCreate> captor = ArgumentCaptor.forClass(ServerCreate.class);
         // when
         openstackNovaService.createServers(SERVER_NAME, imageMock, flavorMock, KEYPAIR, SECURITY_GROUP_NAME, USER_DATA,
-                1, clientV3Mock);
+                1, WAIT_ACTIVE, () -> clientV3Mock);
 
         // then
-        verify(serverServiceMock).boot(captor.capture());
+        verify(serverServiceMock).bootAndWaitActive(captor.capture(), eq(WAIT_ACTIVE * 1000));
 
         ServerCreate captured = captor.getValue();
         assertThat(captured.getName())

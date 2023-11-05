@@ -23,6 +23,7 @@ public class AddInstanceActionTest extends OpenstackActionBaseTest {
     private static final String SECURITY_GROUP = "sec-group";
     private static final String USER_DATA = "user-data";
     private static final String COUNT = "3";
+    private static final String WAIT_ACTIVE = "120";
 
 
     @ParameterizedTest
@@ -32,7 +33,7 @@ public class AddInstanceActionTest extends OpenstackActionBaseTest {
         AddInstanceAction addInstanceAction = new AddInstanceAction(
                 params, openstackServiceMock);
         when(openstackServiceMock.createServers(anyString(), anyString(), anyString(), anyString(),
-                nullable(String.class), nullable(String.class), nullable(String.class), anyInt()))
+                nullable(String.class), nullable(String.class), nullable(String.class), anyInt(), anyInt()))
                 .thenReturn(RESULT);
 
         // when
@@ -43,8 +44,9 @@ public class AddInstanceActionTest extends OpenstackActionBaseTest {
         String securityGroup = params.getParams().get("securityGroup");
         String userData = params.getParams().get("userData");
         int count = Integer.parseInt(params.getParams().getOrDefault("count", "1"));
+        int waitActiveSec = Integer.parseInt(params.getParams().getOrDefault("waitActiveSec", "300"));
         verify(openstackServiceMock).createServers(eq(REGION), eq(NAME), eq(IMAGE_ID), eq(FLAVOR_ID), eq(keypair),
-                eq(securityGroup), eq(userData), eq(count));
+                eq(securityGroup), eq(userData), eq(count), eq(waitActiveSec));
         assertSuccessResponse(response);
     }
 
@@ -57,7 +59,9 @@ public class AddInstanceActionTest extends OpenstackActionBaseTest {
                         Map.of("region", REGION, "name", NAME, "imageId", IMAGE_ID, "flavorId", FLAVOR_ID,
                                 "userData", USER_DATA)),
                 new Params(Map.of("region", REGION, "name", NAME, "imageId", IMAGE_ID, "flavorId", FLAVOR_ID,
-                        "count", COUNT))
+                        "count", COUNT)),
+                new Params(Map.of("region", REGION, "name", NAME, "imageId", IMAGE_ID, "flavorId", FLAVOR_ID,
+                        "waitActiveSec", WAIT_ACTIVE))
 
         );
     }
