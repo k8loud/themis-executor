@@ -23,6 +23,7 @@ public class HorizontalScalingAction extends KubernetesAction {
 
     public HorizontalScalingAction(Params params, KubernetesService kubernetesService) throws ActionException {
         super(params, kubernetesService);
+        this.kubernetesService = kubernetesService;
     }
 
     @Override

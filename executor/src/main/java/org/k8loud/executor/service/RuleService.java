@@ -20,7 +20,7 @@ public class RuleService {
     private final StatelessKieSession session;
     final PrometheusQueryService queryService;
 
-    public RuleService(StatelessKieSession session, ExecutionService executionService, KubernetesService kubernetesService, PrometheusQueryService queryService) {
+    public RuleService(StatelessKieSession session, KubernetesService kubernetesService, PrometheusQueryService queryService) {
         this.session = session;
         this.kubernetesService = kubernetesService;
         this.queryService = queryService;

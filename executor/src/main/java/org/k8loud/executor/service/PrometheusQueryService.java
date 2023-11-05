@@ -23,7 +23,7 @@ public class PrometheusQueryService {
     private static String BACKEND_URL;
 
     public PrometheusQueryService(RestTemplateBuilder restTemplateBuilder) {
-        PrometheusQueryService.BACKEND_URL = System.getenv("HEPHAESTUS_URL"); //TODO make not ugly
+        PrometheusQueryService.BACKEND_URL = System.getenv("HEPHAESTUS_URL");
         this.restTemplate = restTemplateBuilder.build();
     }
 

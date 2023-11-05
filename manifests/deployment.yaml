@@ -19,13 +19,13 @@ spec:
       serviceAccountName: themis-executor
       containers:
         - name: executor
-          image: agwen12/themis-executor:0.0.2.2
+          image: agwen12/themis-executor:0.0.2.3
           env:
             - name: RULES_PATH
               value: /rules/test.drl
             - name: HEPHAESTUS_URL
               value: http://hephaestus-gui.hephaestus.svc.cluster.local:8080
-            - name: KUBERNETES_MASTER_URL
+            - name: KUBERNETES_MASTER
               value: https://149.156.10.131:6443
             - name: KUBERNETES_CA_CERT_DATA
               value: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJTTNxaXpROTAxS0l3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TXpFeE1ERXhOakV6TlRWYUZ3MHpNekV3TWpreE5qRTROVFZhTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUURCMzF0MHpJaTlsQVNJWnRuTzQ3dnhRcUhKbjY4MHpoWlh2VUR0cUM1d0JTaDdHaWdscHo3emF4RzMKZzhiM0RndVJvdlFRYzdzR3dEUkxwQUNEb2RPbjJxUVdwd3U1cDBNYkVacnZ1b2tJaG44eWZBYndxalBEclFQUApQb1Z0a2VTbCt3Y3UrSTN2Z2taa1F6ZXlPZmJZdjVORkphNGlBbTF5YnBmZWdpc01hTkc3cFVHRkhtbGxNeUtBCm5MWXRSWlYreHFuVVE0ZHVySGNWY1ZQN2NnNENlbnIyNE9GS0J1Qk83MkVMNEdsUHJ6N1dzM2JPRXNDcGhkSjIKbk51VlBHRFlKRkVSSVV2U0VGaC9hbCtMQjE2NEpsekFlWENzMlZyK3BiN2NzVWJ0N2R1bkozSkp1UjdZYXJwNQo1S2Ruc1AvNGhQTHFDKzVId0syKzdqMzBtTWVsQWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJTbmt4NkhadkE2QTZBNGM2VWMzenNTeUJrcEVUQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQXNkTVpsM1FWZwpNNWR0VWRUa05aaE1wMnUycnI2SmhycFRMZFNUUGV2SHNPek1RaGZKN2hsZHYrSHNZMi9wN3FQeVVFcjVvZ0hkCmZUa0MzYSt5TXVTQWZla1lmQ3hJd1dOZG9TN2NUMHlBWmUzaGkwZFpuaFRWcjJjZUpvQ24rTzNKVjNENkFwSFoKVzdoQnlFakxndE9STklDdWNvWEp2YmxYWGdnMGpxQ1dybWMvSTZMazJ2WUZ4WGRvTkRIdmNTSGVwRjNNaFJWQgplRTNKK2FkTFNRM2pzM1p5c3cySVAycyt4azZEY3V4SUV4YkwyejdYallwcjJzT2hnTTQzbG1odkpiY3Y1NGdDCklieWtnRWF3VS9nbHdUbmd4QXVBSHJLVjN4dlg2T1NpcXBiZnFDakdWREZNODNIR3RJRWhEYXEyV3lRM05Da24Ka012bmZ2STdNZHltCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
@@ -39,11 +39,11 @@ spec:
               value: "true"
           resources:
             limits:
-              cpu: 500m
-              memory: 500Mi
+              cpu: 900m
+              memory: 900Mi
             requests:
-              cpu: 500m
-              memory: 500Mi
+              cpu: 900m
+              memory: 900Mi
           ports:
             - containerPort: 8080
           volumeMounts:
