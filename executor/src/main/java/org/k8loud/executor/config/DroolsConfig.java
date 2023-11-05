@@ -17,7 +17,6 @@ import java.io.FileNotFoundException;
 @Configuration
 public class DroolsConfig {
 
-//    private static final String RULES_DRL = "rules/test.drl";
     private static final String RULES_DRL = System.getenv("RULES_PATH") != null ?
         System.getenv("RULES_PATH") :
         "rules/test.drl";
@@ -26,7 +25,7 @@ public class DroolsConfig {
 
     @Bean
     public KieContainer kieContainer() {
-        System.out.println(RULES_DRL + "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDUUUUUUUUUUUUUUUUUUUUUUUPPPPPPPPPPPPPPPPPAAAAAAAAAAAAA");
+        System.out.println(RULES_DRL);
         KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
         kieFileSystem.write(ResourceFactory.newFileResource(new File(RULES_DRL)));
 

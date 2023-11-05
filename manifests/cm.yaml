@@ -15,7 +15,7 @@ data:
 
     dialect "mvel"
 
-    rule "carts_cpu_procentage"
+    rule "carts_cpu"
         dialect "mvel"
         when
             cup_time_m : Metric(
@@ -23,17 +23,32 @@ data:
                 labels["container"] == "carts",
                 cpu_time : value
             )
-            cpu_quota_m : Metric(
-                name == " container_spec_cpu_quota",
-                labels["container"] == "carts",
-                cpu_quota : value
-            )
-            eval((cpu_time * 100000) / cpu_quota > 0.80)
+            eval(cpu_time > 0.1)
         then
             System.out.println("carts scaled");
             actions.add(HorizontalScalingAction.builder()
                             .namespace("sock-shop")
                             .resourceName("carts")
+                            .resourceType("Deployment")
+                            .replicas(2)
+                            .client(client)
+                            .build());
+    end
+    
+    rule "orders_cpu"
+        dialect "mvel"
+        when
+            cup_time_m : Metric(
+                queryTag == "orders-cpu",
+                labels["container"] == "orders",
+                cpu_time : value
+            )
+            eval(cpu_time > 0.1)
+        then
+            System.out.println("carts scaled");
+            actions.add(HorizontalScalingAction.builder()
+                            .namespace("sock-shop")
+                            .resourceName("orders")
                             .resourceType("Deployment")
                             .replicas(2)
                             .client(client)

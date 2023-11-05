@@ -17,7 +17,7 @@ rule "carts_cpu_procentage"
             cpu_time : value
         )
         cpu_quota_m : Metric(
-            name == " container_spec_cpu_quota",
+            name == "container_spec_cpu_quota",
             labels["container"] == "carts",
             cpu_quota : value
         )
