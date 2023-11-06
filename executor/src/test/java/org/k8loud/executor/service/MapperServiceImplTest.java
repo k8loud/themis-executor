@@ -68,7 +68,9 @@ class MapperServiceImplTest {
         Params horizontalKubernetesScalingParams = new Params(
                 Map.of("resourceName", "nameVal", "resourceType", "typeVal", "namespace",
                         "namespaceVal", "replicas", "420"));
-        Params horizontalOpenstackScalingParams = new Params(Map.of("region", "regionVal", "serverId", "EUNE"));
+        Params addInstanceParams = new Params(
+                Map.of("region", "reg", "name", "nam", "imageId", "img",
+                        "flavorId", "flav"));
         Params verticalOpenstackScalingParams = new Params(
                 Map.of("region", "regionVal", "serverId", "EUNE", "flavorId", "asdad123312"));
         Params customScriptParams = new Params(Map.of("host", "127.0.0.1", "port", "1337",
@@ -77,12 +79,12 @@ class MapperServiceImplTest {
         return Stream.of(
                 Arguments.of("kubernetes", "DeleteResourceAction", deleteResourceActionParams),
                 Arguments.of("kubernetes", "HorizontalScalingAction", horizontalKubernetesScalingParams),
-                Arguments.of("openstack", "HorizontalScalingAction", horizontalOpenstackScalingParams),
+                Arguments.of("openstack", "AddInstanceAction", addInstanceParams),
                 Arguments.of("openstack", "VerticalScalingUpAction", verticalOpenstackScalingParams),
                 Arguments.of("command", "CustomScriptAction", customScriptParams)
-// TODO: How to handle map?
-//                Arguments.of("kubernetes", "UpdateConfigMapAction", Map.of("namespace", "nameVal",
-//                        "resourceName", "typeVal", "replacements", Map.of("k1", "v1")))
+                // TODO: How to handle map?
+                //                Arguments.of("kubernetes", "UpdateConfigMapAction", Map.of("namespace", "nameVal",
+                //                        "resourceName", "typeVal", "replacements", Map.of("k1", "v1")))
         );
     }
 

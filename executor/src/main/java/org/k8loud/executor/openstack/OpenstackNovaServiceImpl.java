@@ -3,26 +3,29 @@ package org.k8loud.executor.openstack;
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.exception.code.OpenstackExceptionCode;
+import org.k8loud.executor.util.Util;
 import org.openstack4j.api.Builders;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.api.exceptions.ConnectionException;
-import org.openstack4j.common.Buildable;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.compute.Action;
 import org.openstack4j.model.compute.Flavor;
 import org.openstack4j.model.compute.Server;
 import org.openstack4j.model.compute.ServerCreate;
-import org.openstack4j.model.compute.builder.ServerCreateBuilder;
+import org.openstack4j.model.image.v2.Image;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Base64;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
-import static org.openstack4j.model.compute.Server.Status.ACTIVE;
 
 @Service
 @Slf4j
@@ -104,32 +107,54 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
     }
 
     @Override
-    public void createServer(String name, String flavorId, String imageId, int waitingTimeSec,
-                             OSClient.OSClientV3 client, Function<ServerCreateBuilder, ServerCreate> optionalSetup) {
-        createNewServer(name, flavorId, imageId, waitingTimeSec, client, optionalSetup);
-    }
+    public String createServers(String name, Image image, Flavor flavor, String keypairName, String securityGroup,
+                                String userData, int count, int waitActiveSec,
+                                Supplier<OSClient.OSClientV3> clientSupplier) throws OpenstackException {
+        List<String> results = IntStream.rangeClosed(1, count)
+                .parallel()
+                .mapToObj(i -> {
+                    try {
+                        Server server = spawnServer(Util.nameWithUuid(name), flavor, image, keypairName,
+                                securityGroup, userData, waitActiveSec, clientSupplier.get());
+                        return String.format("Successful creation of server %s", server.getName());
+                    } catch (OpenstackException e) {
+                        return e.toString();
+                    }
+                })
+                .toList();
 
-    @Override
-    public void createServer(String name, String flavorId, String imageId, int waitingTimeSec,
-                             OSClient.OSClientV3 client) {
-        createNewServer(name, flavorId, imageId, waitingTimeSec, client, Buildable.Builder::build);
-    }
-
-    private void createNewServer(String name, String flavorId, String imageId, int waitingTimeSec,
-                                 OSClient.OSClientV3 client,
-                                 Function<ServerCreateBuilder, ServerCreate> optionalSetup) {
-        log.debug("Creating new server. Name={}, flavorID={}, imageID={}", name, flavorId, imageId);
-        ServerCreateBuilder serverCreateBuilder = Builders.server().name(name).flavor(flavorId)
-                .image(imageId).keypairName("default");
-
-        ServerCreate serverCreate = optionalSetup.apply(serverCreateBuilder);
-
-        int waitActive = (int) Duration.ofSeconds(waitingTimeSec).toMillis();
-        Server server = client.compute().servers().bootAndWaitActive(serverCreate, waitActive);
-
-        if (server.getStatus() != ACTIVE) {
-            log.warn("Server {} not active after {}s after boot", server.getName(), waitingTimeSec);
+        if (results.stream().anyMatch(s -> s.contains("Failed to create server"))) {
+            throw new OpenstackException(CREATE_SERVER_FAILED,
+                    "Failed to create %s servers named %s. List of results: %s", count, name, results);
         }
+
+        return String.format("Successfully created %s servers named %s", count, name);
+    }
+
+    private Server spawnServer(String name, Flavor flavor, Image image, String keypairName, String securityGroup,
+                               String userData, int waitActiveSec,
+                               OSClient.OSClientV3 client) throws OpenstackException {
+        log.debug("Spawning new server with waiting for ACTIVE state for {}. Name={}, flavor={}, image={}",
+                waitActiveSec, name, flavor.getName(), image.getName());
+        if (userData != null) {
+            userData = Base64.getEncoder().encodeToString(userData.getBytes());
+        }
+
+        ServerCreate serverCreate = Builders.server()
+                .name(name)
+                .flavor(flavor.getId())
+                .image(image.getId())
+                .keypairName(keypairName)
+                .addSecurityGroup(securityGroup)
+                .userData(userData)
+                .build();
+
+        Server server = client.compute().servers().bootAndWaitActive(serverCreate, waitActiveSec * 1000);
+        if (server == null) {
+            throw new OpenstackException(CREATE_SERVER_FAILED, "Failed to create server '%s'", name);
+        }
+
+        return server;
     }
 
     private void serverConditionalWait(Server server, Function<Server, Boolean> condition, long waitingTimeSec,
@@ -144,7 +169,8 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
 
                 Thread.sleep(1000);
             } catch (ConnectionException e) {
-                log.debug("Connection with openstack lost during serverConditionalWait on server {}. ", server.getName(), e);
+                log.debug("Connection with openstack lost during serverConditionalWait on server {}. ",
+                        server.getName(), e);
             } catch (Exception e) {
                 log.debug("Problem during serverConditionalWait on server {}. ", server.getName(), e);
             }

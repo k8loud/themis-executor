@@ -11,6 +11,8 @@ public abstract class OpenstackActionBaseTest extends ActionBaseTest {
     protected static final String SERVER_ID = "123-server-id-123";
     protected static final String VOLUME_ID = "123-volume-id-123";
     protected static final String FLAVOR_ID = "123-flavor-id-123";
+    protected static final String IMAGE_ID = "123-image-id-123";
+
 
     @Mock
     protected OpenstackService openstackServiceMock;
