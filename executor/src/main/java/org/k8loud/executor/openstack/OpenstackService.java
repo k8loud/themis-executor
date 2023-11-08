@@ -31,4 +31,5 @@ public interface OpenstackService {
                                          boolean keepOneSnapshot) throws OpenstackException;
 
     String createSecurityGroup(String region, String name, String description) throws OpenstackException;
+    String addSecurityGroupToInstance(String region, String securityGroupId, String serverId) throws OpenstackException;
 }

@@ -10,6 +10,7 @@ import org.openstack4j.model.compute.Action;
 import org.openstack4j.model.compute.Flavor;
 import org.openstack4j.model.compute.Server;
 import org.openstack4j.model.image.v2.Image;
+import org.openstack4j.model.network.SecurityGroup;
 import org.openstack4j.model.storage.block.Volume;
 import org.springframework.stereotype.Service;
 
@@ -178,6 +179,17 @@ public class OpenstackServiceImpl implements OpenstackService {
         OSClientV3 client = openstackClientWithRegion(region);
         openstackNeutronService.createSecurityGroup(name, description, client);
         return String.format("Created security group named %s with description %s", name, description);
+    }
+
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "ADD_SECURITY_GROUP_FAILED")
+    public String addSecurityGroupToInstance(String region, String securityGroupId, String serverId) throws OpenstackException {
+        OSClientV3 client = openstackClientWithRegion(region);
+        Server server = openstackNovaService.getServer(serverId, client);
+        SecurityGroup securityGroup = openstackNeutronService.getSecurityGroup(securityGroupId, client);
+        openstackNovaService.addSecurityGroupToInstance(server, securityGroup, client);
+        return String.format("Added SecurityGroup named %s to Server named %s",
+                securityGroup.getName(), server.getName());
     }
 
     @NotNull

@@ -13,6 +13,7 @@ import org.openstack4j.model.compute.Flavor;
 import org.openstack4j.model.compute.Server;
 import org.openstack4j.model.compute.ServerCreate;
 import org.openstack4j.model.image.v2.Image;
+import org.openstack4j.model.network.SecurityGroup;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -103,6 +104,18 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
         if (snapshotId == null) {
             throw new OpenstackException(String.format("Failed to create snapshot with name \"%s\" on server %s",
                     snapshotName, server.getName()), CREATE_SERVER_SNAPSHOT_FAILED);
+        }
+    }
+
+    @Override
+    public void addSecurityGroupToInstance(Server server, SecurityGroup securityGroup,
+                                           OSClient.OSClientV3 client) throws OpenstackException {
+        log.debug("Adding SecurityGroup '{}' to Server '{}'", securityGroup.getName(), server.getName());
+        ActionResponse response = client.compute().servers().addSecurityGroup(server.getId(), securityGroup.getId());
+        if (!response.isSuccess()) {
+            throw new OpenstackException(ADD_SECURITY_GROUP_FAILED,
+                    "Failed to add SecurityGroup %s to server %s. Reason: %s",
+                    securityGroup.getName(), server.getName(), response.getFault());
         }
     }
 

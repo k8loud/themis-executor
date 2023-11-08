@@ -11,5 +11,6 @@ public class OpenstackConstants {
     protected static final String DEVICE = "/dev/test";
     protected static final String EXCEPTION_MESSAGE = "Whatever message";
     protected static final String SECURITY_GROUP_NAME = "security group name";
+    protected static final String SECURITY_GROUP_ID = "security group id";
     protected static final String SECURITY_GROUP_DESCRIPTION = "security group description";
 }
