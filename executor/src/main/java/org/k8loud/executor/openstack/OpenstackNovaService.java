@@ -7,6 +7,7 @@ import org.openstack4j.model.compute.Action;
 import org.openstack4j.model.compute.Flavor;
 import org.openstack4j.model.compute.Server;
 import org.openstack4j.model.image.v2.Image;
+import org.openstack4j.model.network.SecurityGroup;
 import org.springframework.retry.annotation.Retryable;
 
 import java.util.function.Supplier;
@@ -28,6 +29,7 @@ public interface OpenstackNovaService {
     void basicServerAction(Server server, Action action, OSClient.OSClientV3 client) throws OpenstackException;
 
     void createServerSnapshot(Server server, String snapshotName, OSClient.OSClientV3 client) throws OpenstackException;
+    void addSecurityGroupToInstance(Server server, SecurityGroup securityGroup, OSClient.OSClientV3 client) throws OpenstackException;
 
     @Retryable(maxAttempts = 1)
     void waitForServerStatus(Server server, Server.Status status, int waitingTimeSec, OSClient.OSClientV3 client);

@@ -8,6 +8,7 @@ import org.openstack4j.model.network.SecurityGroup;
 import org.springframework.stereotype.Service;
 
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.CREATE_SECURITY_GROUP_FAILED;
+import static org.k8loud.executor.exception.code.OpenstackExceptionCode.SECURITY_GROUP_NOT_EXIST;
 
 @Service
 @Slf4j
@@ -26,5 +27,18 @@ public class OpenstackNeutronServiceImpl implements OpenstackNeutronService {
             throw new OpenstackException(CREATE_SECURITY_GROUP_FAILED,
                     "Failed to create SecurityGroup with name \"%s\"", name);
         }
+    }
+
+    @Override
+    public SecurityGroup getSecurityGroup(String securityGroupId, OSClient.OSClientV3 client) throws OpenstackException {
+        log.debug("Getting security group object with id '{}'", securityGroupId);
+        SecurityGroup securityGroup = client.networking().securitygroup().get(securityGroupId);
+
+        if (securityGroup == null){
+            throw new OpenstackException(SECURITY_GROUP_NOT_EXIST,
+                    "Failed to find SecurityGroup with '%s'", securityGroupId);
+        }
+
+        return securityGroup;
     }
 }

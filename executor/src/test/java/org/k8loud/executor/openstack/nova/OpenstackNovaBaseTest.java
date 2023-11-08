@@ -9,6 +9,7 @@ import org.openstack4j.api.OSClient;
 import org.openstack4j.api.compute.ComputeService;
 import org.openstack4j.api.compute.ServerService;
 import org.openstack4j.model.compute.Server;
+import org.openstack4j.model.network.SecurityGroup;
 
 import static org.mockito.Mockito.when;
 
@@ -17,6 +18,8 @@ public abstract class OpenstackNovaBaseTest extends OpenstackConstants {
     protected OSClient.OSClientV3 clientV3Mock;
     @Mock
     protected Server serverMock;
+    @Mock
+    protected SecurityGroup securityGroupMock;
     @Mock
     protected ComputeService computeServiceMock;
     @Mock
