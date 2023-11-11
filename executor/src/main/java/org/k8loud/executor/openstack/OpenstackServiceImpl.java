@@ -11,6 +11,7 @@ import org.openstack4j.model.compute.Flavor;
 import org.openstack4j.model.compute.Server;
 import org.openstack4j.model.image.v2.Image;
 import org.openstack4j.model.network.SecurityGroup;
+import org.openstack4j.model.network.SecurityGroupRule;
 import org.openstack4j.model.storage.block.Volume;
 import org.springframework.stereotype.Service;
 
@@ -183,13 +184,27 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "ADD_SECURITY_GROUP_FAILED")
-    public String addSecurityGroupToInstance(String region, String securityGroupId, String serverId) throws OpenstackException {
+    public String addSecurityGroupToInstance(String region, String securityGroupId,
+                                             String serverId) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
         SecurityGroup securityGroup = openstackNeutronService.getSecurityGroup(securityGroupId, client);
         openstackNovaService.addSecurityGroupToInstance(server, securityGroup, client);
         return String.format("Added SecurityGroup named %s to Server named %s",
                 securityGroup.getName(), server.getName());
+    }
+
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "ADD_RULE_FAILED")
+    public String addRuleToSecurityGroup(String region, String securityGroupId, String ethertype, String direction,
+                                         String remoteIpPrefix, String protocol, int portRangeMin,
+                                         int portRangeMax) throws OpenstackException {
+        OSClientV3 client = openstackClientWithRegion(region);
+        SecurityGroup securityGroup = openstackNeutronService.getSecurityGroup(securityGroupId, client);
+        SecurityGroupRule securityGroupRule = openstackNeutronService.createSecurityGroupRule(securityGroup, ethertype,
+                direction, remoteIpPrefix, protocol, portRangeMin, portRangeMax, client);
+        return String.format("Added new rule (%s) to securityGroup named %s",
+                securityGroupRule.toString(), securityGroup.getName());
     }
 
     @NotNull
