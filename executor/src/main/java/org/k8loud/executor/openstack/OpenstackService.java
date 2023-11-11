@@ -8,7 +8,8 @@ public interface OpenstackService {
 
     String resizeServerDown(String region, String serverId, String newFlavorId) throws OpenstackException;
 
-    String copyServer(String region, String serverId) throws OpenstackException;
+    String createServers(String region, String name, String imageId, String flavorId, String keypairName,
+                         String securityGroup, String userData, int count, int waitActiveSec) throws OpenstackException;
 
     String attachVolume(String region, String serverId, String volumeId, String device) throws OpenstackException;
 
@@ -18,13 +19,17 @@ public interface OpenstackService {
 
     String unpauseServer(String region, String serverId) throws OpenstackException;
 
-    String createServerSnapshot(String region, String serverId, String snapshotName, boolean stopInstance) throws OpenstackException;
+    String createServerSnapshot(String region, String serverId, String snapshotName,
+                                boolean stopInstance) throws OpenstackException;
 
-    String deleteTheOldestServerSnapshot(String region, String serverId, boolean keepOneSnapshot) throws OpenstackException;
+    String deleteTheOldestServerSnapshot(String region, String serverId,
+                                         boolean keepOneSnapshot) throws OpenstackException;
 
     String createVolumeSnapshot(String region, String volumeId, String snapshotName) throws OpenstackException;
 
-    String deleteTheOldestVolumeSnapshot(String region, String volumeId, boolean keepOneSnapshot) throws OpenstackException;
+    String deleteTheOldestVolumeSnapshot(String region, String volumeId,
+                                         boolean keepOneSnapshot) throws OpenstackException;
 
     String createSecurityGroup(String region, String name, String description) throws OpenstackException;
+    String addSecurityGroupToInstance(String region, String securityGroupId, String serverId) throws OpenstackException;
 }
