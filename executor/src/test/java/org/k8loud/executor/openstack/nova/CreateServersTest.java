@@ -18,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.openstack4j.model.compute.Server.Status.ACTIVE;
 
-@ExtendWith(MockitoExtension.class)
 public class CreateServersTest extends OpenstackNovaBaseTest {
     @Mock
     Flavor flavorMock;

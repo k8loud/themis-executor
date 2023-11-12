@@ -15,7 +15,6 @@ import static org.k8loud.executor.exception.code.OpenstackExceptionCode.UNSUPPOR
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 public class BasicServerActionTest extends OpenstackNovaBaseTest {
     @ParameterizedTest
     @EnumSource(value = Action.class, names = {"PAUSE", "UNPAUSE", "STOP", "START"})

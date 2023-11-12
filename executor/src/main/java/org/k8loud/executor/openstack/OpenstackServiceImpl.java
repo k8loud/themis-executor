@@ -195,6 +195,18 @@ public class OpenstackServiceImpl implements OpenstackService {
     }
 
     @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "REMOVE_SECURITY_GROUP_FAILED")
+    public String removeSecurityGroupFromInstance(String region, String securityGroupId,
+                                                  String serverId) throws OpenstackException {
+        OSClientV3 client = openstackClientWithRegion(region);
+        Server server = openstackNovaService.getServer(serverId, client);
+        SecurityGroup securityGroup = openstackNeutronService.getSecurityGroup(securityGroupId, client);
+        openstackNovaService.removeSecurityGroupFromInstance(server, securityGroup, client);
+        return String.format("Removed SecurityGroup named %s to Server named %s",
+                securityGroup.getName(), server.getName());
+    }
+
+    @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "ADD_RULE_FAILED")
     public String addRuleToSecurityGroup(String region, String securityGroupId, String ethertype, String direction,
                                          String remoteIpPrefix, String protocol, int portRangeMin,

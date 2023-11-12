@@ -120,6 +120,18 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
     }
 
     @Override
+    public void removeSecurityGroupFromInstance(Server server, SecurityGroup securityGroup,
+                                                OSClient.OSClientV3 client) throws OpenstackException {
+        log.debug("Removing SecurityGroup '{}' from Server '{}'", securityGroup.getName(), server.getName());
+        ActionResponse response = client.compute().servers().removeSecurityGroup(server.getId(), securityGroup.getId());
+        if (!response.isSuccess()) {
+            throw new OpenstackException(REMOVE_SECURITY_GROUP_FAILED,
+                    "Failed to remove SecurityGroup %s from server %s. Reason: %s",
+                    securityGroup.getName(), server.getName(), response.getFault());
+        }
+    }
+
+    @Override
     public String createServers(String name, Image image, Flavor flavor, String keypairName, String securityGroup,
                                 String userData, int count, int waitActiveSec,
                                 Supplier<OSClient.OSClientV3> clientSupplier) throws OpenstackException {
