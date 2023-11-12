@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.k8loud.executor.action.openstack.AddSecurityGroupToInstanceAction;
+import org.k8loud.executor.actions.openstack.AddSecurityGroupToInstanceAction;
 import org.k8loud.executor.action.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;

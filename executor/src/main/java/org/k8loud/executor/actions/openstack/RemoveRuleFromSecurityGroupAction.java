@@ -1,4 +1,4 @@
-package org.k8loud.executor.action.openstack;
+package org.k8loud.executor.actions.openstack;
 
 import data.Params;
 import org.k8loud.executor.exception.ActionException;
