@@ -25,6 +25,7 @@ public class AddRuleToSecurityGroupTest extends OpenstackNeutronBaseTest {
             .portRangeMax(PORT_RANGE_MAX)
             .protocol(PROTOCOL)
             .remoteIpPrefix(REMOTE_IP_PREFIX)
+            .description(RULE_DESCRIPTION)
             .build();
 
     @Mock
@@ -46,8 +47,8 @@ public class AddRuleToSecurityGroupTest extends OpenstackNeutronBaseTest {
         when(securityGroupRuleService.create(any(SecurityGroupRule.class))).thenReturn(securityGroupRuleMock);
 
         // when
-        openstackNeutronService.createSecurityGroupRule(securityGroupMock, ETHERTYPE, DIRECTION, REMOTE_IP_PREFIX,
-                PROTOCOL, PORT_RANGE_MIN, PORT_RANGE_MAX, clientV3Mock);
+        openstackNeutronService.addSecurityGroupRule(securityGroupMock, ETHERTYPE, DIRECTION, REMOTE_IP_PREFIX,
+                PROTOCOL, PORT_RANGE_MIN, PORT_RANGE_MAX, RULE_DESCRIPTION, clientV3Mock);
 
         // then
         verify(securityGroupRuleService).create(refEq(SECURITY_GROUP_RULE));
@@ -63,8 +64,8 @@ public class AddRuleToSecurityGroupTest extends OpenstackNeutronBaseTest {
 
         // when
         Throwable throwable = catchThrowable(
-                () -> openstackNeutronService.createSecurityGroupRule(securityGroupMock, ETHERTYPE, DIRECTION,
-                        REMOTE_IP_PREFIX, PROTOCOL, PORT_RANGE_MIN, PORT_RANGE_MAX, clientV3Mock));
+                () -> openstackNeutronService.addSecurityGroupRule(securityGroupMock, ETHERTYPE, DIRECTION,
+                        REMOTE_IP_PREFIX, PROTOCOL, PORT_RANGE_MIN, PORT_RANGE_MAX, RULE_DESCRIPTION, clientV3Mock));
 
         // then
         verify(securityGroupRuleService).create(refEq(SECURITY_GROUP_RULE));

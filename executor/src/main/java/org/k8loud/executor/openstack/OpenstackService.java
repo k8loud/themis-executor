@@ -36,5 +36,5 @@ public interface OpenstackService {
 
     String addRuleToSecurityGroup(String region, String securityGroupId, String ethertype, String direction,
                                   String remoteIpPrefix, String protocol, int portRangeMin,
-                                  int portRangeMax) throws OpenstackException;
+                                  int portRangeMax, String description) throws OpenstackException;
 }

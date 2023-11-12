@@ -14,6 +14,7 @@ public class AddRuleToSecurityGroupAction extends OpenstackAction {
     private String protocol; //example TCP
     private int portRangeMin;
     private int portRangeMax;
+    private String description;
 
     public AddRuleToSecurityGroupAction(Params params, OpenstackService openstackService) throws ActionException {
         super(params, openstackService);
@@ -29,12 +30,13 @@ public class AddRuleToSecurityGroupAction extends OpenstackAction {
         protocol = params.getRequiredParam("protocol");
         portRangeMin = params.getRequiredParamAsInteger("portRangeMin");
         portRangeMax = params.getRequiredParamAsInteger("portRangeMax");
+        description = params.getOptionalParam("description", null);
     }
 
     @Override
     protected String executeBody() throws OpenstackException {
         return openstackService.addRuleToSecurityGroup(region, securityGroupId, ethertype, direction, remoteIpPrefix,
-                protocol, portRangeMin, portRangeMax);
+                protocol, portRangeMin, portRangeMax, description);
     }
 
 }

@@ -198,11 +198,11 @@ public class OpenstackServiceImpl implements OpenstackService {
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "ADD_RULE_FAILED")
     public String addRuleToSecurityGroup(String region, String securityGroupId, String ethertype, String direction,
                                          String remoteIpPrefix, String protocol, int portRangeMin,
-                                         int portRangeMax) throws OpenstackException {
+                                         int portRangeMax, String description) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         SecurityGroup securityGroup = openstackNeutronService.getSecurityGroup(securityGroupId, client);
-        SecurityGroupRule securityGroupRule = openstackNeutronService.createSecurityGroupRule(securityGroup, ethertype,
-                direction, remoteIpPrefix, protocol, portRangeMin, portRangeMax, client);
+        SecurityGroupRule securityGroupRule = openstackNeutronService.addSecurityGroupRule(securityGroup, ethertype,
+                direction, remoteIpPrefix, protocol, portRangeMin, portRangeMax, description, client);
         return String.format("Added new rule (%s) to securityGroup named %s",
                 securityGroupRule.toString(), securityGroup.getName());
     }

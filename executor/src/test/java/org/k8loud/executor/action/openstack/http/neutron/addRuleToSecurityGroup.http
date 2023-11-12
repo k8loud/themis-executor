@@ -14,7 +14,8 @@ Content-Type: application/json
       "remoteIpPrefix": "172.42.0.0/16",
       "protocol": "TCP",
       "portRangeMin": "80",
-      "portRangeMax": "80"
+      "portRangeMax": "80",
+      "description": "optional description"
     }
   }
 }

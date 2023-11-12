@@ -13,6 +13,7 @@ public class OpenstackConstants {
     protected static final String SECURITY_GROUP_NAME = "security group name";
     protected static final String SECURITY_GROUP_ID = "security group id";
     protected static final String SECURITY_GROUP_DESCRIPTION = "security group description";
+    protected static final String RULE_DESCRIPTION = "rule description";
     public static final String ETHERTYPE = "IPv4";
     public static final String DIRECTION = "ingress";
     public static final String REMOTE_IP_PREFIX = "123.123.0.0/16";

@@ -44,10 +44,10 @@ public class OpenstackNeutronServiceImpl implements OpenstackNeutronService {
     }
 
     @Override
-    public SecurityGroupRule createSecurityGroupRule(SecurityGroup securityGroup, String ethertype, String direction,
-                                                     String remoteIpPrefix, String protocol, int portRangeMin,
-                                                     int portRangeMax,
-                                                     OSClient.OSClientV3 client) throws OpenstackException {
+    public SecurityGroupRule addSecurityGroupRule(SecurityGroup securityGroup, String ethertype, String direction,
+                                                  String remoteIpPrefix, String protocol, int portRangeMin,
+                                                  int portRangeMax, String description,
+                                                  OSClient.OSClientV3 client) throws OpenstackException {
         log.debug("Creating new rule for SecurityGroup with id '{}'", securityGroup.getName());
         SecurityGroupRule securityGroupRule = client.networking().securityrule().create(Builders.securityGroupRule()
                 .securityGroupId(securityGroup.getId())
@@ -57,6 +57,7 @@ public class OpenstackNeutronServiceImpl implements OpenstackNeutronService {
                 .portRangeMax(portRangeMax)
                 .protocol(protocol)
                 .remoteIpPrefix(remoteIpPrefix)
+                .description(description)
                 .build());
 
         if (securityGroupRule == null) {
