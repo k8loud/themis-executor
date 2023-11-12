@@ -10,10 +10,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.CREATE_SERVER_SNAPSHOT_FAILED;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 public class CreateServerSnapshotTest extends OpenstackNovaBaseTest {
-    private static final String SNAPSHOT_ID = "snapshotId";
-
     @Override
     public void setUp() {
         when(serverMock.getName()).thenReturn(SERVER_NAME);

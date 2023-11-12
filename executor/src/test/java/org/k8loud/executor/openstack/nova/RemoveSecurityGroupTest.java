@@ -9,9 +9,10 @@ import org.openstack4j.model.common.ActionResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.ADD_SECURITY_GROUP_FAILED;
+import static org.k8loud.executor.exception.code.OpenstackExceptionCode.REMOVE_SECURITY_GROUP_FAILED;
 import static org.mockito.Mockito.*;
 
-public class AddSecurityGroupTest extends OpenstackNovaBaseTest {
+public class RemoveSecurityGroupTest extends OpenstackNovaBaseTest {
     @Override
     public void setUp() {
         when(serverMock.getName()).thenReturn(SERVER_NAME);
@@ -23,13 +24,13 @@ public class AddSecurityGroupTest extends OpenstackNovaBaseTest {
     @Test
     void testSuccess() throws OpenstackException {
         // given
-        when(serverServiceMock.addSecurityGroup(anyString(), anyString())).thenReturn(ActionResponse.actionSuccess());
+        when(serverServiceMock.removeSecurityGroup(anyString(), anyString())).thenReturn(ActionResponse.actionSuccess());
 
         // when
-        openstackNovaService.addSecurityGroupToInstance(serverMock, securityGroupMock, clientV3Mock);
+        openstackNovaService.removeSecurityGroupFromInstance(serverMock, securityGroupMock, clientV3Mock);
 
         // then
-        verify(serverServiceMock).addSecurityGroup(SERVER_ID, SECURITY_GROUP_ID);
+        verify(serverServiceMock).removeSecurityGroup(eq(SERVER_ID), eq(SECURITY_GROUP_ID));
         verify(serverMock).getName();
         verify(serverMock).getId();
         verify(securityGroupMock).getName();
@@ -39,19 +40,19 @@ public class AddSecurityGroupTest extends OpenstackNovaBaseTest {
     @Test
     void testFailed() {
         // given
-        when(serverServiceMock.addSecurityGroup(anyString(), anyString())).thenReturn(
+        when(serverServiceMock.removeSecurityGroup(anyString(), anyString())).thenReturn(
                 ActionResponse.actionFailed(EXCEPTION_MESSAGE, 123));
 
         // when
         Throwable throwable = catchThrowable(() ->
-                openstackNovaService.addSecurityGroupToInstance(serverMock, securityGroupMock, clientV3Mock));
+                openstackNovaService.removeSecurityGroupFromInstance(serverMock, securityGroupMock, clientV3Mock));
 
         // then
         assertThat(throwable).isExactlyInstanceOf(OpenstackException.class)
-                .hasMessage(String.format("Failed to add SecurityGroup %s to server %s. Reason: %s",
+                .hasMessage(String.format("Failed to remove SecurityGroup %s from server %s. Reason: %s",
                         SECURITY_GROUP_NAME, SERVER_NAME, EXCEPTION_MESSAGE));
-        assertThat(((OpenstackException) throwable).getExceptionCode()).isEqualTo(ADD_SECURITY_GROUP_FAILED);
-        verify(serverServiceMock).addSecurityGroup(SERVER_ID, SECURITY_GROUP_ID);
+        assertThat(((OpenstackException) throwable).getExceptionCode()).isEqualTo(REMOVE_SECURITY_GROUP_FAILED);
+        verify(serverServiceMock).removeSecurityGroup(eq(SERVER_ID), eq(SECURITY_GROUP_ID));
         verify(serverMock, times(2)).getName();
         verify(serverMock).getId();
         verify(securityGroupMock, times(2)).getName();
