@@ -207,6 +207,15 @@ public class OpenstackServiceImpl implements OpenstackService {
                 securityGroupRule.toString(), securityGroup.getName());
     }
 
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "REMOVE_RULE_FAILED")
+    public String removeSecurityGroupRule(String region, String securityGroupRuleId) throws OpenstackException {
+        OSClientV3 client = openstackClientWithRegion(region);
+        SecurityGroupRule securityGroupRule = openstackNeutronService.getSecurityGroupRule(securityGroupRuleId, client);
+        openstackNeutronService.removeSecurityGroupRule(securityGroupRule, client);
+        return String.format("Deleted securityGroupRule (%s)", securityGroupRule.toString());
+    }
+
     @NotNull
     private OSClientV3 openstackClientWithRegion(String region) throws OpenstackException {
         OSClientV3 client = openstackClientProvider.getClientFromToken();

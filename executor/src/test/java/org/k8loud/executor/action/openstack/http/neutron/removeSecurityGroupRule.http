@@ -1,0 +1,15 @@
+### remove rule
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "openstack",
+  "actionName": "RemoveRuleFromSecurityGroupAction",
+  "params": {
+    "params": {
+      "region": "RegionOne",
+      "securityGroupRuleId": "PUT_ID"
+    }
+  }
+}
+

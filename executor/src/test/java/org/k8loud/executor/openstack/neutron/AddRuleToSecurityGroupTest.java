@@ -15,7 +15,6 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.ADD_RULE_FAILED;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 public class AddRuleToSecurityGroupTest extends OpenstackNeutronBaseTest {
     private static final SecurityGroupRule SECURITY_GROUP_RULE = Builders.securityGroupRule()
             .securityGroupId(SECURITY_GROUP_ID)
@@ -27,13 +26,6 @@ public class AddRuleToSecurityGroupTest extends OpenstackNeutronBaseTest {
             .remoteIpPrefix(REMOTE_IP_PREFIX)
             .description(RULE_DESCRIPTION)
             .build();
-
-    @Mock
-    SecurityGroupRule securityGroupRuleMock;
-    @Mock
-    SecurityGroup securityGroupMock;
-    @Mock
-    SecurityGroupRuleService securityGroupRuleService;
 
     @Override
     protected void setUp() {

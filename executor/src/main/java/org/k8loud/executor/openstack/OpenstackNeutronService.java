@@ -16,4 +16,8 @@ public interface OpenstackNeutronService {
     SecurityGroupRule addSecurityGroupRule(SecurityGroup securityGroup, String ethertype, String direction,
                                            String remoteIpPrefix, String protocol, int portRangeMin,
                                            int portRangeMax, String description, OSClient.OSClientV3 client) throws OpenstackException;
+
+    void removeSecurityGroupRule(SecurityGroupRule securityGroupRule, OSClient.OSClientV3 client);
+
+    SecurityGroupRule getSecurityGroupRule(String securityGroupRuleId, OSClient.OSClientV3 client) throws OpenstackException;
 }
