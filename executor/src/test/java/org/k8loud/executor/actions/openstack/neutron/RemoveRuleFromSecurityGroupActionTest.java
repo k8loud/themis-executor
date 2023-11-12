@@ -1,9 +1,9 @@
-package org.k8loud.executor.action.openstack.neutron;
+package org.k8loud.executor.actions.openstack.neutron;
 
 import data.ExecutionRS;
 import data.Params;
 import org.junit.jupiter.api.Test;
-import org.k8loud.executor.action.openstack.OpenstackActionBaseTest;
+import org.k8loud.executor.actions.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.actions.openstack.RemoveRuleFromSecurityGroupAction;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
