@@ -16,16 +16,11 @@ import static org.k8loud.executor.exception.code.OpenstackExceptionCode.CREATE_S
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 public class CreateSecurityGroupTest extends OpenstackNeutronBaseTest {
     private static final SecurityGroup SECURITY_GROUP = Builders.securityGroup()
             .name(SECURITY_GROUP_NAME)
             .description(SECURITY_GROUP_DESCRIPTION)
             .build();
-    @Mock
-    SecurityGroupService securityGroupServiceMock;
-    @Mock
-    SecurityGroup securityGroupMock;
 
     @Override
     protected void setUp() {

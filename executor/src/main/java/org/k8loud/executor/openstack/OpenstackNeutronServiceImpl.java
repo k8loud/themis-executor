@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.exception.OpenstackException;
 import org.openstack4j.api.Builders;
 import org.openstack4j.api.OSClient;
+import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.network.SecurityGroup;
 import org.openstack4j.model.network.SecurityGroupRule;
 import org.springframework.stereotype.Service;
@@ -63,6 +64,25 @@ public class OpenstackNeutronServiceImpl implements OpenstackNeutronService {
         if (securityGroupRule == null) {
             throw new OpenstackException(ADD_RULE_FAILED,
                     "Failed to add rule to SecurityGroup '%s'", securityGroup.getName());
+        }
+
+        return securityGroupRule;
+    }
+
+    @Override
+    public void removeSecurityGroupRule(SecurityGroupRule securityGroupRule, OSClient.OSClientV3 client) {
+        log.debug("Deleting security group rule ({})", securityGroupRule.toString());
+        client.networking().securityrule().delete(securityGroupRule.getId());
+    }
+
+    @Override
+    public SecurityGroupRule getSecurityGroupRule(String securityGroupRuleId, OSClient.OSClientV3 client) throws OpenstackException {
+        log.debug("Getting security group rule object with id '{}'", securityGroupRuleId);
+        SecurityGroupRule securityGroupRule = client.networking().securityrule().get(securityGroupRuleId);
+
+        if (securityGroupRule == null){
+            throw new OpenstackException(SECURITY_GROUP_RULE_NOT_EXIST,
+                    "Failed to find SecurityGroupRule with '%s'", securityGroupRuleId);
         }
 
         return securityGroupRule;
