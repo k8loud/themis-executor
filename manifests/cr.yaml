@@ -1,0 +1,50 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: themis-executor
+  labels:
+    app: themis-executor
+    name: themis-executor
+rules:
+  - apiGroups:
+      - ""
+      - "apps"
+    resources:
+      - configmaps
+      - namespaces
+      - persistentvolumeclaims
+      - persistentvolumes
+      - pods
+      - resourcequotas
+      - replicationcontrollers
+      - secrets
+      - services
+      - daemonsets
+      - deployments
+      - deployments/scale
+      - replicasets
+      - replicasets/scale
+      - statefulsets
+      - statefulsets/scale
+      - cronjobs
+      - jobs
+      - networkpolicies
+      - storageclasses
+    verbs:
+      - put
+      - update
+      - get
+      - list
+      - watch
+      - apply
+      - create
+      - delete
+      - describe
+      - edit
+      - logs
+      - options
+      - patch
+      - replace
+      - run
+      - scale
+      - set
