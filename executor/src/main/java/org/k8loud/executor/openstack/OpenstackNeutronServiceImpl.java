@@ -5,10 +5,10 @@ import org.k8loud.executor.exception.OpenstackException;
 import org.openstack4j.api.Builders;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.model.network.SecurityGroup;
+import org.openstack4j.model.network.SecurityGroupRule;
 import org.springframework.stereotype.Service;
 
-import static org.k8loud.executor.exception.code.OpenstackExceptionCode.CREATE_SECURITY_GROUP_FAILED;
-import static org.k8loud.executor.exception.code.OpenstackExceptionCode.SECURITY_GROUP_NOT_EXIST;
+import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
 
 @Service
 @Slf4j
@@ -23,22 +23,48 @@ public class OpenstackNeutronServiceImpl implements OpenstackNeutronService {
                 .description(description)
                 .build());
 
-        if (securityGroup == null){
+        if (securityGroup == null) {
             throw new OpenstackException(CREATE_SECURITY_GROUP_FAILED,
                     "Failed to create SecurityGroup with name \"%s\"", name);
         }
     }
 
     @Override
-    public SecurityGroup getSecurityGroup(String securityGroupId, OSClient.OSClientV3 client) throws OpenstackException {
+    public SecurityGroup getSecurityGroup(String securityGroupId,
+                                          OSClient.OSClientV3 client) throws OpenstackException {
         log.debug("Getting security group object with id '{}'", securityGroupId);
         SecurityGroup securityGroup = client.networking().securitygroup().get(securityGroupId);
 
-        if (securityGroup == null){
+        if (securityGroup == null) {
             throw new OpenstackException(SECURITY_GROUP_NOT_EXIST,
                     "Failed to find SecurityGroup with '%s'", securityGroupId);
         }
 
         return securityGroup;
+    }
+
+    @Override
+    public SecurityGroupRule addSecurityGroupRule(SecurityGroup securityGroup, String ethertype, String direction,
+                                                  String remoteIpPrefix, String protocol, int portRangeMin,
+                                                  int portRangeMax, String description,
+                                                  OSClient.OSClientV3 client) throws OpenstackException {
+        log.debug("Creating new rule for SecurityGroup with id '{}'", securityGroup.getName());
+        SecurityGroupRule securityGroupRule = client.networking().securityrule().create(Builders.securityGroupRule()
+                .securityGroupId(securityGroup.getId())
+                .direction(direction)
+                .ethertype(ethertype)
+                .portRangeMin(portRangeMin)
+                .portRangeMax(portRangeMax)
+                .protocol(protocol)
+                .remoteIpPrefix(remoteIpPrefix)
+                .description(description)
+                .build());
+
+        if (securityGroupRule == null) {
+            throw new OpenstackException(ADD_RULE_FAILED,
+                    "Failed to add rule to SecurityGroup '%s'", securityGroup.getName());
+        }
+
+        return securityGroupRule;
     }
 }
