@@ -1,5 +1,5 @@
 ### pause server
-POST localhost:8080/execute
+POST localhost:8084/execute
 Content-Type: application/json
 
 {
@@ -8,7 +8,7 @@ Content-Type: application/json
   "params": {
     "params": {
       "region": "RegionOne",
-      "serverId": "PUT_ID"
+      "serverId": "d0f0afdb-051b-4462-add3-bd51fe427541"
     }
   }
 }

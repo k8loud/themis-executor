@@ -37,6 +37,20 @@ spec:
               value: /tmp
             - name: DATA_STORAGE_REMOVAL_PERMITTED
               value: "true"
+            - name: OPENSTACK_USERNAME
+              value: plgppycia
+            - name: OPENSTACK_PASSWORD
+              value: ladCesFaythoatmisfunoofItoabVilk
+            - name: OPENSTACK_ENDPOINT
+              value: https://api.cloud.cyfronet.pl:5000/v3
+            - name: OPENSTACK_DOMAIN_NAME
+              value: Default
+            - name: OPENSTACK_DOMAIN_I_D
+              value: default
+            - name: OPENSTACK_PROJECT_I_D
+              value: f3f4f2456fa54ec4836b6e5317480372
+            - name: OPENSTACK_OPENSTACK_AUTH
+              value: PROJECT_SCOPED
           resources:
             limits:
               cpu: 900m
