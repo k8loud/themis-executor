@@ -17,8 +17,8 @@ public class DeleteResourceAction extends KubernetesAction {
     }
 
     @Builder
-    public DeleteResourceAction(KubernetesService kubernetesService, String namespace, String resourceName,
-                                String resourceType, Long gracePeriodSeconds) {
+    public DeleteResourceAction(KubernetesService kubernetesService, String namespace,
+                                String resourceName, String resourceType, Long gracePeriodSeconds) {
         super(kubernetesService, namespace);
         this.resourceName = resourceName;
         this.resourceType = resourceType;

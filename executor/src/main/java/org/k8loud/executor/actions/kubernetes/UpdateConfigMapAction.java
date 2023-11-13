@@ -15,8 +15,8 @@ public class UpdateConfigMapAction extends KubernetesAction {
         super(params, kubernetesService);
     }
 
-    public UpdateConfigMapAction(KubernetesService kubernetesService, String namespace, String resourceName,
-                                 Map<String, String> replacements) {
+    public UpdateConfigMapAction(KubernetesService kubernetesService, String namespace,
+                                 String resourceName, Map<String, String> replacements) {
         super(kubernetesService, namespace);
         this.resourceName = resourceName;
         this.replacements = replacements;

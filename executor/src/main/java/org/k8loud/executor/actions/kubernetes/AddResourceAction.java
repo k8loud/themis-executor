@@ -20,8 +20,8 @@ public class AddResourceAction extends KubernetesAction {
     }
 
     @Builder
-    public AddResourceAction(KubernetesService kubernetesService, String namespace, String resourceType,
-                             String resourceDescription) {
+    public AddResourceAction(KubernetesService kubernetesService, String namespace,
+                             String resourceType, String resourceDescription) {
         super(kubernetesService, namespace);
         this.resourceType = resourceType;
         this.resourceDescription = resourceDescription;
