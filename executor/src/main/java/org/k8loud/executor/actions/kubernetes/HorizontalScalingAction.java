@@ -18,8 +18,7 @@ public class HorizontalScalingAction extends KubernetesAction {
     @Builder
     public HorizontalScalingAction(KubernetesService kubernetesService, String namespace, String resourceName,
                                    String resourceType, int replicas) {
-        super(kubernetesService);
-        this.namespace = namespace;
+        super(kubernetesService, namespace);
         this.resourceName = resourceName;
         this.resourceType = resourceType;
         this.replicas = replicas;

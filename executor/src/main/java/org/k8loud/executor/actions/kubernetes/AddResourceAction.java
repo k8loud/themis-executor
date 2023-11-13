@@ -2,6 +2,7 @@ package org.k8loud.executor.actions.kubernetes;
 
 import data.Params;
 import exception.ParamNotFoundException;
+import lombok.Builder;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.KubernetesException;
 import org.k8loud.executor.kubernetes.KubernetesService;
@@ -16,6 +17,14 @@ public class AddResourceAction extends KubernetesAction {
 
     public AddResourceAction(Params params, KubernetesService kubernetesService) throws ActionException {
         super(params, kubernetesService);
+    }
+
+    @Builder
+    public AddResourceAction(KubernetesService kubernetesService, String namespace, String resourceType,
+                             String resourceDescription) {
+        super(kubernetesService, namespace);
+        this.resourceType = resourceType;
+        this.resourceDescription = resourceDescription;
     }
 
     @Override
