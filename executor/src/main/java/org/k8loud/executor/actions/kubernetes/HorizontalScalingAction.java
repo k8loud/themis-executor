@@ -1,29 +1,28 @@
 package org.k8loud.executor.actions.kubernetes;
 
 import data.Params;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.KubernetesException;
 import org.k8loud.executor.kubernetes.KubernetesService;
 
-@Slf4j
-@Builder
-@AllArgsConstructor
 public class HorizontalScalingAction extends KubernetesAction {
     private String resourceName;
     private String resourceType;
     private int replicas;
 
-    public KubernetesService kubernetesService;
-
-    public String namespace;
-
     public HorizontalScalingAction(Params params, KubernetesService kubernetesService) throws ActionException {
         super(params, kubernetesService);
-        this.kubernetesService = kubernetesService;
+    }
+
+    @Builder
+    public HorizontalScalingAction(KubernetesService kubernetesService, String namespace, String resourceName,
+                                   String resourceType, int replicas) {
+        super(kubernetesService);
+        this.namespace = namespace;
+        this.resourceName = resourceName;
+        this.resourceType = resourceType;
+        this.replicas = replicas;
     }
 
     @Override
