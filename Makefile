@@ -10,11 +10,11 @@ help: ## show Makefile contents
 build: ## build
 	mvn clean install
 
-build_and_push: ## build Docker image and push it to Docker Hub
+build-and-push: ## build Docker image and push it to Docker Hub
 	make build
-	make build_and_push_docker FULL_IMAGE_NAME=$(DOCKERHUB_USERNAME)/$(IMAGE_NAME):$(TAG)
+	make build-and-push-docker FULL_IMAGE_NAME=$(DOCKERHUB_USERNAME)/$(IMAGE_NAME):$(TAG)
 
-build_and_push_docker:
+build-and-push-docker:
 	@echo "Full image name: $(FULL_IMAGE_NAME)"
 	docker login
 	docker build -t $(FULL_IMAGE_NAME) .
