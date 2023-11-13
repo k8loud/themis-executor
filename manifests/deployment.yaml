@@ -19,8 +19,8 @@ spec:
       serviceAccountName: themis-executor
       containers:
         - name: executor
-          image: k8loud/themis-executor:0.0.2-builder-test
-          imagePullPolicy: "Always"
+          image: k8loud/themis-executor:0.0.2.4
+          imagePullPolicy: "IfNotPresent"
           env:
             - name: RULES_PATH
               value: /rules/test.drl
