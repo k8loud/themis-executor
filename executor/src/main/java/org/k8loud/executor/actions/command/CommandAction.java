@@ -1,6 +1,7 @@
 package org.k8loud.executor.actions.command;
 
 import data.Params;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.actions.Action;
 import org.k8loud.executor.command.CommandExecutionService;
@@ -8,6 +9,7 @@ import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CommandException;
 
 @Slf4j
+@AllArgsConstructor
 public abstract class CommandAction extends Action {
     protected CommandExecutionService commandExecutionService;
     protected String host;

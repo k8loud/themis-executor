@@ -1,6 +1,7 @@
 package org.k8loud.executor.actions.command;
 
 import data.Params;
+import lombok.Builder;
 import org.k8loud.executor.command.CommandExecutionService;
 import org.k8loud.executor.exception.ActionException;
 
@@ -18,6 +19,17 @@ public class ClearStorageAction extends CommandAction {
 
     public ClearStorageAction(Params params, CommandExecutionService commandExecutionService) throws ActionException {
         super(params, commandExecutionService);
+    }
+
+    @Builder
+    public ClearStorageAction(CommandExecutionService commandExecutionService, String host, Integer port,
+                              String privateKey, String user,
+                              String paths, String regexPattern, Date dateFrom, Date dateTo) {
+        super(commandExecutionService, host, port, privateKey, user);
+        this.paths = paths;
+        this.regexPattern = regexPattern;
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
     }
 
     @Override

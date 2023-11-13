@@ -2,7 +2,6 @@ package org.k8loud.executor.actions.kubernetes;
 
 import data.Params;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.actions.Action;
@@ -13,8 +12,8 @@ import org.k8loud.executor.kubernetes.KubernetesService;
 @AllArgsConstructor
 @NoArgsConstructor
 public abstract class KubernetesAction extends Action {
-    public KubernetesService kubernetesService;
-    public String namespace;
+    protected KubernetesService kubernetesService;
+    protected String namespace;
 
     protected KubernetesAction(Params params, KubernetesService kubernetesService) throws ActionException {
         super(params);

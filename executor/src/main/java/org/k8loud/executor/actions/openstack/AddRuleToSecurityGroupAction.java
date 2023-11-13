@@ -1,6 +1,7 @@
 package org.k8loud.executor.actions.openstack;
 
 import data.Params;
+import lombok.Builder;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.openstack.OpenstackService;
@@ -18,6 +19,23 @@ public class AddRuleToSecurityGroupAction extends OpenstackAction {
 
     public AddRuleToSecurityGroupAction(Params params, OpenstackService openstackService) throws ActionException {
         super(params, openstackService);
+    }
+
+    @Builder
+    public AddRuleToSecurityGroupAction(OpenstackService openstackService,
+                                        String region, String securityGroupId, String ethertype, String direction,
+                                        String remoteIpPrefix, String protocol, int portRangeMin, int portRangeMax,
+                                        String description) {
+        super(openstackService);
+        this.region = region;
+        this.securityGroupId = securityGroupId;
+        this.ethertype = ethertype;
+        this.direction = direction;
+        this.remoteIpPrefix = remoteIpPrefix;
+        this.protocol = protocol;
+        this.portRangeMin = portRangeMin;
+        this.portRangeMax = portRangeMax;
+        this.description = description;
     }
 
     @Override
