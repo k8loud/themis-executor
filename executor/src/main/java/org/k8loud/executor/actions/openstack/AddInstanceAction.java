@@ -1,6 +1,7 @@
 package org.k8loud.executor.actions.openstack;
 
 import data.Params;
+import lombok.Builder;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.openstack.OpenstackService;
@@ -18,6 +19,22 @@ public class AddInstanceAction extends OpenstackAction {
 
     public AddInstanceAction(Params params, OpenstackService openstackService) throws ActionException {
         super(params, openstackService);
+    }
+
+    @Builder
+    public AddInstanceAction(OpenstackService openstackService,
+                             String region, String name, String imageId, String flavorId, String keypairName,
+                             String securityGroup, String userData, int count, int waitActiveSec) {
+        super(openstackService);
+        this.region = region;
+        this.name = name;
+        this.imageId = imageId;
+        this.flavorId = flavorId;
+        this.keypairName = keypairName;
+        this.securityGroup = securityGroup;
+        this.userData = userData;
+        this.count = count;
+        this.waitActiveSec = waitActiveSec;
     }
 
     @Override

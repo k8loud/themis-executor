@@ -1,6 +1,7 @@
 package org.k8loud.executor.actions.openstack;
 
 import data.Params;
+import lombok.Builder;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.openstack.OpenstackService;
@@ -13,6 +14,16 @@ public class AttachVolumeAction extends OpenstackAction {
 
     public AttachVolumeAction(Params params, OpenstackService openstackService) throws ActionException {
         super(params, openstackService);
+    }
+
+    @Builder
+    public AttachVolumeAction(OpenstackService openstackService,
+                              String region, String serverId, String volumeId, String device) {
+        super(openstackService);
+        this.region = region;
+        this.serverId = serverId;
+        this.volumeId = volumeId;
+        this.device = device;
     }
 
     @Override
