@@ -7,6 +7,7 @@ import org.k8loud.executor.actions.openstack.AddRuleToSecurityGroupAction;
 import org.k8loud.executor.actions.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
+import org.k8loud.executor.exception.ValidationException;
 
 import java.util.Map;
 
@@ -19,12 +20,12 @@ public class AddRuleToSecurityGroupActionTest extends OpenstackActionBaseTest {
                     "portRangeMax", PORT_RANGE_MAX));
 
     @Test
-    void testSuccess() throws ActionException, OpenstackException {
+    void testSuccess() throws ActionException, OpenstackException, ValidationException {
         // given
         AddRuleToSecurityGroupAction addRuleToSecurityGroupAction = new AddRuleToSecurityGroupAction(VALID_PARAMS,
                 openstackServiceMock);
         when(openstackServiceMock.addRuleToSecurityGroup(anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyInt(), anyInt(), nullable(String.class))).thenReturn(RESULT);
+                anyString(), anyString(), anyInt(), anyInt(), nullable(String.class))).thenReturn(resultMap);
 
         // when
         ExecutionRS response = addRuleToSecurityGroupAction.execute();

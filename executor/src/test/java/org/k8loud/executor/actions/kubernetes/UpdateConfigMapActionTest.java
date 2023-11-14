@@ -22,7 +22,7 @@ class UpdateConfigMapActionTest extends KubernetesActionBaseTest {
     void testValidParams(Params params, Map<String, String> replacements)
             throws ActionException, KubernetesException {
         // given
-        when(kubernetesServiceMock.updateConfigMap(anyString(), anyString(), anyMap())).thenReturn(RESULT);
+        when(kubernetesServiceMock.updateConfigMap(anyString(), anyString(), anyMap())).thenReturn(resultMap);
 
         // when
         Action action = new UpdateConfigMapAction(params, kubernetesServiceMock);

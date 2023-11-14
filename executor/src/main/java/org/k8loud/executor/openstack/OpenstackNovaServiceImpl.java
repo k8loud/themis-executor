@@ -2,6 +2,7 @@ package org.k8loud.executor.openstack;
 
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.exception.OpenstackException;
+import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.exception.code.OpenstackExceptionCode;
 import org.k8loud.executor.util.Util;
 import org.openstack4j.api.Builders;
@@ -21,12 +22,14 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
+import static org.k8loud.executor.util.Util.resultMap;
 
 @Service
 @Slf4j
@@ -96,7 +99,7 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
     }
 
     @Override
-    public void createServerSnapshot(Server server, String snapshotName,
+    public String createServerSnapshot(Server server, String snapshotName,
                                      OSClient.OSClientV3 client) throws OpenstackException {
         log.debug("Creating snapshot with name {} on server {}", snapshotName, server.getName());
         String snapshotId = client.compute().servers().createSnapshot(server.getId(), snapshotName);
@@ -105,6 +108,8 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
             throw new OpenstackException(String.format("Failed to create snapshot with name \"%s\" on server %s",
                     snapshotName, server.getName()), CREATE_SERVER_SNAPSHOT_FAILED);
         }
+
+        return snapshotId;
     }
 
     @Override
@@ -132,28 +137,27 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
     }
 
     @Override
-    public String createServers(String name, Image image, Flavor flavor, String keypairName, String securityGroup,
-                                String userData, int count, int waitActiveSec,
-                                Supplier<OSClient.OSClientV3> clientSupplier) throws OpenstackException {
-        List<String> results = IntStream.rangeClosed(1, count)
+    public List<String> createServers(String name, Image image, Flavor flavor, String keypairName, String securityGroup,
+                                             String userData, int count, int waitActiveSec,
+                                             Supplier<OSClient.OSClientV3> clientSupplier) throws OpenstackException {
+        List<?> results = IntStream.rangeClosed(1, count)
                 .parallel()
                 .mapToObj(i -> {
                     try {
-                        Server server = spawnServer(Util.nameWithUuid(name), flavor, image, keypairName,
+                        return spawnServer(Util.nameWithUuid(name), flavor, image, keypairName,
                                 securityGroup, userData, waitActiveSec, clientSupplier.get());
-                        return String.format("Successful creation of server %s", server.getName());
                     } catch (OpenstackException e) {
-                        return e.toString();
+                        return e;
                     }
                 })
                 .toList();
 
-        if (results.stream().anyMatch(s -> s.contains("Failed to create server"))) {
+        if (results.stream().anyMatch(s -> Exception.class.isAssignableFrom(s.getClass()))) {
             throw new OpenstackException(CREATE_SERVER_FAILED,
                     "Failed to create %s servers named %s. List of results: %s", count, name, results);
         }
 
-        return String.format("Successfully created %s servers named %s", count, name);
+        return results.stream().map(s -> ((Server) s).getId()).toList();
     }
 
     private Server spawnServer(String name, Flavor flavor, Image image, String keypairName, String securityGroup,

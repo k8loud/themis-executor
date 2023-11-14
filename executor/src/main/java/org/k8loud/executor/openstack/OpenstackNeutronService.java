@@ -9,7 +9,7 @@ import org.springframework.retry.annotation.Retryable;
 
 @Retryable(retryFor = ConnectionException.class)
 public interface OpenstackNeutronService {
-    void createSecurityGroup(String name, String description, OSClient.OSClientV3 client) throws OpenstackException;
+    SecurityGroup createSecurityGroup(String name, String description, OSClient.OSClientV3 client) throws OpenstackException;
 
     SecurityGroup getSecurityGroup(String securityGroupId, OSClient.OSClientV3 client) throws OpenstackException;
 

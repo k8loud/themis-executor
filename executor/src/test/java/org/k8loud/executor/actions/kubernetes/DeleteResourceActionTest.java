@@ -23,7 +23,8 @@ public class DeleteResourceActionTest extends KubernetesActionBaseTest {
     @MethodSource
     void testValidParams(Params params) throws ActionException, KubernetesException {
         // given
-        when(kubernetesServiceMock.deleteResource(anyString(), anyString(), anyString(), anyLong())).thenReturn(RESULT);
+        when(kubernetesServiceMock.deleteResource(anyString(), anyString(), anyString(), anyLong())).thenReturn(
+                resultMap);
 
         // when
         Action action = new DeleteResourceAction(params, kubernetesServiceMock);

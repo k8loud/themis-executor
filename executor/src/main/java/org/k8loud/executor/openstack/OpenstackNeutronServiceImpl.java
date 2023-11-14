@@ -16,7 +16,7 @@ import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
 public class OpenstackNeutronServiceImpl implements OpenstackNeutronService {
 
     @Override
-    public void createSecurityGroup(String name, String description,
+    public SecurityGroup createSecurityGroup(String name, String description,
                                     OSClient.OSClientV3 client) throws OpenstackException {
         log.debug("Creating security group with name '{}' and description '{}'", name, description);
         SecurityGroup securityGroup = client.networking().securitygroup().create(Builders.securityGroup()
@@ -28,6 +28,7 @@ public class OpenstackNeutronServiceImpl implements OpenstackNeutronService {
             throw new OpenstackException(CREATE_SECURITY_GROUP_FAILED,
                     "Failed to create SecurityGroup with name \"%s\"", name);
         }
+        return securityGroup;
     }
 
     @Override

@@ -31,7 +31,7 @@ public class UpdateConfigMapTest extends KubernetesBaseTest {
         client.resource(cm).create();
 
         // when
-        String res = kubernetesService.updateConfigMap(namespace, resourceName, replacements);
+        Map<String, String> res = kubernetesService.updateConfigMap(namespace, resourceName, replacements);
         ConfigMap cm1 = client.configMaps().inNamespace(namespace).withName(resourceName).get();
 
         //then
@@ -40,7 +40,7 @@ public class UpdateConfigMapTest extends KubernetesBaseTest {
         assertNotNull(cm1.getData());
         assertEquals(finalLength, cm1.getData().size());
         assertEquals(newData, cm1.getData());
-        assertEquals(String.format("Update of %s/%s successful", "ConfigMap", resourceName), res);
+        assertResult(String.format("Update of %s/%s successful", "ConfigMap", resourceName), res);
     }
 
     private static Stream<Arguments> testUpdateValuesConfigMap() {

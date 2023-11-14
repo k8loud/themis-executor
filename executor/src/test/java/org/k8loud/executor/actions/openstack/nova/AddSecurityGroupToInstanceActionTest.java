@@ -30,7 +30,7 @@ public class AddSecurityGroupToInstanceActionTest extends OpenstackActionBaseTes
                 validParams, openstackServiceMock);
 
         when(openstackServiceMock.addSecurityGroupToInstance(anyString(), anyString(), anyString()))
-                .thenReturn(RESULT);
+                .thenReturn(resultMap);
 
         // when
         ExecutionRS response = groupToInstanceAction.execute();

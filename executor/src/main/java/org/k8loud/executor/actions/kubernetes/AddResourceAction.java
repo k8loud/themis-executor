@@ -7,6 +7,7 @@ import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.KubernetesException;
 import org.k8loud.executor.kubernetes.KubernetesService;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,7 +46,7 @@ public class AddResourceAction extends KubernetesAction {
     }
 
     @Override
-    public String executeBody() throws KubernetesException {
+    public Map<String, String> executeBody() throws KubernetesException {
         return kubernetesService.addResource(namespace, resourceType, resourceDescription);
     }
 

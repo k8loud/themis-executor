@@ -9,6 +9,7 @@ import org.k8loud.executor.actions.openstack.CreateServerSnapshotAction;
 import org.k8loud.executor.actions.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
+import org.k8loud.executor.exception.ValidationException;
 
 import java.util.Collections;
 import java.util.Map;
@@ -23,12 +24,12 @@ import static org.mockito.Mockito.*;
 public class CreateServerSnapshotActionTest extends OpenstackActionBaseTest {
     @ParameterizedTest
     @MethodSource
-    void testCreateServerSnapshotSuccess(Params params) throws ActionException, OpenstackException {
+    void testCreateServerSnapshotSuccess(Params params) throws ActionException, OpenstackException, ValidationException {
         // given
         CreateServerSnapshotAction createServerSnapshotAction = new CreateServerSnapshotAction(
                 params, openstackServiceMock);
         when(openstackServiceMock.createServerSnapshot(anyString(), anyString(), nullable(String.class), anyBoolean()))
-                .thenReturn(RESULT);
+                .thenReturn(resultMap);
 
         // when
         ExecutionRS response = createServerSnapshotAction.execute();

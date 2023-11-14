@@ -22,6 +22,7 @@ import java.util.Map;
 import static org.k8loud.executor.exception.code.KubernetesExceptionCode.*;
 import static org.k8loud.executor.kubernetes.KubernetesResourceType.CONFIG_MAP;
 import static org.k8loud.executor.util.Util.getFullResourceName;
+import static org.k8loud.executor.util.Util.resultMap;
 
 @SuppressWarnings("unchecked")
 @RequiredArgsConstructor
@@ -33,21 +34,21 @@ public class KubernetesServiceImpl implements KubernetesService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException", exceptionCode = "SCALE_HORIZONTALLY_FAILED")
-    public String scaleHorizontally(String namespace, String resourceName, String resourceType, Integer replicas)
-            throws KubernetesException {
+    public Map<String, String> scaleHorizontally(String namespace, String resourceName, String resourceType,
+                                                 Integer replicas) throws KubernetesException {
         log.info("Scaling {} to {}", getFullResourceName(resourceType, resourceName), replicas);
         getResource(namespace, resourceType, resourceName)
                 .scale(replicas);
-        return String.format("Scaled %s to %d", getFullResourceName(resourceType, resourceName), replicas);
+        return resultMap(String.format("Scaled %s to %d", getFullResourceName(resourceType, resourceName), replicas));
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException", exceptionCode = "ADD_RESOURCE_FAILED")
-    public <T extends HasMetadata> String addResource(final String namespace, final String resourceType,
-                                  String resourceDescription) throws KubernetesException {
+    public <T extends HasMetadata> Map<String, String> addResource(final String namespace, final String resourceType,
+                                                                   String resourceDescription) throws KubernetesException {
         log.info("Adding resource of type {} to namespace {} from description", resourceType, namespace);
         Resource<T> resource = loadResource(resourceType, resourceDescription);
-        final String resourceName = ((HasMetadataOperation<T,?,?>) resource).getName();
+        final String resourceName = ((HasMetadataOperation<T, ?, ?>) resource).getName();
         try {
             // This check may be removed, fabric8 responds with a bit lengthy message, but it's clear
             getResource(namespace, resourceType, resourceName);
@@ -69,30 +70,33 @@ public class KubernetesServiceImpl implements KubernetesService {
             throw new KubernetesException(String.format("Post add resource verification failed, the cause is '%s'", e),
                     POST_ADD_RESOURCE_VERIFICATION_FAILED);
         }
-        return String.format("Added resource %s", getFullResourceName(resourceType, resourceName));
+        return resultMap(String.format("Added resource %s", getFullResourceName(resourceType, resourceName)));
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException", exceptionCode = "DELETE_RESOURCE_FAILED")
-    public String deleteResource(String namespace, String resourceName, String resourceType, Long gracePeriodSeconds)
+    public Map<String, String> deleteResource(String namespace, String resourceName, String resourceType,
+                                              Long gracePeriodSeconds)
             throws KubernetesException {
         log.info("Deleting {}, giving {} seconds for shutdown", getFullResourceName(resourceType, resourceName),
                 gracePeriodSeconds);
         getResource(namespace, resourceType, resourceName)
                 .withGracePeriod(gracePeriodSeconds)
                 .delete();
-        return String.format("Deleted resource %s", getFullResourceName(resourceType, resourceName));
+
+        return resultMap(String.format("Deleted resource %s", getFullResourceName(resourceType, resourceName)));
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException", exceptionCode = "UPDATE_CONFIG_MAP_FAILED")
-    public String updateConfigMap(String namespace, String resourceName, Map<String, String> replacements)
+    public Map<String, String> updateConfigMap(String namespace, String resourceName, Map<String, String> replacements)
             throws KubernetesException {
         log.info("Updating {} with {}", getFullResourceName(CONFIG_MAP.toString(), resourceName), replacements);
         getResource(namespace, CONFIG_MAP.toString(), resourceName)
                 .edit(c -> new ConfigMapBuilder((ConfigMap) c)
                         .addToData(replacements).build());
-        return String.format("Update of %s successful", getFullResourceName(CONFIG_MAP.toString(), resourceName));
+        return resultMap(
+                String.format("Update of %s successful", getFullResourceName(CONFIG_MAP.toString(), resourceName)));
     }
 
     @NotNull

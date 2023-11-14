@@ -28,7 +28,7 @@ public class DeleteVolumeSnapshotActionTest extends OpenstackActionBaseTest {
         DeleteVolumeSnapshotAction deleteVolumeSnapshotAction = new DeleteVolumeSnapshotAction(
                 params, openstackServiceMock);
         when(openstackServiceMock.deleteTheOldestVolumeSnapshot(anyString(), anyString(), anyBoolean()))
-                .thenReturn(RESULT);
+                .thenReturn(resultMap);
 
         // when
         ExecutionRS response = deleteVolumeSnapshotAction.execute();

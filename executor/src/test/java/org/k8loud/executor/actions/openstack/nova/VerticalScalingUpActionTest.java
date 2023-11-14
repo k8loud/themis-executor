@@ -26,7 +26,7 @@ public class VerticalScalingUpActionTest extends OpenstackActionBaseTest {
     void testSuccess() throws ActionException, OpenstackException {
         // given
         VerticalScalingUpAction verticalScalingAction = new VerticalScalingUpAction(VALID_PARAMS, openstackServiceMock);
-        when(openstackServiceMock.resizeServerUp(anyString(), anyString(), anyString())).thenReturn(RESULT);
+        when(openstackServiceMock.resizeServerUp(anyString(), anyString(), anyString())).thenReturn(resultMap);
 
         // when
         ExecutionRS response = verticalScalingAction.execute();

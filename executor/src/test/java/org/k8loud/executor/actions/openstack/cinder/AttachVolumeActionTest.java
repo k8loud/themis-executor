@@ -28,7 +28,8 @@ public class AttachVolumeActionTest extends OpenstackActionBaseTest {
         // given
         AttachVolumeAction attachVolumeAction = new AttachVolumeAction(VALID_PARAMS,
                 openstackServiceMock);
-        when(openstackServiceMock.attachVolume(anyString(), anyString(), anyString(), anyString())).thenReturn(RESULT);
+        when(openstackServiceMock.attachVolume(anyString(), anyString(), anyString(), anyString())).thenReturn(
+                resultMap);
 
         // when
         ExecutionRS response = attachVolumeAction.execute();

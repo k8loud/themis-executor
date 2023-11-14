@@ -28,7 +28,7 @@ public class DeleteServerSnapshotActionTest extends OpenstackActionBaseTest {
         DeleteServerSnapshotAction deleteServerSnapshotAction = new DeleteServerSnapshotAction(
                 params, openstackServiceMock);
         when(openstackServiceMock.deleteTheOldestServerSnapshot(anyString(), anyString(), anyBoolean()))
-                .thenReturn(RESULT);
+                .thenReturn(resultMap);
 
         // when
         ExecutionRS response = deleteServerSnapshotAction.execute();

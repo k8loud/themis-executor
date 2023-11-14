@@ -31,7 +31,6 @@ public class CreateServersTest extends OpenstackNovaBaseTest {
     @Override
     public void setUp() {
         when(serverServiceMock.bootAndWaitActive(any(ServerCreate.class), anyInt())).thenReturn(serverMock);
-        when(serverMock.getName()).thenReturn(SERVER_NAME + 1);
         when(imageMock.getId()).thenReturn(IMAGE_ID);
         when(flavorMock.getId()).thenReturn(FLAVOR_ID);
     }

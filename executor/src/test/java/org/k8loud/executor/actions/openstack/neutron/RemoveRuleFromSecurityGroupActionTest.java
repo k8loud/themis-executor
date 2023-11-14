@@ -21,7 +21,7 @@ public class RemoveRuleFromSecurityGroupActionTest extends OpenstackActionBaseTe
         // given
         RemoveRuleFromSecurityGroupAction removeRuleFromSecurityGroupAction = new RemoveRuleFromSecurityGroupAction(
                 VALID_PARAMS, openstackServiceMock);
-        when(openstackServiceMock.removeSecurityGroupRule(anyString(), anyString())).thenReturn(RESULT);
+        when(openstackServiceMock.removeSecurityGroupRule(anyString(), anyString())).thenReturn(resultMap);
 
         // when
         ExecutionRS response = removeRuleFromSecurityGroupAction.execute();

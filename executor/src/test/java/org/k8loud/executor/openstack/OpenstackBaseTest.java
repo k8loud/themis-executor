@@ -8,6 +8,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.model.compute.Server;
 
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,4 +41,8 @@ public abstract class OpenstackBaseTest extends OpenstackConstants {
     }
 
     protected abstract void setUp() throws OpenstackException;
+
+    protected void assertResult(String expectedResult, Map<String, String> result){
+        assertThat(result.get("result")).isEqualTo(expectedResult);
+    }
 }

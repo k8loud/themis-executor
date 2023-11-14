@@ -27,7 +27,7 @@ public class VerticalScalingDownActionTest extends OpenstackActionBaseTest {
         // given
         VerticalScalingDownAction verticalScalingAction = new VerticalScalingDownAction(VALID_PARAMS,
                 openstackServiceMock);
-        when(openstackServiceMock.resizeServerDown(anyString(), anyString(), anyString())).thenReturn(RESULT);
+        when(openstackServiceMock.resizeServerDown(anyString(), anyString(), anyString())).thenReturn(resultMap);
 
         // when
         ExecutionRS response = verticalScalingAction.execute();

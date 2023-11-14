@@ -27,7 +27,7 @@ public class CreateVolumeSnapshotActionTest extends OpenstackActionBaseTest {
         CreateVolumeSnapshotAction createVolumeSnapshotAction = new CreateVolumeSnapshotAction(
                 params, openstackServiceMock);
         when(openstackServiceMock.createVolumeSnapshot(anyString(), anyString(), nullable(String.class)))
-                .thenReturn(RESULT);
+                .thenReturn(resultMap);
 
         // when
         ExecutionRS response = createVolumeSnapshotAction.execute();
