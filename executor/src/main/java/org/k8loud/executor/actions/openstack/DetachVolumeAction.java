@@ -6,6 +6,8 @@ import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.openstack.OpenstackService;
 
+import java.util.Map;
+
 public class DetachVolumeAction extends OpenstackAction {
     private String region;
     private String serverId;
@@ -32,7 +34,7 @@ public class DetachVolumeAction extends OpenstackAction {
     }
 
     @Override
-    protected String executeBody() throws OpenstackException {
+    protected Map<String, String> executeBody() throws OpenstackException {
         return this.openstackService.detachVolume(region, serverId, volumeId);
     }
 }

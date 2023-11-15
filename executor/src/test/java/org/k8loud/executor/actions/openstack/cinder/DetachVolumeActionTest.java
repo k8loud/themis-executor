@@ -28,7 +28,7 @@ public class DetachVolumeActionTest extends OpenstackActionBaseTest {
         // given
         DetachVolumeAction detachVolumeAction = new DetachVolumeAction(VALID_PARAMS,
                 openstackServiceMock);
-        when(openstackServiceMock.detachVolume(anyString(), anyString(), anyString())).thenReturn(RESULT);
+        when(openstackServiceMock.detachVolume(anyString(), anyString(), anyString())).thenReturn(resultMap);
 
         // when
         ExecutionRS response = detachVolumeAction.execute();

@@ -29,7 +29,7 @@ public class AddResourceActionTest extends KubernetesActionBaseTest {
     void testResourceDescriptionWithNamespace() throws ActionException, KubernetesException {
         // given
         Params params = new Params(Map.of(RESOURCE_DESCRIPTION_KEY, RESOURCE_DESCRIPTION_WITH_NAMESPACE));
-        when(kubernetesServiceMock.addResource(anyString(), anyString(), anyString())).thenReturn(RESULT);
+        when(kubernetesServiceMock.addResource(anyString(), anyString(), anyString())).thenReturn(resultMap);
         final String expectedResourceType = POD.toString();
         final String expectedNamespace = "namespace-from-resource-description";
 
@@ -63,7 +63,7 @@ public class AddResourceActionTest extends KubernetesActionBaseTest {
         // given
         Params params = new Params(Map.of(RESOURCE_DESCRIPTION_KEY, RESOURCE_DESCRIPTION_WITH_NAMESPACE,
                 NAMESPACE_KEY, NAMESPACE));
-        when(kubernetesServiceMock.addResource(anyString(), anyString(), anyString())).thenReturn(RESULT);
+        when(kubernetesServiceMock.addResource(anyString(), anyString(), anyString())).thenReturn(resultMap);
         final String expectedResourceType = POD.toString();
 
         // when
@@ -95,7 +95,7 @@ public class AddResourceActionTest extends KubernetesActionBaseTest {
     void testValidParams(Params params, String expectedNamespace, String expectedResourceType,
                          String expectedResourceDescription) throws ActionException, KubernetesException {
         // given
-        when(kubernetesServiceMock.addResource(anyString(), anyString(), anyString())).thenReturn(RESULT);
+        when(kubernetesServiceMock.addResource(anyString(), anyString(), anyString())).thenReturn(resultMap);
 
         // when
         Action action = new AddResourceAction(params, kubernetesServiceMock);

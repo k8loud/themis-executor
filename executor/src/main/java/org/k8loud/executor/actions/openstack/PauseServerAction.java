@@ -6,6 +6,8 @@ import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.openstack.OpenstackService;
 
+import java.util.Map;
+
 public class PauseServerAction extends OpenstackAction {
     private String region;
     private String serverId;
@@ -29,7 +31,7 @@ public class PauseServerAction extends OpenstackAction {
     }
 
     @Override
-    protected String executeBody() throws OpenstackException {
+    protected Map<String, String> executeBody() throws OpenstackException {
         return openstackService.pauseServer(region, serverId);
     }
 }

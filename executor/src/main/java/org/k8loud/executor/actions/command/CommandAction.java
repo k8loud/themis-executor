@@ -8,6 +8,8 @@ import org.k8loud.executor.command.CommandExecutionService;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CommandException;
 
+import java.util.Map;
+
 @Slf4j
 @AllArgsConstructor
 public abstract class CommandAction extends Action {
@@ -34,7 +36,7 @@ public abstract class CommandAction extends Action {
     protected abstract void unpackAdditionalParams(Params params);
 
     @Override
-    protected String executeBody() throws CommandException {
+    protected Map<String, String> executeBody() throws CommandException {
         return commandExecutionService.executeCommand(host, port, privateKey, user, buildCommand());
     }
 

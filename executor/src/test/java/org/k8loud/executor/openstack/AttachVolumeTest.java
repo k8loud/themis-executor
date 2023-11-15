@@ -8,6 +8,8 @@ import org.mockito.Mock;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.model.storage.block.Volume;
 
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,7 +33,7 @@ public class AttachVolumeTest extends OpenstackBaseTest {
         when(volumeMock.getStatus()).thenReturn(Volume.Status.AVAILABLE);
 
         // when
-        String res = openstackService.attachVolume(REGION, SERVER_ID, VOLUME_ID, DEVICE);
+        Map<String, String> res = openstackService.attachVolume(REGION, SERVER_ID, VOLUME_ID, DEVICE);
 
         // then
         verify(clientV3Mock).useRegion(eq(REGION));
@@ -39,7 +41,7 @@ public class AttachVolumeTest extends OpenstackBaseTest {
         verify(openstackCinderService).getVolume(eq(VOLUME_ID), eq(clientV3Mock));
         verify(volumeMock).getStatus();
         verify(openstackCinderService).attachVolume(eq(serverMock), eq(volumeMock), eq(DEVICE), eq(clientV3Mock));
-        assertEquals(String.format("Attaching volume with id=%s for a server with id=%s to device=%s finished with " +
+        assertResult(String.format("Attaching volume with id=%s for a server with id=%s to device=%s finished with " +
                         "success", VOLUME_ID, SERVER_ID, DEVICE), res);
     }
 

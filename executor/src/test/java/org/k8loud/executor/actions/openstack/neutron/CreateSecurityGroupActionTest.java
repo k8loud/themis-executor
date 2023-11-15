@@ -10,6 +10,7 @@ import org.k8loud.executor.actions.openstack.CreateSecurityGroupAction;
 import org.k8loud.executor.actions.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
+import org.k8loud.executor.exception.ValidationException;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -26,11 +27,11 @@ public class CreateSecurityGroupActionTest extends OpenstackActionBaseTest {
             Map.of("region", REGION, "name", SECURITY_GROUP_NAME, "description", SECURITY_GROUP_DESCRIPTION));
 
     @Test
-    void testCreateSecurityGroupAction() throws ActionException, OpenstackException {
+    void testCreateSecurityGroupAction() throws ActionException, OpenstackException, ValidationException {
         // given
         CreateSecurityGroupAction createSecurityGroupAction = new CreateSecurityGroupAction(VALID_PARAMS,
                 openstackServiceMock);
-        when(openstackServiceMock.createSecurityGroup(anyString(), anyString(), anyString())).thenReturn(RESULT);
+        when(openstackServiceMock.createSecurityGroup(anyString(), anyString(), anyString())).thenReturn(resultMap);
 
         // when
         ExecutionRS response = createSecurityGroupAction.execute();

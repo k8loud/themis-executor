@@ -9,6 +9,7 @@ import org.k8loud.executor.actions.openstack.AddInstanceAction;
 import org.k8loud.executor.actions.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
+import org.k8loud.executor.exception.ValidationException;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -28,13 +29,13 @@ public class AddInstanceActionTest extends OpenstackActionBaseTest {
 
     @ParameterizedTest
     @MethodSource
-    void testSuccess(Params params) throws ActionException, OpenstackException {
+    void testSuccess(Params params) throws ActionException, OpenstackException, ValidationException {
         // given
         AddInstanceAction addInstanceAction = new AddInstanceAction(
                 params, openstackServiceMock);
         when(openstackServiceMock.createServers(anyString(), anyString(), anyString(), anyString(),
                 nullable(String.class), nullable(String.class), nullable(String.class), anyInt(), anyInt()))
-                .thenReturn(RESULT);
+                .thenReturn(resultMap);
 
         // when
         ExecutionRS response = addInstanceAction.execute();

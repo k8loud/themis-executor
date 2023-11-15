@@ -4,7 +4,10 @@ import data.Params;
 import lombok.Builder;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
+import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.openstack.OpenstackService;
+
+import java.util.Map;
 
 public class CreateSecurityGroupAction extends OpenstackAction {
     private String region;
@@ -32,7 +35,7 @@ public class CreateSecurityGroupAction extends OpenstackAction {
     }
 
     @Override
-    protected String executeBody() throws OpenstackException {
+    protected Map<String, String> executeBody() throws OpenstackException, ValidationException {
         return openstackService.createSecurityGroup(region, name, description);
     }
 }

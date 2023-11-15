@@ -5,13 +5,14 @@ import data.ExecutionExitCode;
 import data.ExecutionRS;
 import data.Params;
 import exception.ParamNotFoundException;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CustomException;
 import org.k8loud.executor.exception.code.ActionExceptionCode;
+
+import java.util.Map;
 
 @Slf4j
 @Data
@@ -28,9 +29,9 @@ public abstract class Action {
     public abstract void unpackParams(Params params) throws ActionException;
 
     public ExecutionRS execute() {
-        String result;
+        Map<String, String> resultMap;
         try {
-            result = executeBody();
+            resultMap = executeBody();
         } catch (CustomException e) {
             log.error("Error: {}" , e.toString());
             return ExecutionRS.builder()
@@ -38,12 +39,14 @@ public abstract class Action {
                     .exitCode(ExecutionExitCode.NOT_OK)
                     .build();
         }
-        log.info("Result: {} [{}]", getClass().getName(), result);
+        String result = resultMap.remove("result");
+        log.info("Result: {} [{}]", getClass().getName(), resultMap);
         return ExecutionRS.builder()
                 .result(result)
                 .exitCode(ExecutionExitCode.OK)
+                .additionalData(resultMap)
                 .build();
     }
 
-    protected abstract String executeBody() throws CustomException;
+    protected abstract Map<String,String> executeBody() throws CustomException;
 }

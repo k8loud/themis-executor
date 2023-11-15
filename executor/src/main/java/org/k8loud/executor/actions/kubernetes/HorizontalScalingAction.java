@@ -6,6 +6,8 @@ import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.KubernetesException;
 import org.k8loud.executor.kubernetes.KubernetesService;
 
+import java.util.Map;
+
 public class HorizontalScalingAction extends KubernetesAction {
     private String resourceName;
     private String resourceType;
@@ -32,7 +34,7 @@ public class HorizontalScalingAction extends KubernetesAction {
     }
 
     @Override
-    protected String executeBody() throws KubernetesException  {
+    protected Map<String, String> executeBody() throws KubernetesException  {
         return kubernetesService.scaleHorizontally(namespace, resourceName, resourceType, replicas);
     }
 }

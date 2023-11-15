@@ -18,9 +18,11 @@ import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.Map;
 
 import static org.k8loud.executor.exception.code.CommandExceptionCode.FAILED_TO_EXECUTE_COMMAND;
 import static org.k8loud.executor.exception.code.CommandExceptionCode.NON_ZERO_EXIT_CODE;
+import static org.k8loud.executor.util.Util.resultMap;
 
 @Slf4j
 @Service
@@ -36,8 +38,8 @@ public class CommandExecutionServiceImpl implements CommandExecutionService {
     }
 
     @Override
-    public String executeCommand(@NotNull String host, @NotNull Integer port, @NotNull String privateKey,
-                               @NotNull String user, @NotNull String command) throws CommandException {
+    public Map<String, String> executeCommand(@NotNull String host, @NotNull Integer port, @NotNull String privateKey,
+                                              @NotNull String user, @NotNull String command) throws CommandException {
         try (SSHClient client = initClient(host, port, privateKey, user);
              Session session = client.startSession()) {
             log.info("Executing `{}`", command);
@@ -58,7 +60,7 @@ public class CommandExecutionServiceImpl implements CommandExecutionService {
             if (exitStatus != 0) {
                 throw new CommandException(result, NON_ZERO_EXIT_CODE);
             }
-            return result;
+            return resultMap(result);
         } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new CommandException(FAILED_TO_EXECUTE_COMMAND);
         }

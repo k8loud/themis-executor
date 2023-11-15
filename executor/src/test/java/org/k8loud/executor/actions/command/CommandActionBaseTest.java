@@ -26,6 +26,6 @@ public abstract class CommandActionBaseTest extends ActionBaseTest {
     @BeforeEach
     protected void setUp() throws CommandException {
         when(commandExecutionServiceMock.executeCommand(anyString(), anyInt(), anyString(), anyString(), anyString()))
-                .thenReturn(RESULT);
+                .thenReturn(resultMap);
     }
 }

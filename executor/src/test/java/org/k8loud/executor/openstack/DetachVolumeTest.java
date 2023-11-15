@@ -8,6 +8,8 @@ import org.mockito.Mock;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.model.storage.block.Volume;
 
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,7 +33,7 @@ public class DetachVolumeTest extends OpenstackBaseTest {
         when(volumeMock.getStatus()).thenReturn(Volume.Status.IN_USE);
 
         // when
-        String res = openstackService.detachVolume(REGION, SERVER_ID, VOLUME_ID);
+        Map<String, String> res = openstackService.detachVolume(REGION, SERVER_ID, VOLUME_ID);
 
         // then
         verify(clientV3Mock).useRegion(eq(REGION));
@@ -39,7 +41,7 @@ public class DetachVolumeTest extends OpenstackBaseTest {
         verify(openstackCinderService).getVolume(eq(VOLUME_ID), eq(clientV3Mock));
         verify(volumeMock).getStatus();
         verify(openstackCinderService).detachVolume(eq(serverMock), eq(volumeMock), eq(clientV3Mock));
-        assertEquals(String.format("Detached volume with id=%s from a server with id=%s finished with success",
+        assertResult(String.format("Detached volume with id=%s from a server with id=%s finished with success",
                 VOLUME_ID, SERVER_ID), res);
     }
 

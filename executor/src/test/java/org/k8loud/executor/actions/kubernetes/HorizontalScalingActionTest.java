@@ -25,7 +25,8 @@ class HorizontalScalingActionTest extends KubernetesActionBaseTest {
         // given
         Params params = new Params(Map.of(NAMESPACE_KEY, NAMESPACE, RESOURCE_NAME_KEY, RESOURCE_NAME, RESOURCE_TYPE_KEY,
                 RESOURCE_TYPE, REPLICAS_KEY, "3"));
-        when(kubernetesServiceMock.scaleHorizontally(anyString(), anyString(), anyString(), anyInt())).thenReturn(RESULT);
+        when(kubernetesServiceMock.scaleHorizontally(anyString(), anyString(), anyString(), anyInt())).thenReturn(
+                resultMap);
 
         // when
         Action action = new HorizontalScalingAction(params, kubernetesServiceMock);

@@ -25,7 +25,7 @@ public class PauseServerActionTest extends OpenstackActionBaseTest {
     void testPauseServerAction() throws ActionException, OpenstackException {
         // given
         PauseServerAction pauseServerAction = new PauseServerAction(VALID_PARAMS, openstackServiceMock);
-        when(openstackServiceMock.pauseServer(anyString(), anyString())).thenReturn(RESULT);
+        when(openstackServiceMock.pauseServer(anyString(), anyString())).thenReturn(resultMap);
 
         // when
         ExecutionRS response = pauseServerAction.execute();

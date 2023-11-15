@@ -31,7 +31,7 @@ public class RemoveSecurityGroupFromInstanceActionTest extends OpenstackActionBa
                 new RemoveSecurityGroupFromInstanceAction(validParams, openstackServiceMock);
 
         when(openstackServiceMock.removeSecurityGroupFromInstance(anyString(), anyString(), anyString()))
-                .thenReturn(RESULT);
+                .thenReturn(resultMap);
 
         // when
         ExecutionRS response = groupFromInstanceAction.execute();

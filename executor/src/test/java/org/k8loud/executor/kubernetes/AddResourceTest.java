@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.k8loud.executor.common.testutil.DataStorageTestUtil;
 import org.k8loud.executor.exception.KubernetesException;
 
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,12 +36,12 @@ public class AddResourceTest extends KubernetesBaseTest {
         final String resourceType = POD.toString();
 
         // when
-        String res = kubernetesService.addResource(NAMESPACE, resourceType, RESOURCE_DESCRIPTION_POD);
+        Map<String, String> res = kubernetesService.addResource(NAMESPACE, resourceType, RESOURCE_DESCRIPTION_POD);
         Pod pod = client.pods().inNamespace(NAMESPACE).withName(resourceName).get();
 
         // then
         assertNotNull(pod);
-        assertEquals(String.format("Added resource %s/%s", resourceType, resourceName), res);
+        assertResult(String.format("Added resource %s/%s", resourceType, resourceName), res);
     }
 
     @Test
@@ -49,12 +51,12 @@ public class AddResourceTest extends KubernetesBaseTest {
         final String resourceType = CONFIG_MAP.toString();
 
         // when
-        String res = kubernetesService.addResource(NAMESPACE, resourceType, RESOURCE_DESCRIPTION_CONFIG_MAP);
+        Map<String, String> res = kubernetesService.addResource(NAMESPACE, resourceType, RESOURCE_DESCRIPTION_CONFIG_MAP);
         ConfigMap cm = client.configMaps().inNamespace(NAMESPACE).withName(resourceName).get();
 
         // then
         assertNotNull(cm);
-        assertEquals(String.format("Added resource %s/%s", resourceType, resourceName), res);
+        assertResult(String.format("Added resource %s/%s", resourceType, resourceName), res);
     }
 
     @Test
@@ -64,12 +66,12 @@ public class AddResourceTest extends KubernetesBaseTest {
         final String resourceType = POD.toString();
 
         // when
-        String res = kubernetesService.addResource(NAMESPACE, POD.toString(), RESOURCE_DESCRIPTION_POD);
+        Map<String, String> res = kubernetesService.addResource(NAMESPACE, POD.toString(), RESOURCE_DESCRIPTION_POD);
         Pod pod1 = client.pods().inNamespace(NAMESPACE).withName(resourceName).get();
 
         // then
         assertNotNull(pod1);
-        assertEquals(String.format("Added resource %s/%s", resourceType, resourceName), res);
+        assertResult(String.format("Added resource %s/%s", resourceType, resourceName), res);
     }
 
     @Test

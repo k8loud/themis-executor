@@ -37,7 +37,7 @@ public class UpdateConfigMapAction extends KubernetesAction {
      */
 
     @Override
-    public String executeBody() throws KubernetesException {
+    public Map<String, String> executeBody() throws KubernetesException {
         return kubernetesService.updateConfigMap(namespace, resourceName, replacements);
     }
 }
