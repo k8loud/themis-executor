@@ -198,6 +198,17 @@ public class OpenstackServiceImpl implements OpenstackService {
     }
 
     @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "REMOVE_SECURITY_GROUP_FAILED")
+    public Map<String, String> removeSecurityGroup(String region, String securityGroupId) throws OpenstackException {
+        OSClientV3 client = openstackClientWithRegion(region);
+        SecurityGroup securityGroup = openstackNeutronService.getSecurityGroup(securityGroupId, client);
+        openstackNeutronService.removeSecurityGroup(securityGroup, client);
+
+        String result = String.format("Deleted security group named %s", securityGroup.getName());
+        return resultMap(result);
+    }
+
+    @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "ADD_SECURITY_GROUP_FAILED")
     public Map<String, String> addSecurityGroupToInstance(String region, String securityGroupId,
                                                           String serverId) throws OpenstackException {

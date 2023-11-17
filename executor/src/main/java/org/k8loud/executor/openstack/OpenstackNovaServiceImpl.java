@@ -2,7 +2,6 @@ package org.k8loud.executor.openstack;
 
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.exception.code.OpenstackExceptionCode;
 import org.k8loud.executor.util.Util;
 import org.openstack4j.api.Builders;
@@ -22,7 +21,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -130,7 +128,7 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
         log.debug("Removing SecurityGroup '{}' from Server '{}'", securityGroup.getName(), server.getName());
         ActionResponse response = client.compute().servers().removeSecurityGroup(server.getId(), securityGroup.getId());
         if (!response.isSuccess()) {
-            throw new OpenstackException(REMOVE_SECURITY_GROUP_FAILED,
+            throw new OpenstackException(REMOVE_SECURITY_GROUP_FROM_INSTANCE_FAILED,
                     "Failed to remove SecurityGroup %s from server %s. Reason: %s",
                     securityGroup.getName(), server.getName(), response.getFault());
         }
