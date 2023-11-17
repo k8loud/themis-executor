@@ -7,6 +7,7 @@ import org.k8loud.executor.actions.Action;
 import org.k8loud.executor.kubernetes.KubernetesService;
 import org.k8loud.executor.model.ActionList;
 import org.kie.api.runtime.StatelessKieSession;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +15,13 @@ import java.util.List;
 
 @Slf4j
 @Service
+@ConditionalOnProperty(value="service.enabled.rule", havingValue = "true", matchIfMissing = true)
 public class RuleService {
-
     private final KubernetesService kubernetesService;
     private final StatelessKieSession session;
-    final PrometheusQueryService queryService;
+    final PrometheusQueryServiceImpl queryService;
 
-    public RuleService(StatelessKieSession session, KubernetesService kubernetesService, PrometheusQueryService queryService) {
+    public RuleService(StatelessKieSession session, KubernetesService kubernetesService, PrometheusQueryServiceImpl queryService) {
         this.session = session;
         this.kubernetesService = kubernetesService;
         this.queryService = queryService;
@@ -40,6 +41,8 @@ public class RuleService {
         session.setGlobal("k8s", kubernetesService);
         session.execute(metrics);
         List<ExecutionRS> a = actionList.stream().map(Action::execute).toList();
-        if (a.size() > 0) log.info(a.toString());
+        if (!a.isEmpty()) {
+            log.info(a.toString());
+        }
     }
 }

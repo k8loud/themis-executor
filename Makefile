@@ -2,7 +2,9 @@
 
 DOCKERHUB_USERNAME=k8loud
 IMAGE_NAME=themis-executor
-TAG=0.0.2.4 # w.x.y.z, when tinkering add -<description> suffix
+# w.x.y.z, one digit value each
+# when tinkering add -<description> suffix
+TAG=0.0.2.5
 
 help: ## show Makefile contents
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
