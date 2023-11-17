@@ -1,8 +1,6 @@
 package org.k8loud.executor.kubernetes;
 
-import io.fabric8.kubernetes.api.model.ConfigMap;
-import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
-import io.fabric8.kubernetes.api.model.HasMetadata;
+import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.AppsAPIGroupDSL;
 import io.fabric8.kubernetes.client.dsl.MixedOperation;
@@ -21,6 +19,7 @@ import java.util.Map;
 
 import static org.k8loud.executor.exception.code.KubernetesExceptionCode.*;
 import static org.k8loud.executor.kubernetes.KubernetesResourceType.CONFIG_MAP;
+import static org.k8loud.executor.kubernetes.KubernetesResourceType.POD;
 import static org.k8loud.executor.util.Util.getFullResourceName;
 import static org.k8loud.executor.util.Util.resultMap;
 
@@ -56,10 +55,7 @@ public class KubernetesServiceImpl implements KubernetesService {
                     getFullResourceName(resourceType, resourceName)), RESOURCE_ALREADY_EXISTS);
         } catch (KubernetesException e) {
             if (e.getExceptionCode() == RESOURCE_NOT_FOUND) {
-                getMixedOperation(resourceType)
-                        .inNamespace(namespace)
-                        .resource(resource.item())
-                        .create();
+                addResource(namespace, resourceType, resource.item());
             } else if (e.getExceptionCode() == RESOURCE_ALREADY_EXISTS) {
                 throw e;
             }
@@ -97,6 +93,58 @@ public class KubernetesServiceImpl implements KubernetesService {
                         .addToData(replacements).build());
         return resultMap(
                 String.format("Update of %s successful", getFullResourceName(CONFIG_MAP.toString(), resourceName)));
+    }
+
+    // prepare a template of pod with updated resources -> delete pod -> recreate pod
+    // Wanted to update resources for the container only, but they can't be changed in runtime
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException",
+            exceptionCode = "CHANGE_RESOURCES_OF_CONTAINER_WITHIN_POD_FAILED")
+    public Map<String, String> changeResourcesOfContainerWithinPodAction(String namespace, String podName,
+                                                                         String containerName, String limitsCpu,
+                                                                         String limitsMemory, String requestsCpu,
+                                                                         String requestsMemory)
+            throws KubernetesException {
+        Resource<Pod> resource = getResource(namespace, POD.toString(), podName);
+        final ResourceRequirements requirements = new ResourceRequirementsBuilder()
+                .addToLimits(Map.of("cpu", new Quantity(limitsCpu)))
+                .addToLimits(Map.of("memory", new Quantity(limitsMemory)))
+                .addToRequests(Map.of("cpu", new Quantity(requestsCpu)))
+                .addToRequests(Map.of("memory", new Quantity(requestsMemory)))
+                .build();
+        final String fullPodName = getFullResourceName(POD.toString(), podName);
+
+        log.info("Looking for container {} within {}", containerName, fullPodName);
+        Container container = resource.get().getSpec().getContainers().stream()
+                .filter(c -> c.getName().equals(containerName))
+                .findFirst()
+                .orElseThrow(() -> new KubernetesException(String.format("Couldn't find container %s within %s",
+                        containerName, fullPodName), CONTAINER_WITHIN_POD_NOT_FOUND));
+        Container updatedContainer = new ContainerBuilder(container).withResources(requirements).build();
+
+        log.info("Recreating {}", fullPodName);
+        Pod updatedPod = new PodBuilder(resource.get())
+                .editOrNewMetadata()
+                    .withResourceVersion("")
+                .endMetadata()
+                .editOrNewSpec()
+                    .removeFromContainers(container)
+                    .addToContainers(updatedContainer)
+                .endSpec()
+                .build();
+
+        final long gracePeriodSeconds = 2L;
+        deleteResource(namespace, podName, POD.toString(), gracePeriodSeconds);
+        try {
+            Thread.sleep(gracePeriodSeconds * 1000);
+        } catch (InterruptedException e) {
+            log.warn("Interrupted while waiting for graceful resource deletion");
+        }
+        addResource(namespace, POD.toString(), updatedPod);
+
+        return resultMap(String.format("Updated requirements specs of container %s within %s to {limitsCpu: %s, " +
+                        "limitsMemory: %s, requestsCpu: %s, requestsMemory: %s}", containerName,
+                fullPodName, limitsCpu, limitsMemory, requestsCpu, requestsMemory));
     }
 
     @NotNull
@@ -147,5 +195,12 @@ public class KubernetesServiceImpl implements KubernetesService {
             case CONFIG_MAP -> client.configMaps();
             case POD -> client.pods();
         };
+    }
+
+    private <T> void addResource(String namespace, String resourceType, T resourceItem) throws KubernetesException {
+        getMixedOperation(resourceType)
+                .inNamespace(namespace)
+                .resource(resourceItem)
+                .create();
     }
 }
