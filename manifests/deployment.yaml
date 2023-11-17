@@ -52,6 +52,10 @@ spec:
               value: f3f4f2456fa54ec4836b6e5317480372
             - name: OPENSTACK_OPENSTACK_AUTH
               value: PROJECT_SCOPED
+            - name: SERVICE_ENABLED_PROMETHEUS_QUERY
+              value: true
+            - name: SERVICE_ENABLED_RULE
+              value: true
           resources:
             limits:
               cpu: 900m
