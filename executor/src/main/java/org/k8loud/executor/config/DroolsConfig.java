@@ -17,12 +17,9 @@ import java.nio.file.Path;
 @Slf4j
 @Configuration
 public class DroolsConfig {
-
     private static final String RULES_DRL = System.getenv("RULES_PATH") != null ?
-            System.getenv("RULES_PATH") :
-            Path.of("executor", "rules", "test.drl").toString();
+            System.getenv("RULES_PATH") : getDefaultRulesPath();
     private static final KieServices kieServices = KieServices.Factory.get();
-
 
     @Bean
     public KieContainer kieContainer() {
@@ -39,5 +36,13 @@ public class DroolsConfig {
     @Bean
     public StatelessKieSession kieSession(KieContainer kieContainer) {
         return kieContainer.newStatelessKieSession();
+    }
+
+    private static String getDefaultRulesPath() {
+        String path = Path.of("rules", "test.drl").toString();
+        if (!(new File(path).exists())) {
+            path = Path.of("executor", path).toString();
+        }
+        return path;
     }
 }
