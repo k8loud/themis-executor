@@ -1,0 +1,19 @@
+### change resources of a container
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "kubernetes",
+  "actionName": "ChangeResourcesOfContainerWithinPodAction",
+  "params": {
+    "params": {
+      "namespace": "default",
+      "podName": "change-resources-test",
+      "containerName": "nginx",
+      "limitsCpu": "400m",
+      "limitsMemory": "250Mi",
+      "requestsCpu": "250m",
+      "requestsMemory": "100Mi"
+    }
+  }
+}

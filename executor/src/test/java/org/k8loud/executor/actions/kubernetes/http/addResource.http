@@ -1,4 +1,4 @@
-### add pod
+### add config map
 POST localhost:8080/execute
 Content-Type: application/json
 
@@ -23,6 +23,37 @@ Content-Type: application/json
   "params": {
     "params": {
       "resourceDescription": "            apiVersion: v1\r\n            kind: Pod\r\n            metadata:\r\n              name: nginx-with-namespace\r\n              namespace: namespace-from-resource-description\r\n            spec:\r\n              containers:\r\n              - name: nginx-with-namespace\r\n                image: nginx:1.14.2"
+    }
+  }
+}
+
+### add pod, namespace param overwrites namespace from resourceDescription
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "kubernetes",
+  "actionName": "AddResourceAction",
+  "params": {
+    "params": {
+      "namespace": "default",
+      "resourceDescription": "            apiVersion: v1\r\n            kind: Pod\r\n            metadata:\r\n              name: nginx-with-namespace\r\n              namespace: namespace-from-resource-description\r\n            spec:\r\n              containers:\r\n              - name: nginx-with-namespace\r\n                image: nginx:1.14.2"
+    }
+  }
+}
+
+
+### add pod with resources (for testing changeResourcesOfContainerWithinPodAction.http)
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "kubernetes",
+  "actionName": "AddResourceAction",
+  "params": {
+    "params": {
+      "namespace": "default",
+      "resourceDescription": "apiVersion: v1\r\nkind: Pod\r\nmetadata:\r\n  name: change-resources-test\r\nspec:\r\n  containers:\r\n  - name: nginx\r\n    image: nginx:1.14.2\r\n    ports:\r\n    - containerPort: 80\r\n    resources:\r\n      limits:\r\n        cpu: 200m\r\n        memory: 300Mi\r\n      requests:\r\n        cpu: 150m\r\n        memory: 250Mi"
     }
   }
 }

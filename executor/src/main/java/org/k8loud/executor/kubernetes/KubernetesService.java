@@ -19,6 +19,10 @@ public interface KubernetesService {
     Map<String, String> updateConfigMap(String namespace, String resourceName,
                                         Map<String, String> replacements) throws KubernetesException;
 
+    Map<String, String> changeResourcesOfContainerWithinPodAction(String namespace, String podName, String containerName,
+                                                     String limitsCpu, String limitsMemory, String requestsCpu,
+                                                     String requestsMemory) throws KubernetesException;
+
     <T> Resource<T> getResource(String namespace, String resourceType, String resourceName) throws KubernetesException;
 
     <T> Resource<T> loadResource(String resourceType, String resourceDescription) throws KubernetesException;
