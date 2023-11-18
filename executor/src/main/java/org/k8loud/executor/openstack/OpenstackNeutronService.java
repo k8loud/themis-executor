@@ -19,5 +19,7 @@ public interface OpenstackNeutronService {
 
     void removeSecurityGroupRule(SecurityGroupRule securityGroupRule, OSClient.OSClientV3 client);
 
+    void removeSecurityGroup(SecurityGroup securityGroup, OSClient.OSClientV3 client) throws OpenstackException;
+
     SecurityGroupRule getSecurityGroupRule(String securityGroupRuleId, OSClient.OSClientV3 client) throws OpenstackException;
 }

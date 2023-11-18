@@ -34,6 +34,7 @@ public interface OpenstackService {
                                          boolean keepOneSnapshot) throws OpenstackException;
 
     Map<String, String> createSecurityGroup(String region, String name, String description) throws OpenstackException, ValidationException;
+    Map<String, String> removeSecurityGroup(String region, String securityGroupId) throws OpenstackException;
 
     Map<String, String> addSecurityGroupToInstance(String region, String securityGroupId, String serverId) throws OpenstackException;
 

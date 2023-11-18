@@ -77,6 +77,17 @@ public class OpenstackNeutronServiceImpl implements OpenstackNeutronService {
     }
 
     @Override
+    public void removeSecurityGroup(SecurityGroup securityGroup, OSClient.OSClientV3 client) throws OpenstackException {
+        log.debug("Deleting security group ({})", securityGroup.toString());
+        ActionResponse response = client.networking().securitygroup().delete(securityGroup.getId());
+
+        if (!response.isSuccess()) {
+            throw new OpenstackException(REMOVE_SECURITY_GROUP_FAILED,
+                    "Failed to delete security group named %s. Reason: %s", securityGroup.getName(), response.getFault());
+        }
+    }
+
+    @Override
     public SecurityGroupRule getSecurityGroupRule(String securityGroupRuleId, OSClient.OSClientV3 client) throws OpenstackException {
         log.debug("Getting security group rule object with id '{}'", securityGroupRuleId);
         SecurityGroupRule securityGroupRule = client.networking().securityrule().get(securityGroupRuleId);
