@@ -16,6 +16,7 @@ import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static org.k8loud.executor.exception.code.KubernetesExceptionCode.*;
 import static org.k8loud.executor.kubernetes.KubernetesResourceType.CONFIG_MAP;
@@ -115,14 +116,16 @@ public class KubernetesServiceImpl implements KubernetesService {
         final String fullPodName = getFullResourceName(POD.toString(), podName);
 
         log.info("Looking for container {} within {}", containerName, fullPodName);
-        Container container = resource.get().getSpec().getContainers().stream()
+        PodSpec spec = Optional.ofNullable(resource.get().getSpec()).orElseThrow(() -> new KubernetesException(
+                String.format("Spec of %s is empty", fullPodName), EMPTY_SPEC));
+        Container container = spec.getContainers().stream()
                 .filter(c -> c.getName().equals(containerName))
                 .findFirst()
                 .orElseThrow(() -> new KubernetesException(String.format("Couldn't find container %s within %s",
                         containerName, fullPodName), CONTAINER_WITHIN_POD_NOT_FOUND));
         Container updatedContainer = new ContainerBuilder(container).withResources(requirements).build();
 
-        log.info("Recreating {}", fullPodName);
+        log.info("Preparing {} template", fullPodName);
         Pod updatedPod = new PodBuilder(resource.get())
                 .editOrNewMetadata()
                     .withResourceVersion("")
@@ -133,13 +136,15 @@ public class KubernetesServiceImpl implements KubernetesService {
                 .endSpec()
                 .build();
 
-        final long gracePeriodSeconds = 2L;
+        final long gracePeriodSeconds = 1L;
         deleteResource(namespace, podName, POD.toString(), gracePeriodSeconds);
         try {
             Thread.sleep(gracePeriodSeconds * 1000);
         } catch (InterruptedException e) {
             log.warn("Interrupted while waiting for graceful resource deletion");
         }
+
+        log.info("Recreating {}", fullPodName);
         addResource(namespace, POD.toString(), updatedPod);
 
         return resultMap(String.format("Updated requirements specs of container %s within %s to {limitsCpu: %s, " +
@@ -151,7 +156,7 @@ public class KubernetesServiceImpl implements KubernetesService {
     @Override
     public <T> Resource<T> getResource(String namespace, String resourceType, String resourceName)
             throws KubernetesException {
-        log.info("Looking for {} in {}", getFullResourceName(resourceType, resourceName), namespace);
+        log.debug("Looking for {} in {}", getFullResourceName(resourceType, resourceName), namespace);
         if (Util.emptyOrBlank(namespace)) {
             throw new KubernetesException(String.format("namespace '%s' is empty or blank", namespace),
                     EMPTY_OR_BLANK_NAMESPACE);

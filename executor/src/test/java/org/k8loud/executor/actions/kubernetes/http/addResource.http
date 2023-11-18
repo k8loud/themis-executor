@@ -43,7 +43,7 @@ Content-Type: application/json
 }
 
 
-### add pod with resources
+### add pod with resources (for testing changeResourcesOfContainerWithinPodAction.http)
 POST localhost:8080/execute
 Content-Type: application/json
 

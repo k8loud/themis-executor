@@ -10,10 +10,10 @@ Content-Type: application/json
       "namespace": "default",
       "podName": "change-resources-test",
       "containerName": "nginx",
-      "limitsCpu": "300m",
-      "limitsMemory": "350Mi",
-      "requestsCpu": "200m",
-      "requestsMemory": "300Mi"
+      "limitsCpu": "400m",
+      "limitsMemory": "250Mi",
+      "requestsCpu": "250m",
+      "requestsMemory": "100Mi"
     }
   }
 }

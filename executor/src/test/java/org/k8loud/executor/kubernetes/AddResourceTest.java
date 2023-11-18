@@ -10,7 +10,6 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.k8loud.executor.common.testdata.ResourceDescriptionTestData.RESOURCE_DESCRIPTION_CONFIG_MAP;
 import static org.k8loud.executor.common.testdata.ResourceDescriptionTestData.RESOURCE_DESCRIPTION_POD;
