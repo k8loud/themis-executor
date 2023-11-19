@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class ExecutionServiceImpl implements ExecutionService {
+public class
+ExecutionServiceImpl implements ExecutionService {
     @NotNull
     @Override
     public ExecutionRS execute(@NotNull Action action) {

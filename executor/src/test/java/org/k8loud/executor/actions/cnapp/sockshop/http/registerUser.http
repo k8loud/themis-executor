@@ -1,0 +1,16 @@
+# register user
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "cnapp.sockshop",
+  "actionName": "RegisterUserAction",
+  "params": {
+    "params": {
+      "applicationUrl": "http://localhost:8082",
+      "username": "user999",
+      "password": "pass997",
+      "email": "totallynotfakeemail@yahoo.com"
+    }
+  }
+}
