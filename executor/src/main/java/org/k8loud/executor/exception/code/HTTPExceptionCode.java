@@ -1,0 +1,8 @@
+package org.k8loud.executor.exception.code;
+
+public enum HTTPExceptionCode {
+    HTTP_REQUEST_FAILED_TO_COMPLETE,
+    HTTP_RESPONSE_STATUS_CODE_NOT_SUCCESSFUL,
+    CONVERT_PARAMS_OBJECT_TO_URL_PARAMS_FAILURE,
+    UNSUPPORTED_ENCODING
+}

@@ -1,0 +1,14 @@
+# delete user
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "cnapp.sockshop",
+  "actionName": "DeleteUserAction",
+  "params": {
+    "params": {
+      "applicationUrl": "http://localhost:8082",
+      "id": "655b6dfacb8de600019db115"
+    }
+  }
+}

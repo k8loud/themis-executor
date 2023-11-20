@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.actions.Action;
 import org.k8loud.executor.actions.ActionHelper;
+import org.k8loud.executor.cnapp.sockshop.SockShopService;
 import org.k8loud.executor.command.CommandExecutionService;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.MapperException;
@@ -31,6 +32,7 @@ public class MapperServiceImpl implements MapperService {
     private final OpenstackService openstackService;
     private final CommandExecutionService commandExecutionService;
     private final KubernetesService kubernetesService;
+    private final SockShopService sockShopService;
 
     @NotNull
     @Override
@@ -48,6 +50,8 @@ public class MapperServiceImpl implements MapperService {
                         classParameters.add(new ClassParameter(CommandExecutionService.class, commandExecutionService));
                 case "kubernetes" ->
                         classParameters.add(new ClassParameter(KubernetesService.class, kubernetesService));
+                case "cnapp.sockshop" ->
+                        classParameters.add(new ClassParameter(SockShopService.class, sockShopService));
             }
             return (Action) ClassHelper.getInstance(actionClass, classParameters.toArray(ClassParameter[]::new));
         } catch (NoSuchMethodException e) {
