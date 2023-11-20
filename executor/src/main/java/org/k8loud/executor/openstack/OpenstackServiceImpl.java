@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.exception.ValidationException;
+import org.k8loud.executor.util.Util;
 import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 import org.openstack4j.api.OSClient.OSClientV3;
 import org.openstack4j.model.compute.Action;
@@ -14,9 +15,12 @@ import org.openstack4j.model.image.v2.Image;
 import org.openstack4j.model.network.SecurityGroup;
 import org.openstack4j.model.network.SecurityGroupRule;
 import org.openstack4j.model.storage.block.Volume;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +41,7 @@ public class OpenstackServiceImpl implements OpenstackService {
     private final OpenstackCinderService openstackCinderService;
     private final OpenstackGlanceService openstackGlanceService;
     private final OpenstackNeutronService openstackNeutronService;
+    private final TaskScheduler taskScheduler;
 
     //TODO resize with looking for bigger/smaller available flavor
     @Override
@@ -258,11 +263,51 @@ public class OpenstackServiceImpl implements OpenstackService {
         return resultMap(String.format("Deleted securityGroupRule (%s)", securityGroupRule.toString()));
     }
 
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "IP_THROTTLE_FAILED")
+    public Map<String, String> throttle(String region, String serverId, String ethertype, String direction,
+                                        String remoteIpPrefix, String protocol, int portRangeMin, int portRangeMax,
+                                        long secDuration) throws OpenstackException {
+        OSClientV3 client = openstackClientWithRegion(region);
+        Server server = openstackNovaService.getServer(serverId, client);
+
+        SecurityGroup securityGroup = openstackNeutronService.createSecurityGroup(Util.nameWithUuid("ip-throttle"),
+                null, client);
+        SecurityGroupRule securityGroupRule = openstackNeutronService.addSecurityGroupRule(securityGroup, ethertype,
+                direction, remoteIpPrefix, protocol, portRangeMin, portRangeMax, null, client);
+        openstackNovaService.addSecurityGroupToInstance(server, securityGroup, client);
+
+        scheduleIpThrottlingRemoval(region, server, securityGroup, secDuration);
+        return resultMap(String.format("Added throttling security group with rule (%s) to server %s",
+                securityGroupRule.toString(), server.getName()));
+    }
+
+    @Async
+    public void scheduleIpThrottlingRemoval(String region, Server server, SecurityGroup securityGroup, long secDuration) {
+        log.info("Scheduling IP throttling removal to start in {} seconds", secDuration);
+        taskScheduler.schedule(() -> {
+                    try {
+                        removeThrottling(region,server,securityGroup);
+                    } catch (OpenstackException e) {
+                        log.warn("Problem during removing throttling. ", e);
+                    }
+                }, 
+                Instant.now().plus(secDuration, ChronoUnit.SECONDS));
+    }
+
     @NotNull
     private OSClientV3 openstackClientWithRegion(String region) throws OpenstackException {
         OSClientV3 client = openstackClientProvider.getClientFromToken();
         client.useRegion(region);
         return client;
+    }
+
+    private void removeThrottling(String region, Server server, SecurityGroup securityGroup) throws OpenstackException {
+        log.info("Removing throttling security group {}", securityGroup.getName());
+        OSClientV3 client = openstackClientWithRegion(region);
+        openstackNovaService.removeSecurityGroupFromInstance(server, securityGroup, client);
+        openstackNeutronService.removeSecurityGroup(securityGroup, client);
+        log.info("Successfully removed throttling security group ({})", securityGroup.getName());
     }
 
     private Map<String, String> resizeServer(Server server, Flavor newFlavor, int waitSecondsForVerifyStatus,

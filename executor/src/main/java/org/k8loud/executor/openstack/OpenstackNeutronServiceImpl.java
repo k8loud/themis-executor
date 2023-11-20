@@ -78,7 +78,7 @@ public class OpenstackNeutronServiceImpl implements OpenstackNeutronService {
 
     @Override
     public void removeSecurityGroup(SecurityGroup securityGroup, OSClient.OSClientV3 client) throws OpenstackException {
-        log.debug("Deleting security group ({})", securityGroup.toString());
+        log.debug("Deleting security group ({})", securityGroup.getName());
         ActionResponse response = client.networking().securitygroup().delete(securityGroup.getId());
 
         if (!response.isSuccess()) {
