@@ -35,7 +35,7 @@ public abstract class OpenstackBaseTest extends OpenstackConstants {
     @BeforeEach
     protected void baseSetUp() throws OpenstackException {
         openstackService = new OpenstackServiceImpl(openstackClientProviderMock, openstackNovaServiceMock,
-                openstackCinderService, openstackGlanceService, openstackNeutronService);
+                openstackCinderService, openstackGlanceService, openstackNeutronService, null);
         when(openstackClientProviderMock.getClientFromToken()).thenReturn(clientV3Mock);
         setUp();
     }
