@@ -7,6 +7,7 @@ import org.k8loud.executor.cnapp.sockshop.params.RegisterUserParams;
 import org.k8loud.executor.exception.CNAppException;
 import org.k8loud.executor.exception.HTTPException;
 import org.k8loud.executor.service.HTTPService;
+import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -23,11 +24,14 @@ public class SockShopServiceImpl implements SockShopService {
     private final HTTPService httpService;
 
     @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "CNAppException",
+            exceptionCode = "SOCK_SHOP_REGISTER_USER_FAILED")
     public Map<String, String> registerUser(String applicationUrl, String username, String password, String email)
             throws CNAppException {
         log.info("Registering user {} with email {}", username, email);
         try {
-            HttpResponse response = httpService.doPost(applicationUrl, sockShopProperties.getRegisterUserUrlSupplement(),
+            HttpResponse response = httpService.doPost(applicationUrl,
+                    sockShopProperties.getRegisterUserUrlSupplement(),
                     RegisterUserParams.builder().username(username).password(password).email(email).build());
             handleResponse(response);
         } catch (HTTPException e) {
@@ -37,6 +41,8 @@ public class SockShopServiceImpl implements SockShopService {
     }
 
     @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "CNAppException",
+            exceptionCode = "SOCK_SHOP_DELETE_USER_FAILED")
     public Map<String, String> deleteUser(String applicationUrl, String id) throws CNAppException {
         log.info("Deleting user with id {}", id);
         try {
