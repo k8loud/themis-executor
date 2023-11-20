@@ -34,14 +34,13 @@ public final class Util {
         return new HashMap<>(Map.of("result", result));
     }
 
-    @SuppressWarnings("unchecked")
     public static Map<String, String> resultMap(String result, Map<String, String> additionalData) throws ValidationException {
         if (additionalData.containsKey("result")){
             throw new ValidationException(ADDITIONAL_DATA_WRONG_KEY);
         }
 
-        Set<Map.Entry<String, String>> entries = additionalData.entrySet();
-        entries.add(Map.entry("result", result));
-        return new HashMap<>(Map.ofEntries(entries.toArray(Map.Entry[]::new)));
+        Map<String, String> resultMap = new HashMap<>(additionalData);
+        resultMap.put("result", result);
+        return resultMap;
     }
 }

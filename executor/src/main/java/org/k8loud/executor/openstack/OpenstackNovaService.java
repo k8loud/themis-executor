@@ -14,6 +14,7 @@ import org.springframework.retry.annotation.Retryable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 @Retryable(retryFor = ConnectionException.class)
 public interface OpenstackNovaService {
@@ -24,6 +25,8 @@ public interface OpenstackNovaService {
     List<String> createServers(String name, Image image, Flavor flavor, String keypairName, String securityGroup,
                                String userData, int count, int waitActiveSec,
                                Supplier<OSClient.OSClientV3> clientSupplier) throws OpenstackException;
+
+    List<String> deleteServers(Pattern namePattern, Supplier<OSClient.OSClientV3> clientSupplier) throws OpenstackException;
 
     Server getServer(String serverId, OSClient.OSClientV3 client) throws OpenstackException;
 
@@ -36,6 +39,8 @@ public interface OpenstackNovaService {
     void addSecurityGroupToInstance(Server server, SecurityGroup securityGroup, OSClient.OSClientV3 client) throws OpenstackException;
 
     void removeSecurityGroupFromInstance(Server server, SecurityGroup securityGroup, OSClient.OSClientV3 client) throws OpenstackException;
+
+    List<? extends Server> getServers(OSClient.OSClientV3 client);
 
     @Retryable(maxAttempts = 1)
     void waitForServerStatus(Server server, Server.Status status, int waitingTimeSec, OSClient.OSClientV3 client);

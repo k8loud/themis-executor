@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
 import static org.k8loud.executor.util.Util.resultMap;
@@ -88,8 +89,27 @@ public class OpenstackServiceImpl implements OpenstackService {
                         throw new RuntimeException(e);
                     }
                 });
-        String result = String.format("Creating %s instances named %s finished with success", count, name);
+        String result = String.format("Creating %d instances named '%s' finished with success", count, name);
         return resultMap(result, Map.of("serverIds", serverIds.toString()));
+    }
+
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "DELETE_SERVER_FAILED")
+    public Map<String, String> deleteServers(String region, String name) throws OpenstackException, ValidationException {
+        Pattern namePattern = Pattern.compile(name + "-.{8}");
+
+        List<String> deletedServers = openstackNovaService.deleteServers(namePattern, () -> {
+            try {
+                return openstackClientWithRegion(region);
+            } catch (OpenstackException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        String result = String.format(
+                "Deleting instances named with pattern %s finished with success. Deleted %d servers",
+                namePattern.pattern(), deletedServers.size());
+        return resultMap(result, Map.of("deletedServers", deletedServers.toString()));
     }
 
     @Override
@@ -283,15 +303,16 @@ public class OpenstackServiceImpl implements OpenstackService {
     }
 
     @Async
-    public void scheduleIpThrottlingRemoval(String region, Server server, SecurityGroup securityGroup, long secDuration) {
+    public void scheduleIpThrottlingRemoval(String region, Server server, SecurityGroup securityGroup,
+                                            long secDuration) {
         log.info("Scheduling IP throttling removal to start in {} seconds", secDuration);
         taskScheduler.schedule(() -> {
                     try {
-                        removeThrottling(region,server,securityGroup);
+                        removeThrottling(region, server, securityGroup);
                     } catch (OpenstackException e) {
                         log.warn("Problem during removing throttling. ", e);
                     }
-                }, 
+                },
                 Instant.now().plus(secDuration, ChronoUnit.SECONDS));
     }
 

@@ -9,8 +9,9 @@ Content-Type: application/json
     "params": {
       "region": "RegionOne",
       "name": "test",
-      "imageId": "PUT_IMAGE_ID",
-      "flavorId": "PUT_FLAVOR_ID"
+      "count": "2",
+      "imageId": "be6ec33c-60c8-48fa-ac83-afe934feba04",
+      "flavorId": "13a343c9-1fc5-4dae-9a74-203d290d736b"
     }
   }
 }

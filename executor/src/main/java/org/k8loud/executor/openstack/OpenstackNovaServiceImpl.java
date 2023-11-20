@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
 import static org.k8loud.executor.util.Util.resultMap;
@@ -135,9 +137,16 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
     }
 
     @Override
+    public List<? extends Server> getServers(OSClient.OSClientV3 client) {
+        return client.compute().servers().list();
+    }
+
+    @Override
     public List<String> createServers(String name, Image image, Flavor flavor, String keypairName, String securityGroup,
                                              String userData, int count, int waitActiveSec,
                                              Supplier<OSClient.OSClientV3> clientSupplier) throws OpenstackException {
+        log.debug("Creating servers with name prefix '{}'", name);
+
         List<?> results = IntStream.rangeClosed(1, count)
                 .parallel()
                 .mapToObj(i -> {
@@ -150,14 +159,56 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
                 })
                 .toList();
 
-        if (results.stream().anyMatch(s -> Exception.class.isAssignableFrom(s.getClass()))) {
+        if (results.stream().anyMatch(s -> OpenstackException.class.isAssignableFrom(s.getClass()))) {
             throw new OpenstackException(CREATE_SERVER_FAILED,
-                    "Failed to create %s servers named %s. List of results: %s", count, name, results);
+                    "Failed to create %d servers named %s. List of results: %s", count, name, results);
         }
 
         return results.stream().map(s -> ((Server) s).getId()).toList();
     }
 
+    @Override
+    public List<String> deleteServers(Pattern namePattern,
+                                      Supplier<OSClient.OSClientV3> clientSupplier) throws OpenstackException {
+        log.debug("Deleting servers with name pattern '{}'", namePattern.pattern());
+
+        List<?> results = getServers(clientSupplier.get()).stream()
+                .parallel()
+                .filter(s -> namePattern.matcher(s.getName()).matches())
+                .map(s -> {
+                    try {
+                        deleteServer(s, clientSupplier.get());
+                        return s;
+                    } catch (OpenstackException e) {
+                        return e;
+                    }
+                }).toList();
+
+        List<OpenstackException> exceptions = results.stream()
+                .filter(result -> OpenstackException.class.isAssignableFrom(result.getClass()))
+                .map(exception -> (OpenstackException) exception)
+                .toList();
+
+        if (!exceptions.isEmpty()) {
+            throw new OpenstackException(DELETE_SERVER_FAILED,
+                    "Failed to delete %d servers named with pattern %s. Exceptions: %s",
+                    results.size(), namePattern.pattern(), exceptions.toString());
+        }
+
+        return results.stream()
+                .map(s -> ((Server) s).getName())
+                .toList();
+    }
+
+    private void deleteServer(Server server, OSClient.OSClientV3 client) throws OpenstackException {
+        log.debug("Deleting server '{}'", server.getName());
+
+        ActionResponse response = client.compute().servers().delete(server.getId());
+        if (!response.isSuccess()) {
+            throw new OpenstackException(DELETE_SERVER_FAILED,
+                    "Failed to delete server %s. Reason: %s", server.getName(), response.getFault());
+        }
+    }
     private Server spawnServer(String name, Flavor flavor, Image image, String keypairName, String securityGroup,
                                String userData, int waitActiveSec,
                                OSClient.OSClientV3 client) throws OpenstackException {
