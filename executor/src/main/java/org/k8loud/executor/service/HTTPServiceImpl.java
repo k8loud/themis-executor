@@ -38,7 +38,7 @@ public class HTTPServiceImpl implements HTTPService {
         request.addHeader("content-type", "application/json");
         request.addHeader("charset", ENCODING);
         request.setEntity(params);
-        return doCommon(request);
+        return sendRequest(request);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class HTTPServiceImpl implements HTTPService {
         HttpDelete request = new HttpDelete(url);
         request.addHeader("charset", ENCODING);
         log.info("Sending {}", request);
-        return doCommon(request);
+        return sendRequest(request);
     }
 
     @Override
@@ -60,7 +60,8 @@ public class HTTPServiceImpl implements HTTPService {
         return 200 <= statusCode && statusCode < 300;
     }
 
-    private HttpResponse doCommon(HttpRequestBase request) throws HTTPException {
+    @Override
+    public HttpResponse sendRequest(HttpRequestBase request) throws HTTPException {
         HttpClient httpClient = HttpClientBuilder.create().build();
         try {
             log.info("Sending {}", request);
