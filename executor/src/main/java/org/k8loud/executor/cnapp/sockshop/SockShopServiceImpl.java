@@ -29,12 +29,29 @@ public class SockShopServiceImpl implements SockShopService {
         try {
             HttpResponse response = httpService.doPost(applicationUrl, sockShopProperties.getRegisterUserUrlSupplement(),
                     RegisterUserParams.builder().username(username).password(password).email(email).build());
-            if (!httpService.isResponseSuccessful(response)) {
-                throw new HTTPException(HTTP_REQUEST_STATUS_CODE_NOT_SUCCESSFUL);
+            final int statusCode = response.getStatusLine().getStatusCode();
+            if (!httpService.isResponseStatusCodeSuccessful(statusCode)) {
+                throw new HTTPException(String.valueOf(statusCode), HTTP_REQUEST_STATUS_CODE_NOT_SUCCESSFUL);
             }
         } catch (HTTPException e) {
             throw new CNAppException(e.toString(), CAUGHT_HTTP_EXCEPTION);
         }
         return resultMap(String.format("Registered user %s with email %s", username, email));
+    }
+
+    @Override
+    public Map<String, String> deleteUser(String applicationUrl, String id) throws CNAppException {
+        log.info("Deleting user with id {}", id);
+        try {
+            HttpResponse response = httpService.doDelete(applicationUrl,
+                    sockShopProperties.getCustomersUrlSupplement() + "/" + id);
+            final int statusCode = response.getStatusLine().getStatusCode();
+            if (!httpService.isResponseStatusCodeSuccessful(statusCode)) {
+                throw new HTTPException(String.valueOf(statusCode), HTTP_REQUEST_STATUS_CODE_NOT_SUCCESSFUL);
+            }
+        } catch (HTTPException e) {
+            throw new CNAppException(e.toString(), CAUGHT_HTTP_EXCEPTION);
+        }
+        return resultMap(String.format("Deleted user with id %s", id));
     }
 }

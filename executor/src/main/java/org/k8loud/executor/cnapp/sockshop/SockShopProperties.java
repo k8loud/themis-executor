@@ -9,4 +9,5 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "sockshop")
 public class SockShopProperties {
     private String registerUserUrlSupplement = "register";
+    private String customersUrlSupplement = "customers";
 }
