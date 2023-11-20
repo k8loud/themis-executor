@@ -9,5 +9,6 @@ public interface HTTPService {
     HttpResponse doDelete(String urlBase, String urlSupplement) throws HTTPException;
 
     boolean isResponseSuccessful(HttpResponse response);
+
     boolean isResponseStatusCodeSuccessful(int statusCode);
 }
