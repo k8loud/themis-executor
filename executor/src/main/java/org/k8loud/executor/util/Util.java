@@ -32,14 +32,15 @@ public final class Util {
     }
 
     @SuppressWarnings("unchecked")
-    public static Map<String, String> resultMap(String result, Map<String, String> additionalData) throws ValidationException {
-        if (additionalData.containsKey("result")){
+    public static Map<String, String> resultMap(String result, Map<String, String> additionalData)
+            throws ValidationException {
+        if (additionalData.containsKey("result")) {
             throw new ValidationException(ADDITIONAL_DATA_WRONG_KEY);
         }
-
         Set<Map.Entry<String, String>> entries = additionalData.entrySet();
-        entries.add(Map.entry("result", result));
-        return new HashMap<>(Map.ofEntries(entries.toArray(Map.Entry[]::new)));
+        Map<String, String> resultMap = new HashMap<>(Map.ofEntries(entries.toArray(Map.Entry[]::new)));
+        resultMap.put("result", result);
+        return resultMap;
     }
 
     public static String encodeBase64(String toEncode) {

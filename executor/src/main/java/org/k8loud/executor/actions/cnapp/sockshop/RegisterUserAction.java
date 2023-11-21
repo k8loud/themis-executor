@@ -5,6 +5,8 @@ import lombok.Builder;
 import org.k8loud.executor.cnapp.sockshop.SockShopService;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CNAppException;
+import org.k8loud.executor.exception.HTTPException;
+import org.k8loud.executor.exception.ValidationException;
 
 import java.util.Map;
 
@@ -34,7 +36,7 @@ public class RegisterUserAction extends SockShopAction {
     }
 
     @Override
-    protected Map<String, String> executeBody() throws CNAppException {
+    protected Map<String, String> executeBody() throws CNAppException, ValidationException, HTTPException {
         return sockShopService.registerUser(applicationUrl, username, password, email);
     }
 }

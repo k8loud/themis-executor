@@ -5,6 +5,8 @@ import data.Params;
 import org.junit.jupiter.api.Test;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CNAppException;
+import org.k8loud.executor.exception.HTTPException;
+import org.k8loud.executor.exception.ValidationException;
 
 import java.util.Map;
 
@@ -25,7 +27,7 @@ public class RegisterUserActionTest extends SockShopActionBaseTest {
     ));
 
     @Test
-    void testValidParams() throws CNAppException, ActionException {
+    void testValidParams() throws CNAppException, ActionException, ValidationException, HTTPException {
         // given
         RegisterUserAction registerUserAction = new RegisterUserAction(PARAMS, sockShopServiceMock);
         when(sockShopServiceMock.registerUser(anyString(), anyString(), anyString(), anyString())).thenReturn(resultMap);

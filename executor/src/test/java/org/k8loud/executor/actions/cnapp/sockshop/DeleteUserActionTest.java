@@ -5,6 +5,8 @@ import data.Params;
 import org.junit.jupiter.api.Test;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CNAppException;
+import org.k8loud.executor.exception.HTTPException;
+import org.k8loud.executor.exception.ValidationException;
 
 import java.util.Map;
 
@@ -21,7 +23,7 @@ public class DeleteUserActionTest extends SockShopActionBaseTest {
     ));
 
     @Test
-    void testValidParams() throws CNAppException, ActionException {
+    void testValidParams() throws CNAppException, ActionException, ValidationException, HTTPException {
         // given
         DeleteUserAction deleteUserAction = new DeleteUserAction(PARAMS, sockShopServiceMock);
         when(sockShopServiceMock.deleteUser(anyString(), anyString())).thenReturn(resultMap);
