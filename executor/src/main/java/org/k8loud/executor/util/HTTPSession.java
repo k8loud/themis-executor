@@ -67,7 +67,6 @@ public class HTTPSession {
     }
 
     public HttpResponse sendRequest(HttpRequestBase request) throws HTTPException {
-        request.addHeader("charset", ENCODING);
         try {
             log.info("Sending {}", request);
             return httpClient.execute(request);

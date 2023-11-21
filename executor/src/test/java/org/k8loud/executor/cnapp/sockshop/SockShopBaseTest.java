@@ -7,11 +7,13 @@ import org.apache.http.message.BasicStatusLine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.k8loud.executor.service.HTTPService;
+import org.k8loud.executor.util.HTTPSession;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class SockShopBaseTest {
@@ -25,6 +27,8 @@ public class SockShopBaseTest {
     SockShopProperties sockShopProperties;
     @Mock
     HTTPService httpService;
+    @Mock
+    HTTPSession httpSession;
 
     SockShopServiceImpl sockShopService;
 
@@ -35,5 +39,6 @@ public class SockShopBaseTest {
             int statusCode = i.getArgument(0);
             return 200 <= statusCode && statusCode < 300;
         }).when(httpService).isStatusCodeSuccessful(anyInt());
+        when(httpService.createSession()).thenReturn(httpSession);
     }
 }
