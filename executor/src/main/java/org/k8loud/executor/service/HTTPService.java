@@ -1,17 +1,12 @@
 package org.k8loud.executor.service;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.k8loud.executor.exception.HTTPException;
+import org.k8loud.executor.util.HTTPSession;
 
 public interface HTTPService {
-    HttpResponse doPost(String urlBase, String urlSupplement, Object paramsObj) throws HTTPException;
-
-    HttpResponse doDelete(String urlBase, String urlSupplement) throws HTTPException;
-
-    HttpResponse sendRequest(HttpRequestBase request) throws HTTPException;
+    HTTPSession createSession();
 
     boolean isResponseSuccessful(HttpResponse response);
 
-    boolean isResponseStatusCodeSuccessful(int statusCode);
+    boolean isStatusCodeSuccessful(int statusCode);
 }

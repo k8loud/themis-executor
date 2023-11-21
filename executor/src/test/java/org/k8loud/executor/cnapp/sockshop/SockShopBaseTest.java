@@ -34,6 +34,6 @@ public class SockShopBaseTest {
         doAnswer(i -> {
             int statusCode = i.getArgument(0);
             return 200 <= statusCode && statusCode < 300;
-        }).when(httpService).isResponseStatusCodeSuccessful(anyInt());
+        }).when(httpService).isStatusCodeSuccessful(anyInt());
     }
 }

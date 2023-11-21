@@ -2,10 +2,7 @@ package org.k8loud.executor.util;
 
 import org.k8loud.executor.exception.ValidationException;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static org.k8loud.executor.exception.code.ValidationExceptionCode.ADDITIONAL_DATA_WRONG_KEY;
 
@@ -43,5 +40,9 @@ public final class Util {
         Set<Map.Entry<String, String>> entries = additionalData.entrySet();
         entries.add(Map.entry("result", result));
         return new HashMap<>(Map.ofEntries(entries.toArray(Map.Entry[]::new)));
+    }
+
+    public static String encodeBase64(String toEncode) {
+        return Base64.getEncoder().encodeToString(toEncode.getBytes());
     }
 }
