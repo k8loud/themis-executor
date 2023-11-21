@@ -62,7 +62,6 @@ public class HTTPSession {
     public HttpResponse doDelete(String urlBase, String urlSupplement) throws HTTPException {
         final String url = getUrl(urlBase, urlSupplement);
         HttpDelete request = new HttpDelete(url);
-        log.info("Sending {}", request);
         return sendRequest(request);
     }
 

@@ -1,0 +1,16 @@
+# delete address
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "cnapp.sockshop",
+  "actionName": "DeleteAddressAction",
+  "params": {
+    "params": {
+      "applicationUrl": "http://localhost:8082",
+      "username": "user997",
+      "password": "pass997",
+      "id": "655cd43ecb8de600019db12c"
+    }
+  }
+}

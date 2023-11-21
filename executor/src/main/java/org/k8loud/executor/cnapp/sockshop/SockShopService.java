@@ -13,4 +13,7 @@ public interface SockShopService {
     Map<String, String> createAddress(String applicationUrl, String username, String password, String id,
                                       String country, String city, String postcode, String street, String number)
             throws CNAppException;
+
+    Map<String, String> deleteAddress(String applicationUrl, String username, String password, String id)
+            throws CNAppException;
 }

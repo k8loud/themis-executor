@@ -59,37 +59,9 @@ public class SockShopServiceImpl implements SockShopService {
         return resultMap(String.format("Deleted user with id %s", id));
     }
 
-
-//    function login() {
-//        var username = $('#username-modal').val();
-//        var password = $('#password-modal').val();
-//        $.ajax({
-//                url: "login",
-//                type: "GET",
-//                async: false,
-//                success: function (data, textStatus, jqXHR) {
-//            $("#login-message").html('<div class="alert alert-success">Login successful.</div>');
-//            console.log('posted: ' + textStatus);
-//            console.log("logged_in cookie: " + $.cookie('logged_in'));
-//            setTimeout(function(){
-//                location.reload();
-//            }, 1500);
-//        },
-//        error: function (jqXHR, textStatus, errorThrown) {
-//            $("#login-message").html('<div class="alert alert-danger">Invalid login credentials.</div>');
-//            console.log('error: ' + JSON.stringify(jqXHR));
-//            console.log('error: ' + textStatus);
-//            console.log('error: ' + errorThrown);
-//        },
-//        beforeSend: function (xhr) {
-//            xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
-//        }
-//    });
-//        return false;
-//    }
-
     @Override
-    @ThrowExceptionAndLogExecutionTime(exceptionClass = "CNAppException", exceptionCode = "SOCK_SHOP_CREATE_ADDRESS")
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "CNAppException",
+            exceptionCode = "SOCK_SHOP_CREATE_ADDRESS_FAILED")
     public Map<String, String> createAddress(String applicationUrl, String username, String password, String id,
                                              String country, String city, String postcode, String street, String number)
             throws CNAppException {
@@ -97,15 +69,8 @@ public class SockShopServiceImpl implements SockShopService {
                 .city(city).street(street).number(number).postcode(postcode).build();
         log.info("Creating address with params {}", createAddressParams);
         try {
-            HTTPSession session = httpService.createSession();
-
-            // url: "login", type: "GET"
-            // xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password))
-            HttpResponse response = session.doGet(applicationUrl, sockShopProperties.getLoginUserUrlSupplement(),
-                    addAuthHeader(new HashMap<>(), username, password));
-            handleResponse(response);
-
-            response = session.doPost(applicationUrl, sockShopProperties.getAddressesUrlSupplement(),
+            HTTPSession session = authSession(httpService.createSession(), applicationUrl, username, password);
+            HttpResponse response = session.doPost(applicationUrl, sockShopProperties.getAddressesUrlSupplement(),
                     createAddressParams);
             handleResponse(response);
         } catch (HTTPException e) {
@@ -114,11 +79,38 @@ public class SockShopServiceImpl implements SockShopService {
         return resultMap(String.format("Created address with params %s", createAddressParams));
     }
 
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "CNAppException",
+            exceptionCode = "SOCK_SHOP_DELETE_ADDRESS_FAILED")
+    public Map<String, String> deleteAddress(String applicationUrl, String username, String password, String id)
+            throws CNAppException {
+        log.info("Deleting address with id {}", id);
+        try {
+            HTTPSession session = authSession(httpService.createSession(), applicationUrl, username, password);
+            HttpResponse response = session.doDelete(applicationUrl, String.format("%s/%s",
+                    sockShopProperties.getAddressesUrlSupplement(), id));
+            handleResponse(response);
+        } catch (HTTPException e) {
+            throw new CNAppException(e.toString(), CAUGHT_HTTP_EXCEPTION);
+        }
+        return resultMap(String.format("Deleted address with id %s", id));
+    }
+
     private void handleResponse(HttpResponse response) throws HTTPException {
         final int statusCode = response.getStatusLine().getStatusCode();
         if (!httpService.isStatusCodeSuccessful(statusCode)) {
             throw new HTTPException(String.valueOf(statusCode), HTTP_RESPONSE_STATUS_CODE_NOT_SUCCESSFUL);
         }
+    }
+
+    private HTTPSession authSession(HTTPSession session, String applicationUrl, String username, String password)
+            throws HTTPException {
+        // url: "login", type: "GET"
+        // xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password))
+        HttpResponse response = session.doGet(applicationUrl, sockShopProperties.getLoginUserUrlSupplement(),
+                addAuthHeader(new HashMap<>(), username, password));
+        handleResponse(response);
+        return session;
     }
 
     private Map<String, String> addAuthHeader(Map<String, String> headers, String username, String password) {

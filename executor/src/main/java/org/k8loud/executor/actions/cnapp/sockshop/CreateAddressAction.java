@@ -11,7 +11,7 @@ import java.util.Map;
 public class CreateAddressAction extends SockShopAction {
     private String username;
     private String password;
-    private String id;
+    private String id; // The new address will be assigned to the user with this id
     private String country;
     private String city;
     private String postcode;
@@ -29,7 +29,7 @@ public class CreateAddressAction extends SockShopAction {
         super(sockShopService, applicationUrl);
         this.username = username;
         this.password = password;
-        this.id = id; // The new address will be assigned to the user with this id
+        this.id = id;
         this.country = country;
         this.city = city;
         this.postcode = postcode;
