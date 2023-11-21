@@ -1,0 +1,14 @@
+### delete instances
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "openstack",
+  "actionName": "DeleteInstanceAction",
+  "params": {
+    "params": {
+      "region": "RegionOne",
+      "name": "test"
+    }
+  }
+}
