@@ -11,7 +11,7 @@ import java.util.Map;
 public class DeleteAddressAction extends SockShopAction {
     private String username;
     private String password;
-    private String id; // id of the address to be deleted
+    private String addressId;
 
     public DeleteAddressAction(Params params, SockShopService sockShopService) throws ActionException {
         super(params, sockShopService);
@@ -19,22 +19,22 @@ public class DeleteAddressAction extends SockShopAction {
 
     @Builder
     public DeleteAddressAction(SockShopService sockShopService, String applicationUrl,
-                               String username, String password, String id) {
+                               String username, String password, String addressId) {
         super(sockShopService, applicationUrl);
         this.username = username;
         this.password = password;
-        this.id = id;
+        this.addressId = addressId;
     }
 
     @Override
     protected void unpackAdditionalParams(Params params) {
         username = params.getRequiredParam("username");
         password = params.getRequiredParam("password");
-        id = params.getRequiredParam("id");
+        addressId = params.getRequiredParam("addressId");
     }
 
     @Override
     protected Map<String, String> executeBody() throws CustomException {
-        return sockShopService.deleteAddress(applicationUrl, username, password, id);
+        return sockShopService.deleteAddress(applicationUrl, username, password, addressId);
     }
 }

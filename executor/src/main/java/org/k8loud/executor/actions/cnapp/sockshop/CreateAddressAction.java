@@ -11,7 +11,7 @@ import java.util.Map;
 public class CreateAddressAction extends SockShopAction {
     private String username;
     private String password;
-    private String id; // The new address will be assigned to the user with this id
+    private String userId; // The new address will be assigned to the user with this id
     private String country;
     private String city;
     private String postcode;
@@ -24,12 +24,12 @@ public class CreateAddressAction extends SockShopAction {
 
     @Builder
     public CreateAddressAction(SockShopService sockShopService, String applicationUrl,
-                               String username, String password, String id, String country, String city,
+                               String username, String password, String userId, String country, String city,
                                String postcode, String street, String number) {
         super(sockShopService, applicationUrl);
         this.username = username;
         this.password = password;
-        this.id = id;
+        this.userId = userId;
         this.country = country;
         this.city = city;
         this.postcode = postcode;
@@ -41,7 +41,7 @@ public class CreateAddressAction extends SockShopAction {
     protected void unpackAdditionalParams(Params params) {
         username = params.getRequiredParam("username");
         password = params.getRequiredParam("password");
-        id = params.getRequiredParam("id");
+        userId = params.getRequiredParam("userId");
         country = params.getRequiredParam("country");
         city = params.getRequiredParam("city");
         postcode = params.getRequiredParam("postcode");
@@ -51,7 +51,7 @@ public class CreateAddressAction extends SockShopAction {
 
     @Override
     protected Map<String, String> executeBody() throws CustomException {
-        return sockShopService.createAddress(applicationUrl, username, password, id, country, city, postcode, street,
-                number);
+        return sockShopService.createAddress(applicationUrl, username, password, userId, country, city, postcode,
+                street, number);
     }
 }

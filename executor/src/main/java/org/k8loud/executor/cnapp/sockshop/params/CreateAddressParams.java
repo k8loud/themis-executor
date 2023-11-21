@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class CreateAddressParams {
-    private String id;
+    private String id; // The new address will be assigned to the user with this id
     private String country;
     private String city;
     private String postcode;

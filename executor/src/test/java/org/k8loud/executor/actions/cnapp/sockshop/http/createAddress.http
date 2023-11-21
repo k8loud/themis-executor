@@ -10,7 +10,7 @@ Content-Type: application/json
       "applicationUrl": "http://localhost:8082",
       "username": "user997",
       "password": "pass997",
-      "id": "655ba030cb8de600019db11a",
+      "userId": "655cda2acb8de600019db130",
       "country": "Java",
       "city": "Cracow",
       "postcode": "31-005",
