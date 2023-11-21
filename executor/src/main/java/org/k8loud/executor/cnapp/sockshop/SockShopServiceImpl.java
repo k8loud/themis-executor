@@ -64,7 +64,8 @@ public class SockShopServiceImpl implements SockShopService {
         CreateAddressParams createAddressParams = CreateAddressParams.builder().id(userId).country(country)
                 .city(city).street(street).number(number).postcode(postcode).build();
         log.info("Creating address with params {}", createAddressParams);
-        HTTPSession session = authSession(httpService.createSession(), applicationUrl, username, password);
+        HTTPSession session = httpService.createSession();
+        authSession(session, applicationUrl, username, password);
         HttpResponse response = session.doPost(applicationUrl, sockShopProperties.getAddressesUrlSupplement(),
                 createAddressParams);
         String responseContent = handleResponse(response);
@@ -75,9 +76,11 @@ public class SockShopServiceImpl implements SockShopService {
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "CNAppException",
             exceptionCode = "SOCK_SHOP_DELETE_ADDRESS_FAILED")
-    public Map<String, String> deleteAddress(String applicationUrl, String username, String password, String addressId) throws CNAppException, ValidationException, HTTPException {
+    public Map<String, String> deleteAddress(String applicationUrl, String username, String password, String addressId)
+            throws CNAppException, ValidationException, HTTPException {
         log.info("Deleting address with id {}", addressId);
-        HTTPSession session = authSession(httpService.createSession(), applicationUrl, username, password);
+        HTTPSession session = httpService.createSession();
+        authSession(session, applicationUrl, username, password);
         HttpResponse response = session.doDelete(applicationUrl, String.format("%s/%s",
                 sockShopProperties.getAddressesUrlSupplement(), addressId));
         String responseContent = handleResponse(response);
@@ -97,14 +100,13 @@ public class SockShopServiceImpl implements SockShopService {
         }
     }
 
-    private HTTPSession authSession(HTTPSession session, String applicationUrl, String username, String password)
+    private void authSession(HTTPSession session, String applicationUrl, String username, String password)
             throws HTTPException, CNAppException {
         // url: "login", type: "GET"
         // xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password))
         HttpResponse response = session.doGet(applicationUrl, sockShopProperties.getLoginUserUrlSupplement(),
                 addAuthHeader(new HashMap<>(), username, password));
         handleResponse(response);
-        return session;
     }
 
     private Map<String, String> addAuthHeader(Map<String, String> headers, String username, String password) {

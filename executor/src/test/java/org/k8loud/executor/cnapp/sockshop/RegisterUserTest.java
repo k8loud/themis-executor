@@ -19,25 +19,27 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class RegisterUserTest extends SockShopBaseTest {
-    private static final String REGISTER_USER_URL_SUPPLEMENT = "customers";
-    private static final String USERNAME = "userVal";
-    private static final String PASSWORD = "passVal";
     private static final String EMAIL = "em@il.com";
 
     @Captor
     ArgumentCaptor<RegisterUserParams> registerUserParamsCaptor;
 
+    @Override
+    protected void additionalSetUp() {
+        when(sockShopPropertiesMock.getRegisterUserUrlSupplement()).thenReturn(REGISTER_USER_URL_SUPPLEMENT);
+    }
+
     @Test
     void testRegisterUser() throws CNAppException, HTTPException, ValidationException {
         // given
-        when(sockShopProperties.getRegisterUserUrlSupplement()).thenReturn(REGISTER_USER_URL_SUPPLEMENT);
-        when(httpSession.doPost(anyString(), anyString(), any())).thenReturn(SUCCESSFUL_RESPONSE);
+        when(httpSessionMock.doPost(anyString(), anyString(), any())).thenReturn(successfulResponseMock);
+        mockSuccessfulResponse();
 
         // when
         Map<String, String> resultMap = sockShopService.registerUser(APPLICATION_URL, USERNAME, PASSWORD, EMAIL);
 
         // then
-        verify(httpSession).doPost(eq(APPLICATION_URL), eq(REGISTER_USER_URL_SUPPLEMENT),
+        verify(httpSessionMock).doPost(eq(APPLICATION_URL), eq(REGISTER_USER_URL_SUPPLEMENT),
                 registerUserParamsCaptor.capture());
         final RegisterUserParams registerUserParams = registerUserParamsCaptor.getValue();
         assertEquals(USERNAME, registerUserParams.getUsername());
@@ -49,8 +51,8 @@ public class RegisterUserTest extends SockShopBaseTest {
     @Test
     void testRegisterUserUnsuccessfulResponse() throws HTTPException {
         // given
-        when(sockShopProperties.getRegisterUserUrlSupplement()).thenReturn(REGISTER_USER_URL_SUPPLEMENT);
-        when(httpSession.doPost(anyString(), anyString(), any())).thenReturn(UNSUCCESSFUL_RESPONSE);
+        when(httpSessionMock.doPost(anyString(), anyString(), any())).thenReturn(unsuccessfulResponseMock);
+        mockUnsuccessfulResponse();
 
         // when
         Throwable e = catchThrowable(() -> sockShopService.registerUser(APPLICATION_URL, USERNAME, PASSWORD, EMAIL));

@@ -16,7 +16,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class DeleteUserActionTest extends SockShopActionBaseTest {
-    private static final String ID = "655b6dfacb8de600019db115";
     private static final Params PARAMS = new Params(Map.of(
             APPLICATION_URL_KEY, APPLICATION_URL,
             "userId", ID
