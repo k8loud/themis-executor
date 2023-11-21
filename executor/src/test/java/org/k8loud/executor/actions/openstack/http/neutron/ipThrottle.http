@@ -10,8 +10,7 @@ Content-Type: application/json
       "region": "RegionOne",
       "serverId": "d0f0afdb-051b-4462-add3-bd51fe427541",
       "ethertype": "IPv4",
-      "direction": "egress",
-      "remoteIpPrefix": "172.42.0.0/16",
+      "remoteIpPrefix": "192.168.1.160/27",
       "protocol": "TCP",
       "portRangeMin": "80",
       "portRangeMax": "80"

@@ -48,7 +48,7 @@ public interface OpenstackService {
 
     Map<String, String> removeSecurityGroupRule(String region, String securityGroupRuleId) throws OpenstackException;
 
-    Map<String, String> throttle(String region, String serverId, String ethertype, String direction,
+    Map<String, String> throttle(String region, String serverId, String ethertype,
                                  String remoteIpPrefix, String protocol, int portRangeMin,
                                  int portRangeMax, long secDuration) throws OpenstackException;
 }

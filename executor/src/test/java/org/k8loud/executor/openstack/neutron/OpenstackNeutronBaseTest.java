@@ -23,7 +23,7 @@ public abstract class OpenstackNeutronBaseTest extends OpenstackConstants {
     @Mock
     protected NetworkingService networkingServiceMock;
     @Mock
-    protected SecurityGroupRuleService securityGroupRuleService;
+    protected SecurityGroupRuleService securityGroupRuleServiceMock;
     @Mock
     protected SecurityGroupService securityGroupServiceMock;
     @Mock

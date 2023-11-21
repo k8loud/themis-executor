@@ -1,13 +1,8 @@
 package org.k8loud.executor.openstack.neutron;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.k8loud.executor.exception.OpenstackException;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.openstack4j.api.Builders;
-import org.openstack4j.api.networking.SecurityGroupRuleService;
-import org.openstack4j.model.network.SecurityGroup;
 import org.openstack4j.model.network.SecurityGroupRule;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,28 +24,28 @@ public class AddRuleToSecurityGroupTest extends OpenstackNeutronBaseTest {
 
     @Override
     protected void setUp() {
-        when(networkingServiceMock.securityrule()).thenReturn(securityGroupRuleService);
+        when(networkingServiceMock.securityrule()).thenReturn(securityGroupRuleServiceMock);
         when(securityGroupMock.getId()).thenReturn(SECURITY_GROUP_ID);
     }
 
     @Test
     void testSuccess() throws OpenstackException {
         // given
-        when(securityGroupRuleService.create(any(SecurityGroupRule.class))).thenReturn(securityGroupRuleMock);
+        when(securityGroupRuleServiceMock.create(any(SecurityGroupRule.class))).thenReturn(securityGroupRuleMock);
 
         // when
         openstackNeutronService.addSecurityGroupRule(securityGroupMock, ETHERTYPE, DIRECTION, REMOTE_IP_PREFIX,
                 PROTOCOL, PORT_RANGE_MIN, PORT_RANGE_MAX, RULE_DESCRIPTION, clientV3Mock);
 
         // then
-        verify(securityGroupRuleService).create(refEq(SECURITY_GROUP_RULE));
+        verify(securityGroupRuleServiceMock).create(refEq(SECURITY_GROUP_RULE));
         verify(securityGroupMock).getName();
     }
 
     @Test
     void testCreateSecurityGroupFailed() {
         // given
-        when(securityGroupRuleService.create(any(SecurityGroupRule.class))).thenReturn(null);
+        when(securityGroupRuleServiceMock.create(any(SecurityGroupRule.class))).thenReturn(null);
         when(securityGroupMock.getName()).thenReturn(SECURITY_GROUP_NAME);
 
 
@@ -60,7 +55,7 @@ public class AddRuleToSecurityGroupTest extends OpenstackNeutronBaseTest {
                         REMOTE_IP_PREFIX, PROTOCOL, PORT_RANGE_MIN, PORT_RANGE_MAX, RULE_DESCRIPTION, clientV3Mock));
 
         // then
-        verify(securityGroupRuleService).create(refEq(SECURITY_GROUP_RULE));
+        verify(securityGroupRuleServiceMock).create(refEq(SECURITY_GROUP_RULE));
         verify(securityGroupMock, times(2)).getName();
 
         assertThat(throwable).isExactlyInstanceOf(OpenstackException.class)

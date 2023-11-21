@@ -29,6 +29,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <!--    THEMIS DEPENDENCIES    -->
+            <dependency>
+                <groupId>org.k8loud</groupId>
+                <artifactId>executor-shared</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
             <!--    COMPILE DEPENDENCIES    -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -51,9 +58,9 @@
                 <version>23.0.0</version>
             </dependency>
             <dependency>
-                <groupId>org.k8loud</groupId>
-                <artifactId>executor-shared</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <groupId>commons-net</groupId>
+                <artifactId>commons-net</artifactId>
+                <version>3.9.0</version>
             </dependency>
 
             <!--    TEST DEPENDENCIES    -->
