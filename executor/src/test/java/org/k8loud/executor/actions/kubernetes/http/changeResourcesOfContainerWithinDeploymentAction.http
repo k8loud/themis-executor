@@ -4,11 +4,11 @@ Content-Type: application/json
 
 {
   "collectionName": "kubernetes",
-  "actionName": "ChangeResourcesOfContainerWithinPodAction",
+  "actionName": "ChangeResourcesOfContainerWithinDeploymentAction",
   "params": {
     "params": {
       "namespace": "default",
-      "podName": "change-resources-test",
+      "deploymentName": "change-resources-test",
       "containerName": "nginx",
       "limitsCpu": "400m",
       "limitsMemory": "250Mi",
@@ -18,7 +18,7 @@ Content-Type: application/json
   }
 }
 
-### add pod with resources
+### add deployment with resources
 POST localhost:8080/execute
 Content-Type: application/json
 
@@ -28,12 +28,12 @@ Content-Type: application/json
   "params": {
     "params": {
       "namespace": "default",
-      "resourceDescription": "apiVersion: v1\r\nkind: Pod\r\nmetadata:\r\n  name: change-resources-test\r\nspec:\r\n  containers:\r\n  - name: nginx\r\n    image: nginx:1.14.2\r\n    ports:\r\n    - containerPort: 80\r\n    resources:\r\n      limits:\r\n        cpu: 200m\r\n        memory: 300Mi\r\n      requests:\r\n        cpu: 150m\r\n        memory: 250Mi"
+      "resourceDescription": "apiVersion: apps/v1\r\nkind: Deployment\r\nmetadata:\r\n  name: change-resources-test\r\n  labels:\r\n    app: nginx\r\nspec:\r\n  replicas: 3\r\n  selector:\r\n    matchLabels:\r\n      app: nginx\r\n  template:\r\n    metadata:\r\n      labels:\r\n        app: nginx\r\n    spec:\r\n      containers:\r\n      - name: nginx\r\n        image: nginx:1.14.2\r\n        resources:\r\n          limits:\r\n            cpu: 900m\r\n            memory: 900Mi\r\n          requests:\r\n            cpu: 900m\r\n            memory: 900Mi\r\n        ports:\r\n        - containerPort: 80\r\n"
     }
   }
 }
 
-### delete pod with resources
+### delete deployment with resources
 POST localhost:8080/execute
 Content-Type: application/json
 
@@ -42,7 +42,7 @@ Content-Type: application/json
   "actionName": "DeleteResourceAction",
   "params": {
     "params": {
-      "resourceType": "Pod",
+      "resourceType": "Deployment",
       "resourceName": "change-resources-test",
       "namespace": "default",
       "gracePeriodSeconds": "60"
