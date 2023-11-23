@@ -18,6 +18,7 @@ Content-Type: application/json
   }
 }
 
+###### setUp
 ### add deployment with resources
 POST localhost:8080/execute
 Content-Type: application/json
@@ -33,6 +34,7 @@ Content-Type: application/json
   }
 }
 
+###### tearDown
 ### delete deployment with resources
 POST localhost:8080/execute
 Content-Type: application/json
