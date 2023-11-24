@@ -68,7 +68,6 @@ public final class Util {
 
         String baseAddress = new SubnetUtils(baseSubnet).getInfo().getNetworkAddress();
         List<List<Integer>> oktets = new ArrayList<>();
-        System.out.println(baseAddress);
         Arrays.stream(baseAddress.split("\\."))
                 .forEach(oktet -> oktets.add(listOfBits(oktet)));
 
@@ -127,10 +126,5 @@ public final class Util {
         List<Integer> kChanged = new ArrayList<>(current);
         kChanged.set(k, 1);
         combine(kChanged, len, k + 1, result);
-    }
-
-    public static void main(String[] args) {
-        getDifferenceCIDRS("192.168.1.0/24", "192.168.1.160/27").forEach(s ->
-                System.out.println(s.getInfo().getCidrSignature()));
     }
 }
