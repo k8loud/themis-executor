@@ -56,10 +56,14 @@ spec:
               value: "true"
             - name: SERVICE_ENABLED_RULE
               value: "true"
+            - name: SOCKSHOP_LOGIN_USER_URL_SUPPLEMENT
+              value: login
             - name: SOCKSHOP_REGISTER_USER_URL_SUPPLEMENT
               value: register
             - name: SOCKSHOP_CUSTOMERS_URL_SUPPLEMENT
               value: customers
+            - name: SOCKSHOP_ADDRESSES_URL_SUPPLEMENT
+              value: addresses
           resources:
             limits:
               cpu: 900m

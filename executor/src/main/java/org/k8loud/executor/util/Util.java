@@ -35,17 +35,20 @@ public final class Util {
         return new HashMap<>(Map.of("result", result));
     }
 
-    public static Map<String, String> resultMap(String result,
-                                                Map<String, String> additionalData) throws ValidationException {
+    public static Map<String, String> resultMap(String result, Map<String, String> additionalData)
+            throws ValidationException {
         if (additionalData.containsKey("result")) {
             throw new ValidationException(ADDITIONAL_DATA_WRONG_KEY);
         }
-
         Map<String, String> resultMap = new HashMap<>(additionalData);
         resultMap.put("result", result);
         return resultMap;
     }
 
+    public static String encodeBase64(String toEncode) {
+        return Base64.getEncoder().encodeToString(toEncode.getBytes());
+    }
+    
     public static boolean hasCommonSubnet(String subnet1, String subnet2) {
         if (Utils.isNullOrEmpty(subnet1) || Utils.isNullOrEmpty(subnet2)){
             return false;

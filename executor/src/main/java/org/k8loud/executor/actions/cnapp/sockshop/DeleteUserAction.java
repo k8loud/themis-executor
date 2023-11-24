@@ -9,7 +9,7 @@ import org.k8loud.executor.exception.CustomException;
 import java.util.Map;
 
 public class DeleteUserAction extends SockShopAction {
-    private String id;
+    private String userId;
 
     public DeleteUserAction(Params params, SockShopService sockShopService) throws ActionException {
         super(params, sockShopService);
@@ -17,18 +17,18 @@ public class DeleteUserAction extends SockShopAction {
 
     @Builder
     public DeleteUserAction(SockShopService sockShopService, String applicationUrl,
-                            String id) {
+                            String userId) {
         super(sockShopService, applicationUrl);
-        this.id = id;
+        this.userId = userId;
     }
 
     @Override
     protected void unpackAdditionalParams(Params params) {
-        id = params.getRequiredParam("id");
+        userId = params.getRequiredParam("userId");
     }
 
     @Override
     protected Map<String, String> executeBody() throws CustomException {
-        return sockShopService.deleteUser(applicationUrl, id);
+        return sockShopService.deleteUser(applicationUrl, userId);
     }
 }

@@ -1,0 +1,21 @@
+# create address
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "cnapp.sockshop",
+  "actionName": "CreateAddressAction",
+  "params": {
+    "params": {
+      "applicationUrl": "http://localhost:8082",
+      "username": "user997",
+      "password": "pass997",
+      "userId": "655cda2acb8de600019db130",
+      "country": "Java",
+      "city": "Cracow",
+      "postcode": "31-005",
+      "street": "Bracka",
+      "number": "3"
+    }
+  }
+}

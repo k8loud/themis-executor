@@ -8,8 +8,8 @@ Content-Type: application/json
   "params": {
     "params": {
       "applicationUrl": "http://localhost:8082",
-      "username": "user997",
-      "password": "pass997",
+      "username": "user994",
+      "password": "pass994",
       "email": "totallynotfakeemail@yahoo.com"
     }
   }

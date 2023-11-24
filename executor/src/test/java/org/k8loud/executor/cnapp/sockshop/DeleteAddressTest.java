@@ -15,34 +15,34 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class DeleteUserTest extends SockShopBaseTest {
+public class DeleteAddressTest extends SockShopBaseTest {
     @Override
-    public void additionalSetUp() {
-        when(sockShopPropertiesMock.getCustomersUrlSupplement()).thenReturn(SOCKSHOP_CUSTOMERS_URL_SUPPLEMENT);
+    protected void additionalSetUp() throws HTTPException {
+        when(sockShopPropertiesMock.getAddressesUrlSupplement()).thenReturn(SOCKSHOP_ADDRESSES_URL_SUPPLEMENT);
+        mockAuth();
     }
 
     @Test
-    void testDeleteUser() throws HTTPException, CNAppException, ValidationException {
+    void testDeleteAddress() throws HTTPException, CNAppException, ValidationException {
         // given
         when(httpSessionMock.doDelete(anyString(), anyString())).thenReturn(successfulResponseMock);
-        mockSuccessfulResponse();
 
         // when
-        Map<String, String> resultMap = sockShopService.deleteUser(APPLICATION_URL, ID);
+        Map<String, String> resultMap = sockShopService.deleteAddress(APPLICATION_URL, USERNAME, PASSWORD, ID);
 
         // then
-        verify(httpSessionMock).doDelete(eq(APPLICATION_URL), eq(SOCKSHOP_CUSTOMERS_URL_SUPPLEMENT + "/" + ID));
+        verify(httpSessionMock).doDelete(eq(APPLICATION_URL), eq(SOCKSHOP_ADDRESSES_URL_SUPPLEMENT + "/" + ID));
         assertResponseContent(resultMap);
     }
 
     @Test
-    void testDeleteUserUnsuccessfulResponse() throws HTTPException {
+    void testDeleteAddressUnsuccessfulResponse() throws HTTPException {
         // given
         when(httpSessionMock.doDelete(anyString(), anyString())).thenReturn(unsuccessfulResponseMock);
         mockUnsuccessfulResponse();
 
         // when
-        Throwable e = catchThrowable(() -> sockShopService.deleteUser(APPLICATION_URL, ID));
+        Throwable e = catchThrowable(() -> sockShopService.deleteAddress(APPLICATION_URL, USERNAME, PASSWORD, ID));
 
         // then
         assertThat(e).isExactlyInstanceOf(HTTPException.class).hasMessage(
