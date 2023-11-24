@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.exception.ValidationException;
-import org.k8loud.executor.util.Util;
 import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 import org.openstack4j.api.OSClient.OSClientV3;
 import org.openstack4j.model.compute.Action;
@@ -21,10 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
@@ -285,30 +281,37 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "IP_THROTTLE_FAILED")
-    public Map<String, String> throttle(String region, String serverId, String ethertype, String direction,
+    public Map<String, String> throttle(String region, String serverId, String ethertype,
                                         String remoteIpPrefix, String protocol, int portRangeMin, int portRangeMax,
                                         long secDuration) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
+        Map<SecurityGroup, Set<SecurityGroupRule>> rulesToModify = openstackNeutronService.getThrottlingRules(server,
+                ethertype, remoteIpPrefix, protocol, portRangeMin, portRangeMax, client);
 
-        SecurityGroup securityGroup = openstackNeutronService.createSecurityGroup(Util.nameWithUuid("ip-throttle"),
-                null, client);
-        SecurityGroupRule securityGroupRule = openstackNeutronService.addSecurityGroupRule(securityGroup, ethertype,
-                direction, remoteIpPrefix, protocol, portRangeMin, portRangeMax, null, client);
-        openstackNovaService.addSecurityGroupToInstance(server, securityGroup, client);
+        Set<SecurityGroupRule> throttlingRules = openstackNeutronService.modifySecurityGroupsDuringThrottling(
+                rulesToModify, remoteIpPrefix, portRangeMin, portRangeMax, () -> {
+                    try {
+                        return openstackClientWithRegion(region);
+                    } catch (OpenstackException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
 
-        scheduleIpThrottlingRemoval(region, server, securityGroup, secDuration);
-        return resultMap(String.format("Added throttling security group with rule (%s) to server %s",
-                securityGroupRule.toString(), server.getName()));
+        scheduleIpThrottlingRemoval(region, throttlingRules, rulesToModify, secDuration);
+        return resultMap(
+                String.format("Added throttling security group rules to server %s and scheduled revert in %d sec",
+                        server.getName(), secDuration));
     }
 
     @Async
-    public void scheduleIpThrottlingRemoval(String region, Server server, SecurityGroup securityGroup,
+    public void scheduleIpThrottlingRemoval(String region, Set<SecurityGroupRule> rulesToDelete,
+                                            Map<SecurityGroup, Set<SecurityGroupRule>> rulesToRestore,
                                             long secDuration) {
         log.info("Scheduling IP throttling removal to start in {} seconds", secDuration);
         taskScheduler.schedule(() -> {
                     try {
-                        removeThrottling(region, server, securityGroup);
+                        removeThrottling(region, rulesToDelete, rulesToRestore);
                     } catch (OpenstackException e) {
                         log.warn("Problem during removing throttling. ", e);
                     }
@@ -323,12 +326,30 @@ public class OpenstackServiceImpl implements OpenstackService {
         return client;
     }
 
-    private void removeThrottling(String region, Server server, SecurityGroup securityGroup) throws OpenstackException {
-        log.info("Removing throttling security group {}", securityGroup.getName());
-        OSClientV3 client = openstackClientWithRegion(region);
-        openstackNovaService.removeSecurityGroupFromInstance(server, securityGroup, client);
-        openstackNeutronService.removeSecurityGroup(securityGroup, client);
-        log.info("Successfully removed throttling security group ({})", securityGroup.getName());
+    private void removeThrottling(String region, Set<SecurityGroupRule> rulesToDelete,
+                                  Map<SecurityGroup, Set<SecurityGroupRule>> rulesToRestore) throws OpenstackException {
+        log.info("Removing throttling security group rules and restoring previous ones");
+
+        rulesToRestore.keySet().stream().parallel().forEach(group -> {
+            rulesToRestore.get(group).stream().parallel().forEach(rule -> {
+                try {
+                    openstackNeutronService.addSecurityGroupRule(group, rule.getEtherType(), rule.getDirection(),
+                            rule.getRemoteIpPrefix(), rule.getProtocol(), rule.getPortRangeMin(),
+                            rule.getPortRangeMax(),
+                            rule.getDescription(), openstackClientWithRegion(region));
+                } catch (OpenstackException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        });
+
+        rulesToDelete.stream().parallel().forEach(rules -> {
+            try {
+                openstackNeutronService.removeSecurityGroupRule(rules, openstackClientWithRegion(region));
+            } catch (OpenstackException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private Map<String, String> resizeServer(Server server, Flavor newFlavor, int waitSecondsForVerifyStatus,

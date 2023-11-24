@@ -19,17 +19,11 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.retry</groupId>
-            <artifactId>spring-retry</artifactId>
-        </dependency>
-
         <!--    COMPILE DEPENDENCIES    -->
+        <dependency>
+            <groupId>org.k8loud</groupId>
+            <artifactId>executor-shared</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.github.openstack4j.core</groupId>
             <artifactId>openstack4j-core</artifactId>
@@ -40,6 +34,16 @@
             <artifactId>openstack4j-httpclient</artifactId>
             <version>${openstack4j.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+        </dependency>
+
         <!-- 3rd party dependencies -->
         <dependency>
             <groupId>mysql</groupId>
@@ -73,10 +77,6 @@
             <artifactId>camel-openstack</artifactId>
             <version>3.20.6</version>
             <!-- use the same version as your Camel core version -->
-        </dependency>
-        <dependency>
-            <groupId>org.k8loud</groupId>
-            <artifactId>executor-shared</artifactId>
         </dependency>
         <dependency>
             <groupId>io.fabric8</groupId>
@@ -125,6 +125,10 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
         </dependency>
         <!--    TEST DEPENDENCIES    -->
         <dependency>

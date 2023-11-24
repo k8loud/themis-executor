@@ -39,8 +39,8 @@ public abstract class Action {
                     .exitCode(ExecutionExitCode.NOT_OK)
                     .build();
         }
-        String result = resultMap.remove("result");
         log.info("Result: {} [{}]", getClass().getName(), resultMap);
+        String result = resultMap.remove("result");
         return ExecutionRS.builder()
                 .result(result)
                 .exitCode(ExecutionExitCode.OK)

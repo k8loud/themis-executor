@@ -44,6 +44,7 @@ class ResourceTypeTest {
         assertEquals(INVALID_RESOURCE_TYPE, ((CustomException) e).getExceptionCode());
     }
 
+    // TODO: KubernetesResourceType::toString
     private static Stream<Arguments> testValidResourceTypeParsing() {
         return Stream.of(Arguments.of("ReplicaSet", REPLICA_SET),
                 Arguments.of("Deployment", DEPLOYMENT),
