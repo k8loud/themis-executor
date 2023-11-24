@@ -1,6 +1,9 @@
 package org.k8loud.executor.kubernetes;
 
 import io.fabric8.kubernetes.api.model.*;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
+import io.fabric8.kubernetes.api.model.apps.DeploymentSpec;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.AppsAPIGroupDSL;
 import io.fabric8.kubernetes.client.dsl.MixedOperation;
@@ -15,12 +18,12 @@ import org.k8loud.executor.util.Util;
 import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static org.k8loud.executor.exception.code.KubernetesExceptionCode.*;
-import static org.k8loud.executor.kubernetes.KubernetesResourceType.CONFIG_MAP;
-import static org.k8loud.executor.kubernetes.KubernetesResourceType.POD;
+import static org.k8loud.executor.kubernetes.KubernetesResourceType.*;
 import static org.k8loud.executor.util.Util.getFullResourceName;
 import static org.k8loud.executor.util.Util.resultMap;
 
@@ -107,25 +110,18 @@ public class KubernetesServiceImpl implements KubernetesService {
                                                                          String requestsMemory)
             throws KubernetesException {
         Resource<Pod> resource = getResource(namespace, POD.toString(), podName);
-        final ResourceRequirements requirements = new ResourceRequirementsBuilder()
-                .addToLimits(Map.of("cpu", new Quantity(limitsCpu)))
-                .addToLimits(Map.of("memory", new Quantity(limitsMemory)))
-                .addToRequests(Map.of("cpu", new Quantity(requestsCpu)))
-                .addToRequests(Map.of("memory", new Quantity(requestsMemory)))
-                .build();
-        final String fullPodName = getFullResourceName(POD.toString(), podName);
+        final ResourceRequirements requirements = createResourceRequirements(limitsCpu, limitsMemory, requestsCpu,
+                requestsMemory);
+        final String fullResourceName = getFullResourceName(POD.toString(), podName);
 
-        log.info("Looking for container {} within {}", containerName, fullPodName);
+        log.info("Looking for container {} within {}", containerName, fullResourceName);
         PodSpec spec = Optional.ofNullable(resource.get().getSpec()).orElseThrow(() -> new KubernetesException(
-                String.format("Spec of %s is empty", fullPodName), EMPTY_SPEC));
-        Container container = spec.getContainers().stream()
-                .filter(c -> c.getName().equals(containerName))
-                .findFirst()
-                .orElseThrow(() -> new KubernetesException(String.format("Couldn't find container %s within %s",
-                        containerName, fullPodName), CONTAINER_WITHIN_POD_NOT_FOUND));
-        Container updatedContainer = new ContainerBuilder(container).withResources(requirements).build();
+                String.format("Spec of %s is empty", fullResourceName), EMPTY_SPEC));
+        List<Container> containers = spec.getContainers();
+        Container container = findContainer(containers, containerName, fullResourceName);
 
-        log.info("Preparing {} template", fullPodName);
+        log.info("Preparing {} template", fullResourceName);
+        Container updatedContainer = new ContainerBuilder(container).withResources(requirements).build();
         Pod updatedPod = new PodBuilder(resource.get())
                 .editOrNewMetadata()
                     .withResourceVersion("")
@@ -144,12 +140,48 @@ public class KubernetesServiceImpl implements KubernetesService {
             log.warn("Interrupted while waiting for graceful resource deletion");
         }
 
-        log.info("Recreating {}", fullPodName);
+        log.info("Recreating {}", fullResourceName);
         addResource(namespace, POD.toString(), updatedPod);
 
         return resultMap(String.format("Updated requirements specs of container %s within %s to {limitsCpu: %s, " +
                         "limitsMemory: %s, requestsCpu: %s, requestsMemory: %s}", containerName,
-                fullPodName, limitsCpu, limitsMemory, requestsCpu, requestsMemory));
+                fullResourceName, limitsCpu, limitsMemory, requestsCpu, requestsMemory));
+    }
+
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException",
+            exceptionCode = "CHANGE_RESOURCES_OF_CONTAINER_WITHIN_DEPLOYMENT_FAILED")
+    public Map<String, String> changeResourcesOfContainerWithinDeploymentAction(String namespace, String deploymentName,
+                                                                         String containerName, String limitsCpu,
+                                                                         String limitsMemory, String requestsCpu,
+                                                                         String requestsMemory)
+            throws KubernetesException {
+        Resource<Deployment> resource = getResource(namespace, DEPLOYMENT.toString(), deploymentName);
+        final ResourceRequirements requirements = createResourceRequirements(limitsCpu, limitsMemory, requestsCpu,
+                requestsMemory);
+        final String fullResourceName = getFullResourceName(DEPLOYMENT.toString(), deploymentName);
+
+        log.info("Looking for container {} within {}", containerName, fullResourceName);
+        DeploymentSpec spec = Optional.ofNullable(resource.get().getSpec()).orElseThrow(() -> new KubernetesException(
+                String.format("Spec of %s is empty", fullResourceName), EMPTY_SPEC));
+        List<Container> containers = spec.getTemplate().getSpec().getContainers();
+        // Verify that the container exists, not used later
+        findContainer(containers, containerName, fullResourceName);
+
+        clientProvider.getClient().apps().deployments()
+                .inNamespace(namespace)
+                .withName(deploymentName).edit(
+                        d -> new DeploymentBuilder(d).editSpec().editTemplate()
+                                    .editOrNewSpec()
+                                        .editContainer(getContainerId(containers, containerName))
+                                            .withResources(requirements)
+                                        .endContainer()
+                                    .endSpec()
+                                .endTemplate().endSpec().build());
+
+        return resultMap(String.format("Updated requirements specs of container %s within %s to {limitsCpu: %s, " +
+                        "limitsMemory: %s, requestsCpu: %s, requestsMemory: %s}", containerName,
+                fullResourceName, limitsCpu, limitsMemory, requestsCpu, requestsMemory));
     }
 
     @NotNull
@@ -207,5 +239,29 @@ public class KubernetesServiceImpl implements KubernetesService {
                 .inNamespace(namespace)
                 .resource(resourceItem)
                 .create();
+    }
+
+    private ResourceRequirements createResourceRequirements(String limitsCpu, String limitsMemory, String requestsCpu,
+                                                            String requestsMemory) {
+        return new ResourceRequirementsBuilder()
+                .addToLimits(Map.of("cpu", new Quantity(limitsCpu)))
+                .addToLimits(Map.of("memory", new Quantity(limitsMemory)))
+                .addToRequests(Map.of("cpu", new Quantity(requestsCpu)))
+                .addToRequests(Map.of("memory", new Quantity(requestsMemory)))
+                .build();
+    }
+
+    private Container findContainer(List<Container> containers, String containerName, String fullResourceName)
+            throws KubernetesException {
+        return containers.stream()
+                .filter(c -> c.getName().equals(containerName))
+                .findFirst()
+                .orElseThrow(() -> new KubernetesException(String.format("Couldn't find container %s within %s",
+                        containerName, fullResourceName), CONTAINER_NOT_FOUND));
+    }
+
+    private int getContainerId(List<Container> containers, String containerName) {
+        return containers.stream().map(Container::getName).toList()
+                .indexOf(containerName);
     }
 }

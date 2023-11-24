@@ -39,6 +39,7 @@ public class LoadResourceTest extends KubernetesBaseTest {
     private static Stream<Arguments> testDataStorageServiceInteraction() {
         return Stream.of(Arguments.of(POD.toString(), RESOURCE_DESCRIPTION_POD),
                 Arguments.of(CONFIG_MAP.toString(), RESOURCE_DESCRIPTION_CONFIG_MAP),
-                Arguments.of(STATEFUL_SET.toString(), RESOURCE_DESCRIPTION_STATEFUL_SET));
+                Arguments.of(STATEFUL_SET.toString(), RESOURCE_DESCRIPTION_STATEFUL_SET),
+                Arguments.of(DEPLOYMENT.toString(), RESOURCE_DESCRIPTION_DEPLOYMENT));
     }
 }

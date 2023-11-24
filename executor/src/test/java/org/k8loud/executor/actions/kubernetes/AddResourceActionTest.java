@@ -113,6 +113,8 @@ public class AddResourceActionTest extends KubernetesActionBaseTest {
                 Arguments.of(new Params(Map.of(RESOURCE_DESCRIPTION_KEY, RESOURCE_DESCRIPTION_CONFIG_MAP,
                         NAMESPACE_KEY, NAMESPACE)), NAMESPACE, "ConfigMap", RESOURCE_DESCRIPTION_CONFIG_MAP),
                 Arguments.of(new Params(Map.of(RESOURCE_DESCRIPTION_KEY, RESOURCE_DESCRIPTION_STATEFUL_SET,
-                        NAMESPACE_KEY, NAMESPACE)), NAMESPACE, "StatefulSet", RESOURCE_DESCRIPTION_STATEFUL_SET));
+                        NAMESPACE_KEY, NAMESPACE)), NAMESPACE, "StatefulSet", RESOURCE_DESCRIPTION_STATEFUL_SET),
+                Arguments.of(new Params(Map.of(RESOURCE_DESCRIPTION_KEY, RESOURCE_DESCRIPTION_DEPLOYMENT,
+                        NAMESPACE_KEY, NAMESPACE)), NAMESPACE, "Deployment", RESOURCE_DESCRIPTION_DEPLOYMENT));
     }
 }

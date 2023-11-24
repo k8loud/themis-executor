@@ -23,6 +23,12 @@ public interface KubernetesService {
                                                      String limitsCpu, String limitsMemory, String requestsCpu,
                                                      String requestsMemory) throws KubernetesException;
 
+    Map<String, String> changeResourcesOfContainerWithinDeploymentAction(String namespace, String deploymentName,
+                                                                                String containerName, String limitsCpu,
+                                                                                String limitsMemory, String requestsCpu,
+                                                                                String requestsMemory)
+            throws KubernetesException;
+
     <T> Resource<T> getResource(String namespace, String resourceType, String resourceName) throws KubernetesException;
 
     <T> Resource<T> loadResource(String resourceType, String resourceDescription) throws KubernetesException;

@@ -1,6 +1,11 @@
 package org.k8loud.executor.kubernetes;
 
-import io.fabric8.kubernetes.api.model.*;
+import io.fabric8.kubernetes.api.model.Container;
+import io.fabric8.kubernetes.api.model.Quantity;
+import io.fabric8.kubernetes.api.model.ResourceRequirements;
+import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import org.junit.jupiter.api.Test;
 import org.k8loud.executor.exception.KubernetesException;
 
@@ -12,12 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.k8loud.executor.exception.code.KubernetesExceptionCode.EMPTY_SPEC;
 import static org.k8loud.executor.exception.code.KubernetesExceptionCode.RESOURCE_NOT_FOUND;
-import static org.k8loud.executor.kubernetes.KubernetesResourceType.POD;
+import static org.k8loud.executor.kubernetes.KubernetesResourceType.DEPLOYMENT;
 import static org.k8loud.executor.util.Util.getFullResourceName;
 
 @SuppressWarnings("unchecked")
-public class ChangeResourcesOfContainerWithinPodTest extends KubernetesBaseTest {
-    private static final String POD_NAME = "pod-123";
+public class ChangeResourcesOfContainerWithinDeploymentTest extends KubernetesBaseTest {
+    private static final String DEPLOYMENT_NAME = "deployment-123";
     private static final String CONTAINER_NAME = "nginx-123";
 
     private static final String INITIAL_LIMITS_CPU = "450m";
@@ -30,33 +35,40 @@ public class ChangeResourcesOfContainerWithinPodTest extends KubernetesBaseTest 
     private static final String TARGET_REQUESTS_CPU = "200m";
     private static final String TARGET_REQUESTS_MEMORY = "300Mi";
 
-    private static final String POD_FULL_NAME = getFullResourceName(POD.toString(), POD_NAME);
+    private static final String DEPLOYMENT_FULL_NAME = getFullResourceName(DEPLOYMENT.toString(), DEPLOYMENT_NAME);
 
     @Test
-    void testChangingResourcesOfContainerWithinPod() throws KubernetesException {
+    void testChangingResourcesOfContainerWithinDeployment() throws KubernetesException {
         // given
-        Pod pod = new PodBuilder().withNewMetadata().withName(POD_NAME).endMetadata()
+        Deployment deployment = new DeploymentBuilder().withNewMetadata().withName(DEPLOYMENT_NAME).endMetadata()
+                .withNewSpec()
+                .withReplicas(1)
+                .withNewTemplate()
+                .withNewMetadata().addToLabels("app", "httpd").endMetadata()
                 .withNewSpec()
                 .addNewContainer()
                 .withName(CONTAINER_NAME)
-                .withImage("nginx:1.7.9")
-                .addNewPort().withContainerPort(80).endPort()
-                .withResources(getInitialResources(
-                ))
+                .withImage("busybox")
+                .withCommand("sleep","36000")
+                .withResources(getInitialResources())
                 .endContainer()
                 .endSpec()
+                .endTemplate()
+                .endSpec()
                 .build();
-        client.pods().inNamespace(NAMESPACE).resource(pod).create();
+        client.apps().deployments().inNamespace(NAMESPACE).resource(deployment).create();
 
         // when
-        kubernetesService.changeResourcesOfContainerWithinPodAction(NAMESPACE, POD_NAME, CONTAINER_NAME,
+        kubernetesService.changeResourcesOfContainerWithinDeploymentAction(NAMESPACE, DEPLOYMENT_NAME, CONTAINER_NAME,
                 TARGET_LIMITS_CPU, TARGET_LIMITS_MEMORY, TARGET_REQUESTS_CPU, TARGET_REQUESTS_MEMORY);
 
         // then
-        final Pod pod1 = client.pods().inNamespace(NAMESPACE).withName(POD_NAME).get();
-        assertNotNull(pod1);
+        final Deployment deployment1 = client.apps().deployments().inNamespace(NAMESPACE).withName(DEPLOYMENT_NAME)
+                .get();
+        assertNotNull(deployment1);
 
-        final Container container = pod1.getSpec().getContainers().stream()
+        final Container container = deployment1.getSpec().getTemplate()
+                .getSpec().getContainers().stream()
                 .filter(c -> c.getName().equals(CONTAINER_NAME))
                 .findFirst()
                 .orElse(null);
@@ -66,33 +78,33 @@ public class ChangeResourcesOfContainerWithinPodTest extends KubernetesBaseTest 
     }
 
     @Test
-    void testChangingResourcesOfContainerWithinNonExistentPod() {
+    void testChangingResourcesOfContainerWithinNonExistentDeployment() {
         // when
-        Throwable throwable = catchThrowable(() -> kubernetesService.changeResourcesOfContainerWithinPodAction(
-                NAMESPACE, POD_NAME, CONTAINER_NAME, TARGET_LIMITS_CPU, TARGET_LIMITS_MEMORY, TARGET_REQUESTS_CPU,
+        Throwable throwable = catchThrowable(() -> kubernetesService.changeResourcesOfContainerWithinDeploymentAction(
+                NAMESPACE, DEPLOYMENT_NAME, CONTAINER_NAME, TARGET_LIMITS_CPU, TARGET_LIMITS_MEMORY, TARGET_REQUESTS_CPU,
                 TARGET_REQUESTS_MEMORY));
 
         // then
         assertThat(throwable).isExactlyInstanceOf(KubernetesException.class)
-                .hasMessage("Couldn't find '%s'", POD_FULL_NAME);
+                .hasMessage("Couldn't find '%s'", DEPLOYMENT_FULL_NAME);
         assertThat(((KubernetesException) throwable).getExceptionCode()).isEqualTo(RESOURCE_NOT_FOUND);
     }
 
     @Test
-    void testChangingResourcesOfNonExistentContainerWithinPod() {
+    void testChangingResourcesOfNonExistentContainerWithinDeployment() {
         // given
-        Pod pod = new PodBuilder().withNewMetadata().withName(POD_NAME).endMetadata()
+        Deployment deployment = new DeploymentBuilder().withNewMetadata().withName(DEPLOYMENT_NAME).endMetadata()
                 .build();
-        client.pods().inNamespace(NAMESPACE).resource(pod).create();
+        client.apps().deployments().inNamespace(NAMESPACE).resource(deployment).create();
 
         // when
-        Throwable throwable = catchThrowable(() -> kubernetesService.changeResourcesOfContainerWithinPodAction(
-                NAMESPACE, POD_NAME, CONTAINER_NAME, TARGET_LIMITS_CPU, TARGET_LIMITS_MEMORY, TARGET_REQUESTS_CPU,
-                TARGET_REQUESTS_MEMORY));
+        Throwable throwable = catchThrowable(() -> kubernetesService.changeResourcesOfContainerWithinDeploymentAction(
+                NAMESPACE, DEPLOYMENT_NAME, CONTAINER_NAME, TARGET_LIMITS_CPU, TARGET_LIMITS_MEMORY,
+                TARGET_REQUESTS_CPU, TARGET_REQUESTS_MEMORY));
 
         // then
         assertThat(throwable).isExactlyInstanceOf(KubernetesException.class)
-                .hasMessage("Spec of %s is empty", POD_FULL_NAME);
+                .hasMessage("Spec of %s is empty", DEPLOYMENT_FULL_NAME);
         assertThat(((KubernetesException) throwable).getExceptionCode()).isEqualTo(EMPTY_SPEC);
     }
 
