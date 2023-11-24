@@ -1,8 +1,7 @@
 package org.k8loud.executor.model;
 
-import exception.ParamNotFoundException;
 import org.junit.jupiter.api.Test;
-import org.k8loud.executor.model.Params;
+import org.k8loud.executor.exception.ParamNotFoundException;
 
 import java.util.Map;
 
