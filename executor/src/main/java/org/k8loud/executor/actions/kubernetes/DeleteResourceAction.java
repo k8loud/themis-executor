@@ -1,6 +1,6 @@
 package org.k8loud.executor.actions.kubernetes;
 
-import data.Params;
+import org.k8loud.executor.model.Params;
 import lombok.Builder;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.KubernetesException;

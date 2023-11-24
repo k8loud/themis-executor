@@ -1,4 +1,4 @@
-package data;
+package org.k8loud.executor.model;
 
 
 import lombok.Builder;

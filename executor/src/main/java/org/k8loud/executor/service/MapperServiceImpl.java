@@ -1,7 +1,7 @@
 package org.k8loud.executor.service;
 
-import data.ExecutionRQ;
-import data.Params;
+import org.k8loud.executor.model.ExecutionRQ;
+import org.k8loud.executor.model.Params;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;

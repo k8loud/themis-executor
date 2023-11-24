@@ -1,6 +1,6 @@
 package org.k8loud.executor.service;
 
-import data.ExecutionRS;
+import org.k8loud.executor.model.ExecutionRS;
 import io.github.hephaestusmetrics.model.metrics.Metric;
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.actions.Action;

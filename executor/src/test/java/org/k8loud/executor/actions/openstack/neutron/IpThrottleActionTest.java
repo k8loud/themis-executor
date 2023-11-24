@@ -1,13 +1,12 @@
 package org.k8loud.executor.actions.openstack.neutron;
 
-import data.ExecutionRS;
-import data.Params;
+import org.k8loud.executor.model.ExecutionRS;
+import org.k8loud.executor.model.Params;
 import org.junit.jupiter.api.Test;
 import org.k8loud.executor.actions.openstack.IpThrottleAction;
 import org.k8loud.executor.actions.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.exception.ValidationException;
 
 import java.util.Map;
 

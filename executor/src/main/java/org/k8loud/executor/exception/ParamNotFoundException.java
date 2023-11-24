@@ -1,4 +1,4 @@
-package exception;
+package org.k8loud.executor.exception;
 
 public class ParamNotFoundException extends RuntimeException {
     public ParamNotFoundException() {

@@ -1,6 +1,6 @@
 package org.k8loud.executor.actions.cnapp.sockshop;
 
-import data.Params;
+import org.k8loud.executor.model.Params;
 import lombok.AllArgsConstructor;
 import org.k8loud.executor.actions.cnapp.CNAppAction;
 import org.k8loud.executor.cnapp.sockshop.SockShopService;

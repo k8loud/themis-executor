@@ -1,7 +1,7 @@
 package org.k8loud.executor.controller;
 
 
-import data.ExecutionRQ;
+import org.k8loud.executor.model.ExecutionRQ;
 import org.k8loud.executor.service.ExecutionWrapperService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,6 +1,6 @@
 package org.k8loud.executor.actions.openstack;
 
-import data.Params;
+import org.k8loud.executor.model.Params;
 import lombok.AllArgsConstructor;
 import org.k8loud.executor.actions.Action;
 import org.k8loud.executor.exception.ActionException;

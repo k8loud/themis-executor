@@ -1,7 +1,7 @@
 package org.k8loud.executor.actions.kubernetes;
 
-import data.Params;
-import exception.ParamNotFoundException;
+import org.k8loud.executor.model.Params;
+import org.k8loud.executor.exception.ParamNotFoundException;
 import lombok.Builder;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.KubernetesException;

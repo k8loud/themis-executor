@@ -1,7 +1,7 @@
 package org.k8loud.executor.service;
 
-import data.ExecutionRQ;
-import data.Params;
+import org.k8loud.executor.model.ExecutionRQ;
+import org.k8loud.executor.model.Params;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static data.ExecutionRQ.createExecutionRQ;
+import static org.k8loud.executor.model.ExecutionRQ.createExecutionRQ;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 

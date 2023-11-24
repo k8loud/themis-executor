@@ -1,6 +1,6 @@
-package data;
+package org.k8loud.executor.model;
 
-import exception.ParamNotFoundException;
+import org.k8loud.executor.exception.ParamNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

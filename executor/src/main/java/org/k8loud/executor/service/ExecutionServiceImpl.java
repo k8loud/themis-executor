@@ -1,6 +1,6 @@
 package org.k8loud.executor.service;
 
-import data.ExecutionRS;
+import org.k8loud.executor.model.ExecutionRS;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.actions.Action;

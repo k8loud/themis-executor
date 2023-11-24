@@ -1,12 +1,11 @@
 package org.k8loud.executor.actions.openstack.nova;
 
-import data.ExecutionRS;
-import data.Params;
+import org.k8loud.executor.model.ExecutionRS;
+import org.k8loud.executor.model.Params;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.k8loud.executor.actions.openstack.AddInstanceAction;
 import org.k8loud.executor.actions.openstack.DeleteInstanceAction;
 import org.k8loud.executor.actions.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;

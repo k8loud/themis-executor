@@ -1,7 +1,7 @@
 package org.k8loud.executor.actions.cnapp.sockshop;
 
-import data.ExecutionRS;
-import data.Params;
+import org.k8loud.executor.model.ExecutionRS;
+import org.k8loud.executor.model.Params;
 import org.junit.jupiter.api.Test;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CNAppException;

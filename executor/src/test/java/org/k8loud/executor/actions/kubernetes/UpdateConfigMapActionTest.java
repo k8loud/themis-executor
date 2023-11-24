@@ -1,7 +1,7 @@
 package org.k8loud.executor.actions.kubernetes;
 
-import data.ExecutionRS;
-import data.Params;
+import org.k8loud.executor.model.ExecutionRS;
+import org.k8loud.executor.model.Params;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

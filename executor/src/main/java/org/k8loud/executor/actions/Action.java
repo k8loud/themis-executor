@@ -1,10 +1,10 @@
 package org.k8loud.executor.actions;
 
 
-import data.ExecutionExitCode;
-import data.ExecutionRS;
-import data.Params;
-import exception.ParamNotFoundException;
+import org.k8loud.executor.model.ExecutionExitCode;
+import org.k8loud.executor.model.ExecutionRS;
+import org.k8loud.executor.model.Params;
+import org.k8loud.executor.exception.ParamNotFoundException;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

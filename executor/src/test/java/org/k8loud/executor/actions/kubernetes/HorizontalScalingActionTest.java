@@ -1,7 +1,7 @@
 package org.k8loud.executor.actions.kubernetes;
 
-import data.ExecutionRS;
-import data.Params;
+import org.k8loud.executor.model.ExecutionRS;
+import org.k8loud.executor.model.Params;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.k8loud.executor.actions.Action;

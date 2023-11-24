@@ -1,6 +1,6 @@
 package org.k8loud.executor.service;
 
-import data.ExecutionRQ;
+import org.k8loud.executor.model.ExecutionRQ;
 import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.actions.Action;
 import org.k8loud.executor.exception.ActionException;

@@ -1,7 +1,7 @@
 package org.k8loud.executor.actions;
 
-import data.ExecutionExitCode;
-import data.ExecutionRS;
+import org.k8loud.executor.model.ExecutionExitCode;
+import org.k8loud.executor.model.ExecutionRS;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.k8loud.executor.exception.ActionException;
 import org.mockito.junit.jupiter.MockitoExtension;

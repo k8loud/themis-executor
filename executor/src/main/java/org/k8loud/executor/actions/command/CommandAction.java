@@ -1,6 +1,6 @@
 package org.k8loud.executor.actions.command;
 
-import data.Params;
+import org.k8loud.executor.model.Params;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.actions.Action;
