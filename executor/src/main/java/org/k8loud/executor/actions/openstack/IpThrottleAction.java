@@ -12,7 +12,6 @@ public class IpThrottleAction extends OpenstackAction {
     private String region;
     private String serverId;
     private String ethertype; //IPv4 or IPv6
-    private String direction; //ingress or egress
     private String remoteIpPrefix; //example 0.0.0.0/0
     private String protocol; //example TCP
     private int portRangeMin;
@@ -31,7 +30,6 @@ public class IpThrottleAction extends OpenstackAction {
         this.region = region;
         this.serverId = serverId;
         this.ethertype = ethertype;
-        this.direction = direction;
         this.remoteIpPrefix = remoteIpPrefix;
         this.protocol = protocol;
         this.portRangeMin = portRangeMin;
@@ -44,7 +42,6 @@ public class IpThrottleAction extends OpenstackAction {
         region = params.getRequiredParam("region");
         serverId = params.getRequiredParam("serverId");
         ethertype = params.getRequiredParam("ethertype");
-        direction = params.getRequiredParam("direction");
         remoteIpPrefix = params.getRequiredParam("remoteIpPrefix");
         protocol = params.getRequiredParam("protocol");
         portRangeMin = params.getRequiredParamAsInteger("portRangeMin");
@@ -54,7 +51,7 @@ public class IpThrottleAction extends OpenstackAction {
 
     @Override
     protected Map<String, String> executeBody() throws OpenstackException {
-        return openstackService.throttle(region, serverId, ethertype, direction, remoteIpPrefix, protocol, portRangeMin,
+        return openstackService.throttle(region, serverId, ethertype, remoteIpPrefix, protocol, portRangeMin,
                 portRangeMax, secDuration);
     }
 }

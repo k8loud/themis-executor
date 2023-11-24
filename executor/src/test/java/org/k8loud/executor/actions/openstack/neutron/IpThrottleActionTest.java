@@ -20,10 +20,10 @@ public class IpThrottleActionTest extends OpenstackActionBaseTest {
                     "portRangeMax", PORT_RANGE_MAX));
 
     @Test
-    void testSuccess() throws ActionException, OpenstackException, ValidationException {
+    void testSuccess() throws ActionException, OpenstackException {
         // given
         IpThrottleAction ipThrottleAction = new IpThrottleAction(VALID_PARAMS, openstackServiceMock);
-        when(openstackServiceMock.throttle(anyString(), anyString(), anyString(), anyString(),
+        when(openstackServiceMock.throttle(anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyInt(), anyInt(), anyLong())).thenReturn(resultMap);
 
         // when
@@ -31,8 +31,9 @@ public class IpThrottleActionTest extends OpenstackActionBaseTest {
 
         // then
         verify(openstackServiceMock).throttle(eq(REGION), eq(SERVER_ID), eq(ETHERTYPE),
-                eq(DIRECTION), eq(REMOTE_IP_PREFIX), eq(PROTOCOL), eq(Integer.parseInt(PORT_RANGE_MIN)),
+                eq(REMOTE_IP_PREFIX), eq(PROTOCOL), eq(Integer.parseInt(PORT_RANGE_MIN)),
                 eq(Integer.parseInt(PORT_RANGE_MAX)), eq(300L));
+
         assertSuccessResponse(response);
     }
 }
