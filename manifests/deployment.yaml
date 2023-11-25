@@ -19,7 +19,7 @@ spec:
       serviceAccountName: themis-executor
       containers:
         - name: executor
-          image: k8loud/themis-executor:0.0.2.5
+          image: k8loud/themis-executor:0.0.2.5-maven-package
           imagePullPolicy: "IfNotPresent"
           env:
             - name: RULES_PATH

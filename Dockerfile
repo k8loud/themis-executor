@@ -1,9 +1,11 @@
 FROM openjdk:17-alpine
 
-WORKDIR /executor
+WORKDIR "/themis-executor"
 
-COPY ./executor/target/executor-0.0.1-SNAPSHOT.jar executor.jar
+ARG VER
 
-CMD ["java", "-jar", "/executor/executor.jar"]
+COPY ./target/themis-executor-${VER}.jar themis-executor.jar
+
+CMD ["java", "-jar", "/themis-executor/themis-executor.jar"]
 
 EXPOSE 8080
