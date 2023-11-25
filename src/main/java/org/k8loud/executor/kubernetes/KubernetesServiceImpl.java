@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.exception.KubernetesException;
-import org.k8loud.executor.service.DataStorageService;
+import org.k8loud.executor.datastorage.DataStorageService;
 import org.k8loud.executor.util.Util;
 import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 import org.springframework.stereotype.Service;

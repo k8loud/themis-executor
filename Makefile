@@ -16,6 +16,9 @@ build-jar: ## build a plain jar
 	mvn clean install -DthemisExecutorVersion=$(VER)
 
 # GH - GitHub, DH - Dockerhub
+# if 409 Conflict is received it means that a package with version VER is already present on GH
+# remove it manually: https://github.com/k8loud/themis-executor/packages
+# or change VER
 build-and-push: ## plain jar -> GH | Docker image from a jar with Spring Boot wrapper -> DH
 	make build-jar
 	mvn deploy -DthemisExecutorVersion=$(VER) -DskipTests=true

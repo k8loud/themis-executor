@@ -5,7 +5,7 @@ import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.k8loud.executor.service.DataStorageService;
+import org.k8loud.executor.datastorage.DataStorageService;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
