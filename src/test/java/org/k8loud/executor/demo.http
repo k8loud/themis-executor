@@ -1,5 +1,5 @@
 ### add pod
-POST localhost:8084/execute
+POST localhost:8080/execute
 Content-Type: application/json
 
 {
@@ -14,7 +14,7 @@ Content-Type: application/json
 }
 
 ### add config map
-POST localhost:8084/execute
+POST localhost:8080/execute
 Content-Type: application/json
 
 {
@@ -29,7 +29,7 @@ Content-Type: application/json
 }
 
 ### add stateful set
-POST localhost:8084/execute
+POST localhost:8080/execute
 Content-Type: application/json
 
 {
@@ -43,7 +43,7 @@ Content-Type: application/json
   }
 }
 ### unpause server
-POST localhost:8084/execute
+POST localhost:8080/execute
 Content-Type: application/json
 
 {
@@ -57,7 +57,7 @@ Content-Type: application/json
   }
 }
 ### pause server
-POST localhost:8084/execute
+POST localhost:8080/execute
 Content-Type: application/json
 
 {
@@ -72,7 +72,7 @@ Content-Type: application/json
 }
 
 ### copy server
-POST localhost:8084/execute
+POST localhost:8080/execute
 Content-Type: application/json
 
 {
@@ -87,7 +87,7 @@ Content-Type: application/json
 }
 
 ### resize to c1.small
-POST localhost:8084/execute
+POST localhost:8080/execute
 Content-Type: application/json
 
 {
@@ -102,7 +102,7 @@ Content-Type: application/json
   }
 }
 ### resize to h1.smedium
-POST localhost:8084/execute
+POST localhost:8080/execute
 Content-Type: application/json
 
 {
@@ -118,7 +118,7 @@ Content-Type: application/json
 }
 
 ### create server snapshot
-POST localhost:8084/execute
+POST localhost:8080/execute
 Content-Type: application/json
 
 {
@@ -133,7 +133,7 @@ Content-Type: application/json
 }
 
 ### attach shared volume
-POST localhost:8084/execute
+POST localhost:8080/execute
 Content-Type: application/json
 
 {
@@ -149,7 +149,7 @@ Content-Type: application/json
   }
 }
 ### detach shared volume
-POST localhost:8084/execute
+POST localhost:8080/execute
 Content-Type: application/json
 
 {
@@ -164,7 +164,7 @@ Content-Type: application/json
   }
 }
 ### create SecurityGroup
-POST localhost:8084/execute
+POST localhost:8080/execute
 Content-Type: application/json
 
 {
