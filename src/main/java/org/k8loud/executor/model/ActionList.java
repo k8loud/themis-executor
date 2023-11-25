@@ -1,6 +1,6 @@
 package org.k8loud.executor.model;
 
-import org.k8loud.executor.action.Action;
+import org.k8loud.executor.actions.Action;
 
 import java.util.LinkedList;
 

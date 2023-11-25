@@ -6,7 +6,7 @@ metadata:
 data:
   test.drl: |
     import io.github.hephaestusmetrics.model.metrics.Metric;
-    import org.k8loud.executor.action.kubernetes.*
+    import org.k8loud.executor.actions.kubernetes.*
     import java.util.List;
 
     global org.k8loud.executor.model.ActionList actions;

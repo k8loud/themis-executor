@@ -1,6 +1,6 @@
 import io.github.hephaestusmetrics.model.metrics.Metric;
-import org.k8loud.executor.action.kubernetes.*
-import java.util.List;
+import org.k8loud.executor.actions.kubernetes.*;
+import java.util.List
 
 global org.k8loud.executor.model.ActionList actions;
 global org.k8loud.executor.kubernetes.KubernetesService k8s;
@@ -18,7 +18,7 @@ rule "carts_cpu"
         eval(cpu_time > 0.1)
     then
         System.out.println("carts scaled");
-        actions.add(HorizontalScalingAction.builder()
+        actions.add(org.k8loud.executor.actions.kubernetes.HorizontalScalingAction.builder()
                         .namespace("sock-shop")
                         .resourceName("carts")
                         .resourceType("Deployment")

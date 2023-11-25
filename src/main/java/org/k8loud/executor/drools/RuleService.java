@@ -3,7 +3,7 @@ package org.k8loud.executor.drools;
 import org.k8loud.executor.model.ExecutionRS;
 import io.github.hephaestusmetrics.model.metrics.Metric;
 import lombok.extern.slf4j.Slf4j;
-import org.k8loud.executor.action.Action;
+import org.k8loud.executor.actions.Action;
 import org.k8loud.executor.kubernetes.KubernetesService;
 import org.k8loud.executor.model.ActionList;
 import org.kie.api.runtime.StatelessKieSession;
