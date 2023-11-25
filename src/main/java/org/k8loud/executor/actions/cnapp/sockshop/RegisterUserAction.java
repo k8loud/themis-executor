@@ -1,5 +1,6 @@
 package org.k8loud.executor.actions.cnapp.sockshop;
 
+import lombok.EqualsAndHashCode;
 import org.k8loud.executor.model.Params;
 import lombok.Builder;
 import org.k8loud.executor.cnapp.sockshop.SockShopService;
@@ -10,6 +11,7 @@ import org.k8loud.executor.exception.ValidationException;
 
 import java.util.Map;
 
+@EqualsAndHashCode
 public class RegisterUserAction extends SockShopAction {
     private String username;
     private String password;

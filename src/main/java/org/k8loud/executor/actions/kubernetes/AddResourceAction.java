@@ -1,5 +1,6 @@
 package org.k8loud.executor.actions.kubernetes;
 
+import lombok.EqualsAndHashCode;
 import org.k8loud.executor.model.Params;
 import org.k8loud.executor.exception.ParamNotFoundException;
 import lombok.Builder;
@@ -12,6 +13,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@EqualsAndHashCode
 public class AddResourceAction extends KubernetesAction {
     private String resourceType;
     private String resourceDescription;

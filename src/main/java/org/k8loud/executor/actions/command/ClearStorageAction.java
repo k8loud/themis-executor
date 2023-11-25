@@ -1,5 +1,6 @@
 package org.k8loud.executor.actions.command;
 
+import lombok.EqualsAndHashCode;
 import org.k8loud.executor.model.Params;
 import lombok.Builder;
 import org.k8loud.executor.command.CommandExecutionService;
@@ -9,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+@EqualsAndHashCode
 public class ClearStorageAction extends CommandAction {
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
