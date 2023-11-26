@@ -3,6 +3,7 @@ package org.k8loud.executor.openstack;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.exception.ValidationException;
 
+import java.util.List;
 import java.util.Map;
 
 //FIXME enable annotation here not in implementation (with spring-retry working)
@@ -15,6 +16,8 @@ public interface OpenstackService {
                          String securityGroup, String userData, int count, int waitActiveSec) throws OpenstackException, ValidationException;
 
     Map<String, String> deleteServers(String region, String name) throws OpenstackException, ValidationException;
+
+    Map<String, String> deleteServers(String region, List<String> serverIds) throws OpenstackException, ValidationException;
 
     Map<String, String> attachVolume(String region, String serverId, String volumeId, String device) throws OpenstackException;
 

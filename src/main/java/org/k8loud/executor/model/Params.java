@@ -1,16 +1,14 @@
 package org.k8loud.executor.model;
 
-import org.k8loud.executor.exception.ParamNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.k8loud.executor.exception.ParamNotFoundException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Getter
 @Builder
@@ -46,14 +44,20 @@ public class Params {
     }
 
     public Long getOptionalParamAsLong(String param, Long defaultValue) {
-        return Optional.ofNullable(params.get(param)).map(Long::parseLong).orElseGet(() -> defaultValue);
+        return Optional.ofNullable(params.get(param)).map(Long::parseLong).orElse(defaultValue);
     }
 
     public Integer getOptionalParamAsInt(String param, Integer defaultValue) {
-        return Optional.ofNullable(params.get(param)).map(Integer::parseInt).orElseGet(() -> defaultValue);
+        return Optional.ofNullable(params.get(param)).map(Integer::parseInt).orElse(defaultValue);
     }
-      
+
     public boolean getOptionalParamAsBoolean(String param, String defaultValue) {
         return Boolean.parseBoolean(getOptionalParam(param, defaultValue));
+    }
+
+    public List<String> getOptionalParamAsListOfStrings(String param, List<String> defaultValue) {
+        return Optional.ofNullable(params.get(param))
+                .map(p -> Arrays.stream(p.split(",")).toList())
+                .orElse(defaultValue);
     }
 }

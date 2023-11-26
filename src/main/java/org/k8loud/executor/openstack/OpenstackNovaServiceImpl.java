@@ -1,6 +1,7 @@
 package org.k8loud.executor.openstack;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.exception.code.OpenstackExceptionCode;
 import org.k8loud.executor.util.Util;
@@ -26,10 +27,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
-import static org.k8loud.executor.util.Util.resultMap;
 
 @Service
 @Slf4j
@@ -75,6 +74,15 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
             throw new OpenstackException(SERVER_NOT_EXISTS, "Failed to find server with id '%s'", serverId);
         }
         return server;
+    }
+
+    @Override
+    public List<Server> getServers(OSClient.OSClientV3 client, Pattern namePattern) {
+        return client.compute().servers().list()
+                .stream()
+                .filter(s -> namePattern.matcher(s.getName()).matches())
+                .map(s -> (Server) s)
+                .toList();
     }
 
     @Override
@@ -137,11 +145,6 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
     }
 
     @Override
-    public List<? extends Server> getServers(OSClient.OSClientV3 client) {
-        return client.compute().servers().list();
-    }
-
-    @Override
     public List<String> createServers(String name, Image image, Flavor flavor, String keypairName, String securityGroup,
                                              String userData, int count, int waitActiveSec,
                                              Supplier<OSClient.OSClientV3> clientSupplier) throws OpenstackException {
@@ -172,43 +175,19 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
                                       Supplier<OSClient.OSClientV3> clientSupplier) throws OpenstackException {
         log.debug("Deleting servers with name pattern '{}'", namePattern.pattern());
 
-        List<?> results = getServers(clientSupplier.get()).stream()
-                .parallel()
-                .filter(s -> namePattern.matcher(s.getName()).matches())
-                .map(s -> {
-                    try {
-                        deleteServer(s, clientSupplier.get());
-                        return s;
-                    } catch (OpenstackException e) {
-                        return e;
-                    }
-                }).toList();
+        List<Server> servers = getServers(clientSupplier.get(), namePattern);
 
-        List<OpenstackException> exceptions = results.stream()
-                .filter(result -> OpenstackException.class.isAssignableFrom(result.getClass()))
-                .map(exception -> (OpenstackException) exception)
-                .toList();
-
-        if (!exceptions.isEmpty()) {
-            throw new OpenstackException(DELETE_SERVER_FAILED,
-                    "Failed to delete %d servers named with pattern %s. Exceptions: %s",
-                    results.size(), namePattern.pattern(), exceptions.toString());
-        }
-
-        return results.stream()
-                .map(s -> ((Server) s).getName())
-                .toList();
+        return parallelDeleteServers(servers, clientSupplier);
     }
 
-    private void deleteServer(Server server, OSClient.OSClientV3 client) throws OpenstackException {
-        log.debug("Deleting server '{}'", server.getName());
+    @Override
+    public List<String> deleteServers(List<Server> servers,
+                                      Supplier<OSClient.OSClientV3> clientSupplier) throws OpenstackException {
+        log.debug("Deleting servers named '{}'", servers.stream().map(Server::getName).toList());
 
-        ActionResponse response = client.compute().servers().delete(server.getId());
-        if (!response.isSuccess()) {
-            throw new OpenstackException(DELETE_SERVER_FAILED,
-                    "Failed to delete server %s. Reason: %s", server.getName(), response.getFault());
-        }
+        return parallelDeleteServers(servers, clientSupplier);
     }
+
     private Server spawnServer(String name, Flavor flavor, Image image, String keypairName, String securityGroup,
                                String userData, int waitActiveSec,
                                OSClient.OSClientV3 client) throws OpenstackException {
@@ -268,5 +247,47 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
 
     private boolean isTimeNotExceeded(long waitingTimeSec, Instant start) {
         return start.plus(waitingTimeSec, ChronoUnit.SECONDS).isAfter(Instant.now());
+    }
+
+    @NotNull
+    private List<OpenstackException> getResultsExceptions(List<?> results) {
+        return results.stream()
+                .filter(result -> OpenstackException.class.isAssignableFrom(result.getClass()))
+                .map(OpenstackException.class::cast)
+                .toList();
+    }
+
+    private void deleteServer(Server server, OSClient.OSClientV3 client) throws OpenstackException {
+        log.debug("Deleting server '{}'", server.getName());
+
+        ActionResponse response = client.compute().servers().delete(server.getId());
+        if (!response.isSuccess()) {
+            throw new OpenstackException(DELETE_SERVER_FAILED,
+                    "Failed to delete server %s. Reason: %s", server.getName(), response.getFault());
+        }
+    }
+
+    private List<String> parallelDeleteServers(List<Server> servers, Supplier<OSClient.OSClientV3> clientSupplier)
+            throws OpenstackException {
+        List<?> results = servers.stream().parallel()
+                .map(s -> {
+                    try {
+                        deleteServer(s, clientSupplier.get());
+                        return s;
+                    } catch (OpenstackException e) {
+                        return e;
+                    }
+                }).toList();
+
+        List<OpenstackException> exceptions = getResultsExceptions(results);
+        if (!exceptions.isEmpty()) {
+            throw new OpenstackException(DELETE_SERVER_FAILED,
+                    "Failed to delete %d servers from '%s'. Exceptions: %s",
+                    results.size(), servers.stream().map(Server::getName).toString(), exceptions.toString());
+        }
+
+        return servers.stream()
+                .map(Server::getName)
+                .toList();
     }
 }
