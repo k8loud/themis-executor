@@ -1,10 +1,12 @@
 package org.k8loud.executor.actions.command;
 
+import lombok.EqualsAndHashCode;
 import org.k8loud.executor.model.Params;
 import lombok.Builder;
 import org.k8loud.executor.command.CommandExecutionService;
 import org.k8loud.executor.exception.ActionException;
 
+@EqualsAndHashCode
 public class CustomScriptAction extends CommandAction {
     private String command;
 

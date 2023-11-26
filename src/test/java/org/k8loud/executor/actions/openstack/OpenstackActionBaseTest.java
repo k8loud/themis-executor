@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 public abstract class OpenstackActionBaseTest extends ActionBaseTest {
     protected static final String REGION = "regionTest";
     protected static final String SERVER_ID = "123-server-id-123";
+    protected static final String SERVER_IDS = "id1,id2,id3,id4";
     protected static final String VOLUME_ID = "123-volume-id-123";
     protected static final String FLAVOR_ID = "123-flavor-id-123";
     protected static final String IMAGE_ID = "123-image-id-123";

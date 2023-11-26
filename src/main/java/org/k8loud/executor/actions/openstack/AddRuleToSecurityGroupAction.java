@@ -1,5 +1,6 @@
 package org.k8loud.executor.actions.openstack;
 
+import lombok.EqualsAndHashCode;
 import org.k8loud.executor.model.Params;
 import lombok.Builder;
 import org.k8loud.executor.exception.ActionException;
@@ -9,6 +10,7 @@ import org.k8loud.executor.openstack.OpenstackService;
 
 import java.util.Map;
 
+@EqualsAndHashCode
 public class AddRuleToSecurityGroupAction extends OpenstackAction {
     private String region;
     private String securityGroupId;

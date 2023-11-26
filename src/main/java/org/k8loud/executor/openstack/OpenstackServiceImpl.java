@@ -15,12 +15,12 @@ import org.openstack4j.model.network.SecurityGroup;
 import org.openstack4j.model.network.SecurityGroupRule;
 import org.openstack4j.model.storage.block.Volume;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
@@ -39,6 +39,7 @@ public class OpenstackServiceImpl implements OpenstackService {
     private final OpenstackGlanceService openstackGlanceService;
     private final OpenstackNeutronService openstackNeutronService;
     private final TaskScheduler taskScheduler;
+
 
     //TODO resize with looking for bigger/smaller available flavor
     @Override
@@ -78,33 +79,41 @@ public class OpenstackServiceImpl implements OpenstackService {
         Flavor flavor = openstackNovaService.getFlavor(flavorId, client);
 
         List<String> serverIds = openstackNovaService.createServers(name, image, flavor, keypairName, securityGroup,
-                userData, count, waitActiveSec, () -> {
-                    try {
-                        return openstackClientWithRegion(region);
-                    } catch (OpenstackException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+                userData, count, waitActiveSec, clientSupplier(region));
         String result = String.format("Creating %d instances named '%s' finished with success", count, name);
         return resultMap(result, Map.of("serverIds", serverIds.toString()));
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "DELETE_SERVER_FAILED")
-    public Map<String, String> deleteServers(String region, String name) throws OpenstackException, ValidationException {
+    public Map<String, String> deleteServers(String region, String name)
+            throws OpenstackException, ValidationException {
         Pattern namePattern = Pattern.compile(name + "-.{8}");
 
-        List<String> deletedServers = openstackNovaService.deleteServers(namePattern, () -> {
-            try {
-                return openstackClientWithRegion(region);
-            } catch (OpenstackException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        List<String> deletedServers = openstackNovaService.deleteServers(namePattern, clientSupplier(region));
 
-        String result = String.format(
-                "Deleting instances named with pattern %s finished with success. Deleted %d servers",
-                namePattern.pattern(), deletedServers.size());
+        String result = String.format("Deleting instances named with pattern %s finished with success.",
+                namePattern.pattern());
+        return resultMap(result, Map.of("deletedServers", deletedServers.toString()));
+    }
+
+    @Override
+    public Map<String, String> deleteServers(String region, List<String> serverIds)
+            throws OpenstackException, ValidationException {
+        List<Server> servers = serverIds.stream()
+                .parallel()
+                .map(serverId -> {
+                    try {
+                        return openstackNovaService.getServer(serverId, clientSupplier(region).get());
+                    } catch (OpenstackException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .toList();
+
+        List<String> deletedServers = openstackNovaService.deleteServers(servers, clientSupplier(region));
+
+        String result = "Deleting instances from serverList finished with success";
         return resultMap(result, Map.of("deletedServers", deletedServers.toString()));
     }
 
@@ -290,13 +299,7 @@ public class OpenstackServiceImpl implements OpenstackService {
                 ethertype, remoteIpPrefix, protocol, portRangeMin, portRangeMax, client);
 
         Set<SecurityGroupRule> throttlingRules = openstackNeutronService.modifySecurityGroupsDuringThrottling(
-                rulesToModify, remoteIpPrefix, portRangeMin, portRangeMax, () -> {
-                    try {
-                        return openstackClientWithRegion(region);
-                    } catch (OpenstackException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+                rulesToModify, remoteIpPrefix, portRangeMin, portRangeMax, clientSupplier(region));
 
         scheduleIpThrottlingRemoval(region, throttlingRules, rulesToModify, secDuration);
         return resultMap(
@@ -304,10 +307,9 @@ public class OpenstackServiceImpl implements OpenstackService {
                         server.getName(), secDuration));
     }
 
-    @Async
-    public void scheduleIpThrottlingRemoval(String region, Set<SecurityGroupRule> rulesToDelete,
-                                            Map<SecurityGroup, Set<SecurityGroupRule>> rulesToRestore,
-                                            long secDuration) {
+    private void scheduleIpThrottlingRemoval(String region, Set<SecurityGroupRule> rulesToDelete,
+                                             Map<SecurityGroup, Set<SecurityGroupRule>> rulesToRestore,
+                                             long secDuration) {
         log.info("Scheduling IP throttling removal to start in {} seconds", secDuration);
         taskScheduler.schedule(() -> {
                     try {
@@ -335,21 +337,15 @@ public class OpenstackServiceImpl implements OpenstackService {
                 try {
                     openstackNeutronService.addSecurityGroupRule(group, rule.getEtherType(), rule.getDirection(),
                             rule.getRemoteIpPrefix(), rule.getProtocol(), rule.getPortRangeMin(),
-                            rule.getPortRangeMax(),
-                            rule.getDescription(), openstackClientWithRegion(region));
+                            rule.getPortRangeMax(), rule.getDescription(), openstackClientWithRegion(region));
                 } catch (OpenstackException e) {
                     throw new RuntimeException(e);
                 }
             });
         });
 
-        rulesToDelete.stream().parallel().forEach(rules -> {
-            try {
-                openstackNeutronService.removeSecurityGroupRule(rules, openstackClientWithRegion(region));
-            } catch (OpenstackException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        rulesToDelete.stream().parallel()
+                .forEach(rules -> openstackNeutronService.removeSecurityGroupRule(rules, clientSupplier(region).get()));
     }
 
     private Map<String, String> resizeServer(Server server, Flavor newFlavor, int waitSecondsForVerifyStatus,
@@ -419,5 +415,15 @@ public class OpenstackServiceImpl implements OpenstackService {
     @NotNull
     private String generateSnapshotName(Volume volume) {
         return volume.getName() + "-volume-" + Instant.now();
+    }
+
+    private Supplier<OSClientV3> clientSupplier(String region) {
+        return () -> {
+            try {
+                return openstackClientWithRegion(region);
+            } catch (OpenstackException e) {
+                throw new RuntimeException(e);
+            }
+        };
     }
 }

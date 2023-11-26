@@ -12,6 +12,7 @@ import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.exception.ValidationException;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -24,7 +25,7 @@ public class DeleteInstanceActionTest extends OpenstackActionBaseTest {
     private static final String NAME = "name";
 
     @Test
-    void testSuccess() throws ActionException, OpenstackException, ValidationException {
+    void testNamePatter() throws ActionException, OpenstackException, ValidationException {
         // given
         Params params = new Params(Map.of("name", NAME, "region", REGION));
         DeleteInstanceAction deleteInstanceAction = new DeleteInstanceAction(
@@ -37,6 +38,23 @@ public class DeleteInstanceActionTest extends OpenstackActionBaseTest {
 
         // then
         verify(openstackServiceMock).deleteServers(eq(REGION), eq(NAME));
+        assertSuccessResponse(response);
+    }
+
+    @Test
+    void testServerList() throws ActionException, OpenstackException, ValidationException {
+        // given
+        Params params = new Params(Map.of("name", NAME, "region", REGION, "serverIds", SERVER_IDS));
+        DeleteInstanceAction deleteInstanceAction = new DeleteInstanceAction(
+                params, openstackServiceMock);
+        when(openstackServiceMock.deleteServers(anyString(), anyList()))
+                .thenReturn(resultMap);
+
+        // when
+        ExecutionRS response = deleteInstanceAction.execute();
+
+        // then
+        verify(openstackServiceMock).deleteServers(eq(REGION), eq(List.of(SERVER_IDS.split(","))));
         assertSuccessResponse(response);
     }
 
