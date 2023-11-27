@@ -23,6 +23,8 @@ build-and-push: ## plain jar -> GH | Docker image from a jar with Spring Boot wr
 	make build-jar
 	mvn deploy -DthemisExecutorVersion=$(VER) -DskipTests=true
 	make build-and-push-docker FULL_IMAGE_NAME=$(DOCKERHUB_USERNAME)/$(IMAGE_NAME):$(VER)
+	git tag v$(VER)
+	git push origin --tags
 
 build-and-push-docker:
 	@echo "FULL_IMAGE_NAME: $(FULL_IMAGE_NAME)"
