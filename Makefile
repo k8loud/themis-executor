@@ -35,6 +35,6 @@ build-and-push-docker:
 	docker push $(FULL_IMAGE_NAME)
 
 deploy: ## deploy to the Kubernetes cluster
-	kubectl apply -f manifests/deployment.yaml
+	kubectl apply -f manifests/
 
 .DEFAULT_GOAL := help
