@@ -4,7 +4,7 @@ DOCKERHUB_USERNAME=k8loud
 IMAGE_NAME=themis-executor
 # w.x.y.z, one digit value each
 # when tinkering add -<description> suffix
-VER=0.0.2.7
+VER=0.0.2.7-distinguish-build-and-push
 
 # targets that aren't annotated with ## are not supposed to be run on their own
 
@@ -20,12 +20,16 @@ build-jar: ## build a plain jar
 # remove it manually:
 # https://github.com/k8loud/themis-executor/packages -> Package settings -> Manage versions -> delete concrete version
 # or change VER
-build-and-push: ## plain jar -> GH | Docker image from a jar with Spring Boot wrapper -> DH
+
+build-and-push-final: ## !RUN ONLY AFTER MERGING TO MASTER! build-and-push-non-final + tag the commit with VER
+	make build-and-push-non-final
+	git tag v$(VER)
+	git push origin --tags
+
+build-and-push-non-final: ## plain jar -> GH | Docker image from a jar with Spring Boot wrapper -> DH
 	make build-jar
 	mvn deploy -DthemisExecutorVersion=$(VER) -DskipTests=true
 	make build-and-push-docker FULL_IMAGE_NAME=$(DOCKERHUB_USERNAME)/$(IMAGE_NAME):$(VER)
-	git tag v$(VER)
-	git push origin --tags
 
 build-and-push-docker:
 	@echo "FULL_IMAGE_NAME: $(FULL_IMAGE_NAME)"
