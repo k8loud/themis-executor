@@ -4,7 +4,7 @@ DOCKERHUB_USERNAME=k8loud
 IMAGE_NAME=themis-executor
 # w.x.y.z, one digit value each
 # when tinkering add -<description> suffix
-VER=0.0.2.6
+VER=0.0.2.7
 
 # targets that aren't annotated with ## are not supposed to be run on their own
 
@@ -17,7 +17,8 @@ build-jar: ## build a plain jar
 
 # GH - GitHub, DH - Dockerhub
 # if 409 Conflict is received it means that a package with version VER is already present on GH
-# remove it manually: https://github.com/k8loud/themis-executor/packages
+# remove it manually:
+# https://github.com/k8loud/themis-executor/packages -> Package settings -> Manage versions -> delete concrete version
 # or change VER
 build-and-push: ## plain jar -> GH | Docker image from a jar with Spring Boot wrapper -> DH
 	make build-jar
