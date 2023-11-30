@@ -140,6 +140,13 @@
             <version>1.70</version>
         </dependency>
 
+        <!-- Mail -->
+        <dependency>
+            <groupId>org.simplejavamail</groupId>
+            <artifactId>simple-java-mail</artifactId>
+            <version>8.3.1</version>
+        </dependency>
+
         <!-- Other -->
         <dependency>
             <groupId>mysql</groupId>

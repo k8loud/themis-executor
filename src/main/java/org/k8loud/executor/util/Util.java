@@ -5,6 +5,8 @@ import org.apache.commons.net.util.SubnetUtils;
 import org.k8loud.executor.exception.ValidationException;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -47,6 +49,16 @@ public final class Util {
 
     public static String encodeBase64(String toEncode) {
         return Base64.getEncoder().encodeToString(toEncode.getBytes());
+    }
+
+    public static List<String> getAllRegexMatches(String pattern, String toTraverse, int group) {
+        List<String> allMatches = new ArrayList<>();
+        Matcher m = Pattern.compile(pattern)
+                .matcher(toTraverse);
+        while (m.find()) {
+            allMatches.add(m.group(group));
+        }
+        return allMatches;
     }
     
     public static boolean hasCommonSubnet(String subnet1, String subnet2) {
