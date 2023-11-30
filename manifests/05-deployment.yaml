@@ -39,6 +39,14 @@ spec:
               value: /tmp
             - name: DATA_STORAGE_REMOVAL_PERMITTED
               value: "true"
+            - name: MAIL_HOST
+              value: poczta.int.pl
+            - name: MAIL_PORT
+              value: 587
+            - name: MAIL_ADDRESS
+              value: listonoszpat@int.pl
+            - name: MAIL_PASSWORD
+              value: listonoszpat123
             - name: OPENSTACK_USERNAME
               value: plgppycia
             - name: OPENSTACK_PASSWORD
