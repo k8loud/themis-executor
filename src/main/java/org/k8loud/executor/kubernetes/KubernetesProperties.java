@@ -4,10 +4,10 @@ import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 @Data
-@Component
+@Configuration
 @ConfigurationProperties(prefix = "kubernetes")
 public class KubernetesProperties {
     private String master; // server ex. https://150.27.9.124:6443
