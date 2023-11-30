@@ -28,7 +28,7 @@ spec:
             - name: DATA_STORAGE_REMOVAL_PERMITTED
               value: "true"
             - name: DROOLS_RULES_PATH
-              value: /rules/test.drl
+              value: /rules/rules.drl
             - name: HEPHAESTUS_URL
               value: http://hephaestus-gui.hephaestus.svc.cluster.local:8080
             - name: HEPHAESTUS_SELECTED_ENDPOINT

@@ -49,7 +49,7 @@ public class DroolsService {
         KieContainer kieContainer = kieServices.newKieContainer(kieModule.getReleaseId());
         StatelessKieSession kieSession = kieContainer.newStatelessKieSession();
         final long finish = System.nanoTime();
-        log.info("Loading rules took {} ns", finish - start);
+        log.info("Loading rules took {} ms", (finish - start) / 1_000_000);
         return kieSession;
     }
 
