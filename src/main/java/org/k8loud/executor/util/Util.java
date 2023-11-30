@@ -51,12 +51,12 @@ public final class Util {
         return Base64.getEncoder().encodeToString(toEncode.getBytes());
     }
 
-    public static List<String> getAllRegexMatches(String pattern, String toTraverse) {
+    public static List<String> getAllRegexMatches(String pattern, String toTraverse, int group) {
         List<String> allMatches = new ArrayList<>();
         Matcher m = Pattern.compile(pattern)
                 .matcher(toTraverse);
         while (m.find()) {
-            allMatches.add(m.group());
+            allMatches.add(m.group(group));
         }
         return allMatches;
     }

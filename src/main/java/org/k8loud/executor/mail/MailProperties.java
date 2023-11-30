@@ -8,12 +8,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "mail")
 public class MailProperties {
-    private String host = "poczta.int.pl";
-    private String port = "465";
-    private String username;
+    private String host;
+    private int port = 587;
+    private String address;
     private String password;
-
-    public String getAddress() {
-        return username + "@" + host;
-    }
 }

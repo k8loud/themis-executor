@@ -21,6 +21,6 @@ public interface SockShopService {
     Map<String, String> deleteAddress(String applicationUrl, String username, String password, String addressId)
             throws CNAppException, ValidationException, HTTPException;
 
-    Map<String, String> notifyCustomers(String applicationUrl, String message)
+    Map<String, String> notifyCustomers(String applicationUrl, String senderDisplayName, String subject, String content)
             throws CNAppException, ValidationException, HTTPException, MailException;
 }

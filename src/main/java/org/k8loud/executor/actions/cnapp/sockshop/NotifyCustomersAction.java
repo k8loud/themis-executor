@@ -9,7 +9,9 @@ import org.k8loud.executor.model.Params;
 import java.util.Map;
 
 public class NotifyCustomersAction extends SockShopAction {
-    private String message;
+    private String senderDisplayName;
+    private String subject;
+    private String content;
 
     public NotifyCustomersAction(Params params, SockShopService sockShopService) throws ActionException {
         super(params, sockShopService);
@@ -17,18 +19,22 @@ public class NotifyCustomersAction extends SockShopAction {
 
     @Builder
     public NotifyCustomersAction(SockShopService sockShopService, String applicationUrl,
-                                 String message) {
+                                 String senderDisplayName, String subject, String content) {
         super(sockShopService, applicationUrl);
-        this.message = message;
+        this.senderDisplayName = senderDisplayName;
+        this.subject = subject;
+        this.content = content;
     }
 
     @Override
     protected void unpackAdditionalParams(Params params) {
-        this.message = params.getRequiredParam("message");
+        this.senderDisplayName = params.getRequiredParam("senderDisplayName");
+        this.subject = params.getRequiredParam("subject");
+        this.content = params.getRequiredParam("content");
     }
 
     @Override
     protected Map<String, String> executeBody() throws CustomException {
-        return sockShopService.notifyCustomers(applicationUrl, message);
+        return sockShopService.notifyCustomers(applicationUrl, senderDisplayName, subject, content);
     }
 }
