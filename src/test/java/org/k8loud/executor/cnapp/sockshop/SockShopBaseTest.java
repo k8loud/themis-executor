@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.k8loud.executor.exception.HTTPException;
 import org.k8loud.executor.http.HTTPService;
 import org.k8loud.executor.http.HTTPSession;
+import org.k8loud.executor.mail.MailService;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -44,12 +45,14 @@ public class SockShopBaseTest {
     HttpResponse successfulResponseMock;
     @Mock
     HttpResponse unsuccessfulResponseMock;
+    @Mock
+    MailService mailServiceMock;
 
     SockShopServiceImpl sockShopService;
 
     @BeforeEach
     public void setUp() throws IOException, HTTPException {
-        sockShopService = new SockShopServiceImpl(sockShopPropertiesMock, httpServiceMock);
+        sockShopService = new SockShopServiceImpl(sockShopPropertiesMock, httpServiceMock, mailServiceMock);
         doAnswer(i -> {
             int statusCode = i.getArgument(0);
             return 200 <= statusCode && statusCode < 300;

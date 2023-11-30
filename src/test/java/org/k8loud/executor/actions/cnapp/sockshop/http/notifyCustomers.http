@@ -1,0 +1,14 @@
+# create address
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "cnapp.sockshop",
+  "actionName": "NotifyCustomersAction",
+  "params": {
+    "params": {
+      "applicationUrl": "http://localhost:8082",
+      "message": "Hello world"
+    }
+  }
+}

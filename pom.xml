@@ -133,6 +133,13 @@
             <version>1.70</version>
         </dependency>
 
+        <!-- Mail -->
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>angus-mail</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+
         <!-- Other -->
         <dependency>
             <groupId>mysql</groupId>
