@@ -128,8 +128,8 @@ public class SockShopServiceImpl implements SockShopService {
                     senderDisplayName, subject, content, results), FAILED_TO_SEND_MAIL);
         }
 
-        return createResultMap(String.format("Notified customers; senderDisplayName = '%s'; subject = '%s', " +
-                        "content = '%s'", senderDisplayName, subject, content), responseContent);
+        return resultMap(String.format("Notified customers; senderDisplayName = '%s'; subject = '%s', " +
+                        "content = '%s'", senderDisplayName, subject, content));
     }
 
     private String handleResponse(HttpResponse response) throws HTTPException, CNAppException {
