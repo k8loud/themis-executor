@@ -31,11 +31,6 @@ public class HephaestusServiceImpl implements HephaestusService {
         this.hephaestusFullUrl = hephaestusProperties.getUrl() + hephaestusProperties.getSelectedEndpoint();
     }
 
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
-
     @Override
     public List<Metric> queryMetrics() {
         log.info("Querying metrics");

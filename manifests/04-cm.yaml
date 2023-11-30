@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: executor-rules-cm
+  name: rules
   namespace: themis-executor
 data:
   test.drl: |
