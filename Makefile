@@ -21,7 +21,7 @@ build-jar: ## build a plain jar
 # https://github.com/k8loud/themis-executor/packages -> Package settings -> Manage versions -> delete concrete version
 # or change VER
 
-build-and-push-final: ## !RUN ONLY AFTER MERGING TO MASTER! build-and-push-non-final + tag the commit with VER
+build-and-push-final: ## !RUN ONLY ON MASTER! build-and-push-non-final + tag the commit with VER
 	make build-and-push-non-final
 	git tag v$(VER)
 	git push origin --tags
