@@ -3,12 +3,11 @@ import org.k8loud.executor.actions.kubernetes.*;
 import java.util.List
 
 global org.k8loud.executor.model.ActionList actions;
-global org.k8loud.executor.kubernetes.KubernetesService k8s;
+global org.k8loud.executor.drools.UsableServices usableServices;
 
 dialect "mvel"
 
 rule "carts_cpu"
-    dialect "mvel"
     when
         cup_time_m : Metric(
             queryTag == "carts-cpu",
@@ -23,12 +22,11 @@ rule "carts_cpu"
                         .resourceName("carts")
                         .resourceType("Deployment")
                         .replicas(2)
-                        .kubernetesService(k8s)
+                        .kubernetesService(usableServices.getKubernetesService())
                         .build());
 end
 
 rule "orders_cpu"
-    dialect "mvel"
     when
         cup_time_m : Metric(
             queryTag == "orders-cpu",
@@ -43,7 +41,7 @@ rule "orders_cpu"
                         .resourceName("orders")
                         .resourceType("Deployment")
                         .replicas(2)
-                        .kubernetesService(k8s)
+                        .kubernetesService(usableServices.getKubernetesService())
                         .build());
 end
 
@@ -53,7 +51,6 @@ end
 **/
 
 rule "front-end_cpu_procentage"
-    dialect "mvel"
     when
         cup_time_m : Metric(
             queryTag == "front-end-cpu",
@@ -73,6 +70,6 @@ rule "front-end_cpu_procentage"
                         .resourceName("front-end")
                         .resourceType("Deployment")
                         .replicas(2)
-                        .kubernetesService(k8s)
+                        .kubernetesService(usableServices.getKubernetesService())
                         .build());
 end
