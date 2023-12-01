@@ -48,7 +48,7 @@ spec:
             - name: MAIL_HOST
               value: poczta.int.pl
             - name: MAIL_PORT
-              value: 587
+              value: "587"
             - name: MAIL_ADDRESS
               value: listonoszpat@int.pl
             - name: MAIL_PASSWORD
