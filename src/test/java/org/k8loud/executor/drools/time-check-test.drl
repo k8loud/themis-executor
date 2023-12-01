@@ -1,0 +1,21 @@
+import io.github.hephaestusmetrics.model.metrics.Metric;
+import java.util.List
+
+global org.k8loud.executor.model.ActionList actions;
+global org.k8loud.executor.drools.UsableServices usableServices;
+
+dialect "mvel"
+
+rule "every-1min"
+	when
+		eval(usableServices.getCronCheckerService().checkPatternForSession("0 0/1 * ? * * *"))
+  then
+		System.out.println("every-1min triggered");
+end
+
+rule "every-2min"
+	when
+		eval(usableServices.getCronCheckerService().checkPatternForSession("0 0/2 * ? * * *"))
+  then
+		System.out.println("every-2min triggered");
+end
