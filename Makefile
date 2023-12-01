@@ -4,7 +4,7 @@ DOCKERHUB_USERNAME=k8loud
 IMAGE_NAME=themis-executor
 # w.x.y.z, one digit value each
 # when tinkering add -<description> suffix
-VER=0.0.3.0
+VER=0.0.3.0-time-check-for-processing-rules
 
 # targets that aren't annotated with ## are not supposed to be run on their own
 

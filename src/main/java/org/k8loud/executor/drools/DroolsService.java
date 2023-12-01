@@ -1,10 +1,10 @@
 package org.k8loud.executor.drools;
 
 import io.github.hephaestusmetrics.model.metrics.Metric;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.actions.Action;
 import org.k8loud.executor.hephaestus.HephaestusService;
-import org.k8loud.executor.kubernetes.KubernetesService;
 import org.k8loud.executor.model.ActionList;
 import org.k8loud.executor.model.ExecutionRS;
 import org.kie.api.KieServices;
@@ -24,19 +24,13 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @ConditionalOnProperty(value="service.enabled.drools", havingValue = "true", matchIfMissing = true)
 public class DroolsService {
     private final DroolsProperties droolsProperties;
     private final HephaestusService hephaestusService;
-    private final KubernetesService kubernetesService;
+    private final UsableServices usableServices;
     private final KieServices kieServices = KieServices.Factory.get();
-
-    public DroolsService(DroolsProperties droolsProperties, HephaestusService hephaestusService,
-                         KubernetesService kubernetesService) {
-        this.droolsProperties = droolsProperties;
-        this.hephaestusService = hephaestusService;
-        this.kubernetesService = kubernetesService;
-    }
 
     private StatelessKieSession createSession() {
         log.info("Loading rules from '{}'", droolsProperties.getRulesPath());
@@ -62,17 +56,18 @@ public class DroolsService {
         List<ExecutionRS> results = actionList.stream()
                 .map(Action::execute)
                 .toList();
-        log.info(String.format("Results\n%s", results.stream()
+        log.info(String.format("===== Actions results =====\n%s", results.stream()
                 .map(ExecutionRS::toString)
                 .collect(Collectors.joining("\n"))));
     }
 
     private ActionList initializeGlobals(StatelessKieSession session) {
         log.info("Initializing globals");
+
         ActionList actionList = new ActionList();
         session.setGlobal("actions", actionList);
 
-        session.setGlobal("k8s", kubernetesService);
+        session.setGlobal("usableServices", usableServices);
 
         return actionList;
     }

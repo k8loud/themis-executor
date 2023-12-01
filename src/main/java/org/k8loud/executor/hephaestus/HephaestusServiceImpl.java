@@ -5,8 +5,6 @@ import io.github.hephaestusmetrics.model.queryresults.RawQueryResult;
 import io.github.hephaestusmetrics.serialization.Translator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -39,7 +37,7 @@ public class HephaestusServiceImpl implements HephaestusService {
                 .map(translator::parseResult)
                 .flatMap(result -> result.getMetrics().stream())
                 .toList();
-        log.info("Queried metrics\n{}", getMetricsRepr(metrics));
+        log.info("===== Queried metrics =====\n{}", getMetricsRepr(metrics));
         return metrics;
     }
 
