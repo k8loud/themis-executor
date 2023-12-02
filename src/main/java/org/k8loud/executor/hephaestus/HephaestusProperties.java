@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @ConfigurationProperties(prefix = "hephaestus")
 public class HephaestusProperties {
-    private String url = "localhost:8080";
+    private String url = "http://hephaestus-gui.hephaestus.svc.cluster.local:8080";
     private String selectedEndpoint = "/hephaestus/metrics/selected";
 
     @Bean
