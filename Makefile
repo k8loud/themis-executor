@@ -4,7 +4,7 @@ DOCKERHUB_USERNAME=k8loud
 IMAGE_NAME=themis-executor
 # w.x.y.z, one digit value each
 # when tinkering add -<description> suffix
-VER=0.0.3.1
+VER=0.0.3.1-scenario-sockshop-notify-customers
 
 # targets that aren't annotated with ## are not supposed to be run on their own
 

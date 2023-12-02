@@ -4,4 +4,7 @@ import org.k8loud.executor.exception.MailException;
 
 public interface MailService {
     void sendMail(String receiver, String senderDisplayName, String subject, String content) throws MailException;
+
+    void sendMailWithEmbeddedImage(String receiver, String senderDisplayName, String subject, String content,
+                                   String imagePath) throws MailException;
 }

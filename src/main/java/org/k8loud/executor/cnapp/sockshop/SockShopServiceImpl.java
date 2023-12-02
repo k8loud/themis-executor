@@ -3,7 +3,6 @@ package org.k8loud.executor.cnapp.sockshop;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.Nullable;
 import org.k8loud.executor.cnapp.sockshop.params.CreateAddressParams;
 import org.k8loud.executor.cnapp.sockshop.params.RegisterUserParams;
@@ -138,7 +137,7 @@ public class SockShopServiceImpl implements SockShopService {
             throw new HTTPException(String.valueOf(statusCode), HTTP_RESPONSE_STATUS_CODE_NOT_SUCCESSFUL);
         }
         try {
-            return EntityUtils.toString(response.getEntity());
+            return httpService.getResponseEntityAsString(response);
         } catch (IOException e) {
             throw new CNAppException(e.toString(), FAILED_TO_CONVERT_RESPONSE_ENTITY);
         }

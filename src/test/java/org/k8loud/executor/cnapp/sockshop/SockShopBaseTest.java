@@ -3,6 +3,7 @@ package org.k8loud.executor.cnapp.sockshop;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.entity.BasicHttpEntity;
+import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.k8loud.executor.exception.HTTPException;
@@ -58,7 +59,10 @@ public class SockShopBaseTest {
             return 200 <= statusCode && statusCode < 300;
         }).when(httpServiceMock).isStatusCodeSuccessful(anyInt());
         when(httpServiceMock.createSession()).thenReturn(httpSessionMock);
-
+        doAnswer(i -> {
+            HttpResponse response = i.getArgument(0);
+            return EntityUtils.toString(response.getEntity());
+        }).when(httpServiceMock).getResponseEntityAsString(any(HttpResponse.class));
         additionalSetUp();
     }
 

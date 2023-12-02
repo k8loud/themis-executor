@@ -5,9 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,11 +24,36 @@ public class DataStorageServiceImpl implements DataStorageService {
     @Override
     public String store(String fileName, String content) {
         log.debug("Storing in file, the passed fileName is '{}'", fileName);
-        fileName = assureFileName(fileName);
-        String uniqueFullPath = getUniqueFullPath(fileName);
+        String uniqueFullPath = getUniqueFullPath(assureFileName(fileName));
         log.debug("Actual path '{}'", uniqueFullPath);
         File file = new File(uniqueFullPath);
         return safelyCreateFile(file) && writeToFile(file, content) ? uniqueFullPath : null;
+    }
+
+    // https://stackoverflow.com/questions/10292792/getting-image-from-url-java
+    @Nullable
+    @Override
+    public String storeImage(String fileName, String sourceUrl) {
+        String uniqueFullPath = null;
+        try {
+            URL url = new URL(sourceUrl);
+            InputStream is = url.openStream();
+            uniqueFullPath = getUniqueFullPath(assureFileName(fileName));
+            log.debug("Actual path '{}'", uniqueFullPath);
+            OutputStream os = new FileOutputStream(uniqueFullPath);
+            byte[] b = new byte[2048];
+            int length;
+
+            while ((length = is.read(b)) != -1) {
+                os.write(b, 0, length);
+            }
+
+            is.close();
+            os.close();
+        } catch (IOException e) {
+            log.error("Failed to store image '{}' from URL {}", fileName, sourceUrl);
+        }
+        return uniqueFullPath;
     }
 
     @Override
