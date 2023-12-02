@@ -2,6 +2,7 @@ package org.k8loud.executor.mail;
 
 import jakarta.activation.FileDataSource;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.simplejavamail.MailException;
 import org.simplejavamail.api.email.Email;
 import org.simplejavamail.api.email.EmailPopulatingBuilder;
@@ -9,9 +10,11 @@ import org.simplejavamail.email.EmailBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static org.k8loud.executor.exception.code.MailExceptionCode.FAILED_TO_SEND_MAIL;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MailServiceImpl implements MailService {
@@ -19,24 +22,34 @@ public class MailServiceImpl implements MailService {
     private final MailerProvider mailerProvider;
 
     @Override
-    public void sendMail(String receiver, String senderDisplayName, String subject, String content)
+    public CompletableFuture<Void> sendMail(String receiver, String senderDisplayName, String subject, String content)
             throws org.k8loud.executor.exception.MailException {
-            doSendMail(getMailBase(receiver, senderDisplayName, subject, content).buildEmail());
+        return doSendMail(getMailBase(receiver, senderDisplayName, subject, content)
+                .buildEmail());
     }
 
     @Override
-    public void sendMailWithEmbeddedImages(String receiver, String senderDisplayName, String subject, String content,
-                                          Map<String, String> imageTitleToPath)
+    public CompletableFuture<Void> sendMailWithEmbeddedImages(String receiver, String senderDisplayName, String subject,
+                                                              String content, Map<String, String> imageTitleToPath)
             throws org.k8loud.executor.exception.MailException {
         EmailPopulatingBuilder emailBuilder = getMailBase(receiver, senderDisplayName, subject, content);
+        StringBuilder htmlText = new StringBuilder();
         for (Map.Entry<String, String> e : imageTitleToPath.entrySet()) {
-            emailBuilder.withEmbeddedImage(e.getKey(), new FileDataSource(e.getValue()));
+            final String title = e.getKey();
+            final String path = e.getValue();
+            log.info("Adding embedded image: title = '{}', path = '{}'", title, path);
+            emailBuilder.withEmbeddedImage(title, new FileDataSource(path));
+            htmlText.append(String.format("<p>%s</p><img src='cid:%s'><br/>%n", title, title));
         }
-        doSendMail(emailBuilder.buildEmail());
+        return doSendMail(emailBuilder
+                .withHTMLText(htmlText.toString())
+                .buildEmail());
     }
 
     private EmailPopulatingBuilder getMailBase(String receiver, String senderDisplayName, String subject,
                                                 String content) {
+        log.info("Creating mail base: receiver = {}, senderDisplayName = '{}', subject = '{}', content = '{}'",
+                receiver, senderDisplayName, subject, content);
         return EmailBuilder.startingBlank()
                 .from(senderDisplayName, mailProperties.getAddress())
                 .to(receiver)
@@ -44,9 +57,9 @@ public class MailServiceImpl implements MailService {
                 .withPlainText(content);
     }
 
-    private void doSendMail(Email email) throws org.k8loud.executor.exception.MailException {
+    private CompletableFuture<Void> doSendMail(Email email) throws org.k8loud.executor.exception.MailException {
         try {
-            mailerProvider.getMailer()
+            return mailerProvider.getMailer()
                     .sendMail(email);
         } catch (MailException e) {
             throw new org.k8loud.executor.exception.MailException(e, FAILED_TO_SEND_MAIL);

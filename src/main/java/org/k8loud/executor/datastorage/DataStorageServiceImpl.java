@@ -23,6 +23,7 @@ public class DataStorageServiceImpl implements DataStorageService {
     private static final DateTimeFormatter UNIQUE_FILE_NAME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
     private final DataStorageProperties dataStorageProperties;
 
+    // TODO: Change from null on fail to throwing an exception which better fits the way we handle errors
     @Nullable
     @Override
     public String store(String fileName, String content) {
