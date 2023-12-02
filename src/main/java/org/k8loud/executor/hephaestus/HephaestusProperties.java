@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @ConfigurationProperties(prefix = "hephaestus")
 public class HephaestusProperties {
-    private String url;
+    private String url = "127.0.0.1";
     private String selectedEndpoint = "/hephaestus/metrics/selected";
 
     @Bean
