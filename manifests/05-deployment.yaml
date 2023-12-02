@@ -29,6 +29,8 @@ spec:
               value: "true"
             - name: DROOLS_RULES_PATH
               value: /rules/rules.drl
+            - name: DROOLS_QUERY_AND_PROCESS_FIXED_RATE_SECONDS
+              value: "60"
             - name: HEPHAESTUS_URL
               value: http://hephaestus-gui.hephaestus.svc.cluster.local:8080
             - name: HEPHAESTUS_SELECTED_ENDPOINT

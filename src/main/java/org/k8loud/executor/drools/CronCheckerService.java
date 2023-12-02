@@ -1,5 +1,7 @@
 package org.k8loud.executor.drools;
 
+import org.quartz.CronExpression;
+
 import java.util.Date;
 
 public interface CronCheckerService {
@@ -8,4 +10,6 @@ public interface CronCheckerService {
     boolean checkPatternInRange(String pattern, Date dateFrom, Date dateTo);
 
     boolean checkPatternForSession(String pattern);
+
+    CronExpression getCronExpression(String pattern);
 }

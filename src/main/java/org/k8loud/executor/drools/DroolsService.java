@@ -47,8 +47,9 @@ public class DroolsService {
         return kieSession;
     }
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRateString = "${drools.query.and.process.fixed.rate.seconds}000")
     private void queryMetricsAndProcessRules() {
+        log.info("========== Start session ==========");
         StatelessKieSession session = createSession();
         List<Metric> metrics = hephaestusService.queryMetrics();
         ActionList actionList = initializeGlobals(session);
@@ -56,9 +57,11 @@ public class DroolsService {
         List<ExecutionRS> results = actionList.stream()
                 .map(Action::execute)
                 .toList();
-        log.info(String.format("===== Actions results =====\n%s", results.stream()
+        log.info("===== Actions results =====\n{}", results.stream()
                 .map(ExecutionRS::toString)
-                .collect(Collectors.joining("\n"))));
+                .collect(Collectors.joining("\n")));
+        log.info("Next task in {} s", droolsProperties.getQueryAndProcessFixedRateSeconds());
+        log.info("========== End session ==========");
     }
 
     private ActionList initializeGlobals(StatelessKieSession session) {

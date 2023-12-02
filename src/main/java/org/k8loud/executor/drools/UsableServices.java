@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.k8loud.executor.cnapp.sockshop.SockShopService;
 import org.k8loud.executor.command.CommandExecutionService;
+import org.k8loud.executor.http.HTTPService;
 import org.k8loud.executor.kubernetes.KubernetesService;
+import org.k8loud.executor.mail.MailService;
 import org.k8loud.executor.openstack.OpenstackService;
 import org.springframework.stereotype.Component;
 
@@ -18,4 +20,6 @@ public class UsableServices {
     private final OpenstackService openstackService;
 
     private final CronCheckerService cronCheckerService;
+    private final HTTPService httpService;
+    private final MailService mailService;
 }
