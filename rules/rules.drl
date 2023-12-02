@@ -1,0 +1,8 @@
+dialect "mvel"
+
+rule "test"
+	when
+		eval( true )
+  	then
+		System.out.println("test rule triggered");
+end

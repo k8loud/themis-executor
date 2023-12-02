@@ -13,4 +13,4 @@ jobs:
           allowed_prefixes: 'feature,bugfix,refactor' # All branches should start with the given prefix
           ignore: main # Ignore exactly matching branch names from convention
           min_length: 3 # Min length of the branch name
-          max_length: 64 # Max length of the branch name
+          max_length: 128 # Max length of the branch name

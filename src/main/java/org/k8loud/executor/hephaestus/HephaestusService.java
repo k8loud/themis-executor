@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface HephaestusService {
     List<Metric> queryMetrics();
+
     RawQueryResult[] queryMetricsRaw();
 }

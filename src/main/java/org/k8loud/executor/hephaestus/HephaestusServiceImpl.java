@@ -5,9 +5,8 @@ import io.github.hephaestusmetrics.model.queryresults.RawQueryResult;
 import io.github.hephaestusmetrics.serialization.Translator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -34,12 +33,17 @@ public class HephaestusServiceImpl implements HephaestusService {
     @Override
     public List<Metric> queryMetrics() {
         log.info("Querying metrics");
-        RawQueryResult[] rawMetrics = restTemplate.getForObject(hephaestusFullUrl, RawQueryResult[].class);
+        RawQueryResult[] rawMetrics = new RawQueryResult[0];
+        try {
+            rawMetrics = restTemplate.getForObject(hephaestusFullUrl, RawQueryResult[].class);
+        } catch (ResourceAccessException e) {
+            log.error(e.toString());
+        }
         List<Metric> metrics = Arrays.stream(Objects.requireNonNullElse(rawMetrics, new RawQueryResult[]{}))
                 .map(translator::parseResult)
                 .flatMap(result -> result.getMetrics().stream())
                 .toList();
-        log.info("Queried metrics\n{}", getMetricsRepr(metrics));
+        log.info("===== Queried metrics =====\n{}", getMetricsRepr(metrics));
         return metrics;
     }
 
