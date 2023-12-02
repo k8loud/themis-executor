@@ -8,6 +8,7 @@ import org.k8loud.executor.exception.ValidationException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,7 +30,7 @@ public class CreateAddressTest extends SockShopBaseTest {
     ArgumentCaptor<CreateAddressParams> createAddressParamsCaptor;
 
     @Override
-    protected void additionalSetUp() throws HTTPException {
+    protected void additionalSetUp() throws HTTPException, IOException {
         when(sockShopPropertiesMock.getAddressesUrlSupplement()).thenReturn(SOCKSHOP_ADDRESSES_URL_SUPPLEMENT);
         mockAuth();
     }

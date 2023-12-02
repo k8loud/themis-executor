@@ -5,6 +5,7 @@ import org.k8loud.executor.exception.CNAppException;
 import org.k8loud.executor.exception.HTTPException;
 import org.k8loud.executor.exception.ValidationException;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +23,7 @@ public class DeleteUserTest extends SockShopBaseTest {
     }
 
     @Test
-    void testDeleteUser() throws HTTPException, CNAppException, ValidationException {
+    void testDeleteUser() throws HTTPException, CNAppException, ValidationException, IOException {
         // given
         when(httpSessionMock.doDelete(anyString(), anyString())).thenReturn(successfulResponseMock);
         mockSuccessfulResponse();

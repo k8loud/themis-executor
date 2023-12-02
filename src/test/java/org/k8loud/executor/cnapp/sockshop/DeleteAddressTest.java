@@ -5,6 +5,7 @@ import org.k8loud.executor.exception.CNAppException;
 import org.k8loud.executor.exception.HTTPException;
 import org.k8loud.executor.exception.ValidationException;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,7 +18,7 @@ import static org.mockito.Mockito.when;
 
 public class DeleteAddressTest extends SockShopBaseTest {
     @Override
-    protected void additionalSetUp() throws HTTPException {
+    protected void additionalSetUp() throws HTTPException, IOException {
         when(sockShopPropertiesMock.getAddressesUrlSupplement()).thenReturn(SOCKSHOP_ADDRESSES_URL_SUPPLEMENT);
         mockAuth();
     }

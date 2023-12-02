@@ -59,14 +59,10 @@ public class SockShopBaseTest {
             return 200 <= statusCode && statusCode < 300;
         }).when(httpServiceMock).isStatusCodeSuccessful(anyInt());
         when(httpServiceMock.createSession()).thenReturn(httpSessionMock);
-        doAnswer(i -> {
-            HttpResponse response = i.getArgument(0);
-            return EntityUtils.toString(response.getEntity());
-        }).when(httpServiceMock).getResponseEntityAsString(any(HttpResponse.class));
         additionalSetUp();
     }
 
-    protected void additionalSetUp() throws HTTPException {
+    protected void additionalSetUp() throws HTTPException, IOException {
         // empty
     }
 
@@ -74,15 +70,19 @@ public class SockShopBaseTest {
         assertEquals(RESPONSE_CONTENT, resultMap.get("responseContent"));
     }
 
-    protected void mockAuth() throws HTTPException {
+    protected void mockAuth() throws HTTPException, IOException {
         when(sockShopPropertiesMock.getLoginUserUrlSupplement()).thenReturn(SOCKSHOP_LOGIN_URL_SUPPLEMENT);
         when(httpSessionMock.doGet(eq(APPLICATION_URL), eq(SOCKSHOP_LOGIN_URL_SUPPLEMENT), any(Map.class)))
                 .thenReturn(successfulResponseMock);
         mockSuccessfulResponse();
     }
 
-    protected void mockSuccessfulResponse() {
+    protected void mockSuccessfulResponse() throws IOException {
         mockResponse(successfulResponseMock, 200);
+        doAnswer(i -> {
+            HttpResponse response = i.getArgument(0);
+            return EntityUtils.toString(response.getEntity());
+        }).when(httpServiceMock).getResponseEntityAsString(any(HttpResponse.class));
     }
 
     protected void mockUnsuccessfulResponse() {
