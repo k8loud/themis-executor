@@ -35,6 +35,7 @@ public class DroolsService {
     private StatelessKieSession createSession() {
         log.info("Loading rules from '{}'", droolsProperties.getRulesPath());
         final long start = System.nanoTime();
+
         KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
         kieFileSystem.write(ResourceFactory.newFileResource(new File(droolsProperties.getRulesPath())));
         KieBuilder kb = kieServices.newKieBuilder(kieFileSystem);
@@ -42,6 +43,7 @@ public class DroolsService {
         KieModule kieModule = kb.getKieModule();
         KieContainer kieContainer = kieServices.newKieContainer(kieModule.getReleaseId());
         StatelessKieSession kieSession = kieContainer.newStatelessKieSession();
+
         final long finish = System.nanoTime();
         log.info("Loading rules took {} ms", (finish - start) / 1_000_000);
         return kieSession;
@@ -53,13 +55,17 @@ public class DroolsService {
         StatelessKieSession session = createSession();
         List<Metric> metrics = hephaestusService.queryMetrics();
         ActionList actionList = initializeGlobals(session);
+
+        log.info("===== Execute session =====");
         session.execute(metrics);
         List<ExecutionRS> results = actionList.stream()
                 .map(Action::execute)
                 .toList();
+
         log.info("===== Actions results =====\n{}", results.stream()
                 .map(ExecutionRS::toString)
                 .collect(Collectors.joining("\n")));
+
         log.info("Next task in {} s", droolsProperties.getQueryAndProcessFixedRateSeconds());
         log.info("========== End session ==========");
     }

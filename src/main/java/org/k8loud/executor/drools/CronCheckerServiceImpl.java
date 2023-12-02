@@ -68,7 +68,7 @@ public class CronCheckerServiceImpl implements CronCheckerService {
         try {
             return new CronExpression(pattern);
         } catch (ParseException e) {
-            log.error("Invalid pattern: '{}', the exception is: '{}'", pattern, e);
+            log.error("Invalid pattern: '{}', the exception: '{}'", pattern, e.toString());
             return null;
         }
     }
