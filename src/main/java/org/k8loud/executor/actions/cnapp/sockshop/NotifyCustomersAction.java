@@ -6,12 +6,15 @@ import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CustomException;
 import org.k8loud.executor.model.Params;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class NotifyCustomersAction extends SockShopAction {
     private String senderDisplayName;
     private String subject;
     private String content;
+    private List<String> imagesUrls;
 
     public NotifyCustomersAction(Params params, SockShopService sockShopService) throws ActionException {
         super(params, sockShopService);
@@ -19,11 +22,12 @@ public class NotifyCustomersAction extends SockShopAction {
 
     @Builder
     public NotifyCustomersAction(SockShopService sockShopService, String applicationUrl,
-                                 String senderDisplayName, String subject, String content) {
+                                 String senderDisplayName, String subject, String content, List<String> imagesUrls) {
         super(sockShopService, applicationUrl);
         this.senderDisplayName = senderDisplayName;
         this.subject = subject;
         this.content = content;
+        this.imagesUrls = imagesUrls;
     }
 
     @Override
@@ -31,10 +35,11 @@ public class NotifyCustomersAction extends SockShopAction {
         this.senderDisplayName = params.getRequiredParam("senderDisplayName");
         this.subject = params.getRequiredParam("subject");
         this.content = params.getRequiredParam("content");
+        this.imagesUrls = params.getOptionalParamAsListOfStrings("imagesUrls", Collections.emptyList());
     }
 
     @Override
     protected Map<String, String> executeBody() throws CustomException {
-        return sockShopService.notifyCustomers(applicationUrl, senderDisplayName, subject, content);
+        return sockShopService.notifyCustomers(applicationUrl, senderDisplayName, subject, content, imagesUrls);
     }
 }

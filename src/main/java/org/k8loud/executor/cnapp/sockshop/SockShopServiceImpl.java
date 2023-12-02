@@ -6,10 +6,8 @@ import org.apache.http.HttpResponse;
 import org.jetbrains.annotations.Nullable;
 import org.k8loud.executor.cnapp.sockshop.params.CreateAddressParams;
 import org.k8loud.executor.cnapp.sockshop.params.RegisterUserParams;
-import org.k8loud.executor.exception.CNAppException;
-import org.k8loud.executor.exception.HTTPException;
-import org.k8loud.executor.exception.MailException;
-import org.k8loud.executor.exception.ValidationException;
+import org.k8loud.executor.datastorage.DataStorageService;
+import org.k8loud.executor.exception.*;
 import org.k8loud.executor.http.HTTPService;
 import org.k8loud.executor.http.HTTPSession;
 import org.k8loud.executor.mail.MailService;
@@ -35,6 +33,7 @@ public class SockShopServiceImpl implements SockShopService {
     private final SockShopProperties sockShopProperties;
     private final HTTPService httpService;
     private final MailService mailService;
+    private final DataStorageService dataStorageService;
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "CNAppException",
@@ -100,8 +99,8 @@ public class SockShopServiceImpl implements SockShopService {
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "CNAppException",
             exceptionCode = "SOCK_SHOP_NOTIFY_CUSTOMERS_FAILED")
     public Map<String, String> notifyCustomers(String applicationUrl, String senderDisplayName, String subject,
-                                               String content)
-            throws CNAppException, ValidationException, HTTPException, MailException {
+                                               String content, List<String> imagesUrls)
+            throws CNAppException, HTTPException, MailException {
         log.info("Notifying customers; senderDisplayName = '{}'; subject = '{}', content = '{}'", senderDisplayName,
                 subject, content);
 
@@ -111,12 +110,26 @@ public class SockShopServiceImpl implements SockShopService {
 
         final String MAIL_PATTERN = "\"username\":\"([a-zA-Z0-9]+@[a-zA-Z0-9.]+)\"";
         List<String> receivers = getAllRegexMatches(MAIL_PATTERN, responseContent, 1);
-        Map<String, @Nullable MailException> results = new HashMap<>();
+        Map<String, @Nullable CustomException> results = new HashMap<>();
         receivers.forEach(receiver -> {
             try {
-                mailService.sendMail(receiver, senderDisplayName, subject, content);
+                if (imagesUrls.isEmpty()) {
+                    mailService.sendMail(receiver, senderDisplayName, subject, content);
+                } else {
+                    Map<String, String> imageTitleToPath = new HashMap<>();
+                    for (String imageUrl : imagesUrls) {
+                        // FIXME: Generalize,
+                        //  parsing expects URLs like http://localhost:8082/catalogue/images/youtube_2.jpeg
+                        String imageFileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+                        String imagePath = dataStorageService.storeImage(imageFileName, imageUrl);
+                        String imageTitle = imageFileName.substring(0, imageFileName.indexOf("."));
+                        imageTitleToPath.put(imageTitle, imagePath);
+                    }
+                    mailService.sendMailWithEmbeddedImages(receiver, senderDisplayName, subject, content,
+                            imageTitleToPath);
+                }
                 results.put(receiver, null);
-            } catch (MailException e) {
+            } catch (MailException | DataStorageException e) {
                 results.put(receiver, e);
             }
         });

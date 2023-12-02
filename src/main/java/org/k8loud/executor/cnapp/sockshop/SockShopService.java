@@ -5,6 +5,7 @@ import org.k8loud.executor.exception.HTTPException;
 import org.k8loud.executor.exception.MailException;
 import org.k8loud.executor.exception.ValidationException;
 
+import java.util.List;
 import java.util.Map;
 
 public interface SockShopService {
@@ -21,6 +22,7 @@ public interface SockShopService {
     Map<String, String> deleteAddress(String applicationUrl, String username, String password, String addressId)
             throws CNAppException, ValidationException, HTTPException;
 
-    Map<String, String> notifyCustomers(String applicationUrl, String senderDisplayName, String subject, String content)
-            throws CNAppException, ValidationException, HTTPException, MailException;
+    Map<String, String> notifyCustomers(String applicationUrl, String senderDisplayName, String subject,
+                                        String content, List<String> imagesUrls)
+            throws CNAppException, HTTPException, MailException;
 }

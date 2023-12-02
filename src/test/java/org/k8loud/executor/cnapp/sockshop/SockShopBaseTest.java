@@ -6,6 +6,7 @@ import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.k8loud.executor.datastorage.DataStorageService;
 import org.k8loud.executor.exception.HTTPException;
 import org.k8loud.executor.http.HTTPService;
 import org.k8loud.executor.http.HTTPSession;
@@ -48,12 +49,15 @@ public class SockShopBaseTest {
     HttpResponse unsuccessfulResponseMock;
     @Mock
     MailService mailServiceMock;
+    @Mock
+    DataStorageService dataStorageServiceMock;
 
     SockShopServiceImpl sockShopService;
 
     @BeforeEach
     public void setUp() throws IOException, HTTPException {
-        sockShopService = new SockShopServiceImpl(sockShopPropertiesMock, httpServiceMock, mailServiceMock);
+        sockShopService = new SockShopServiceImpl(sockShopPropertiesMock, httpServiceMock, mailServiceMock,
+                dataStorageServiceMock);
         doAnswer(i -> {
             int statusCode = i.getArgument(0);
             return 200 <= statusCode && statusCode < 300;
