@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.k8loud.executor.exception.DBException;
 import org.k8loud.executor.exception.code.DBExceptionCode;
+import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 import org.springframework.stereotype.Service;
 
 import static org.k8loud.executor.util.Util.resultMap;
@@ -22,6 +23,7 @@ public class MongoService implements DBService<MongoClient> {
 
     private String database;
     @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "DBException", exceptionCode = "CONNECTION_FAILED")
     public SuperConnection<MongoClient> getConnection(String connString) throws DBException {
         String[] split = connString.split(";");
         String uri = split[0];
@@ -31,11 +33,12 @@ public class MongoService implements DBService<MongoClient> {
     }
 
     @Override
-    public Map<String, String> runUpdate(String query, SuperConnection<MongoClient> conn) throws DBException {
+    public Map<String, String> runUpdate(String query, SuperConnection<MongoClient> connection) throws DBException {
         return null;
     }
 
     @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "DBException", exceptionCode = "QUERY_FAILED")
     public Map<String, String> runQuery(String query, SuperConnection<MongoClient> connection) throws DBException {
         try {
             QueryConverter queryConverter = new QueryConverter

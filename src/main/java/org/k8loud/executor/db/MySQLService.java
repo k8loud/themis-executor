@@ -17,7 +17,7 @@ import static org.k8loud.executor.util.Util.resultMap;
 public class MySQLService implements DBService<Connection> {
 
     @Override
-    @ThrowExceptionAndLogExecutionTime(exceptionClass = "DBException",exceptionCode = "CONNECTION_FAILED")
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "DBException", exceptionCode = "CONNECTION_FAILED")
     public SuperConnection<Connection> getConnection(String connString) throws DBException {
         try {
             return new SuperConnection<>(DriverManager.getConnection(connString));
@@ -27,11 +27,11 @@ public class MySQLService implements DBService<Connection> {
     }
 
     @Override
-    @ThrowExceptionAndLogExecutionTime(exceptionClass = "DBException",exceptionCode = "QUERY_FAILED")
-    public Map<String, String> runUpdate(String query, SuperConnection<Connection> conn) throws DBException {
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "DBException", exceptionCode = "QUERY_FAILED")
+    public Map<String, String> runUpdate(String query, SuperConnection<Connection> connection) throws DBException {
 
         int rowsAffected;
-        try(Statement statement = conn.getConnection().createStatement()) {
+        try(Statement statement = connection.getConnection().createStatement()) {
             rowsAffected = statement.executeUpdate(query);
         } catch (SQLException e) {
             throw new DBException(e, DBExceptionCode.QUERY_FAILED);
