@@ -3,8 +3,10 @@ package org.k8loud.executor.cnapp.sockshop;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.entity.BasicHttpEntity;
+import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.k8loud.executor.datastorage.DataStorageService;
 import org.k8loud.executor.exception.HTTPException;
 import org.k8loud.executor.http.HTTPService;
 import org.k8loud.executor.http.HTTPSession;
@@ -47,22 +49,24 @@ public class SockShopBaseTest {
     HttpResponse unsuccessfulResponseMock;
     @Mock
     MailService mailServiceMock;
+    @Mock
+    DataStorageService dataStorageServiceMock;
 
     SockShopServiceImpl sockShopService;
 
     @BeforeEach
     public void setUp() throws IOException, HTTPException {
-        sockShopService = new SockShopServiceImpl(sockShopPropertiesMock, httpServiceMock, mailServiceMock);
+        sockShopService = new SockShopServiceImpl(sockShopPropertiesMock, httpServiceMock, mailServiceMock,
+                dataStorageServiceMock);
         doAnswer(i -> {
             int statusCode = i.getArgument(0);
             return 200 <= statusCode && statusCode < 300;
         }).when(httpServiceMock).isStatusCodeSuccessful(anyInt());
         when(httpServiceMock.createSession()).thenReturn(httpSessionMock);
-
         additionalSetUp();
     }
 
-    protected void additionalSetUp() throws HTTPException {
+    protected void additionalSetUp() throws HTTPException, IOException {
         // empty
     }
 
@@ -70,15 +74,19 @@ public class SockShopBaseTest {
         assertEquals(RESPONSE_CONTENT, resultMap.get("responseContent"));
     }
 
-    protected void mockAuth() throws HTTPException {
+    protected void mockAuth() throws HTTPException, IOException {
         when(sockShopPropertiesMock.getLoginUserUrlSupplement()).thenReturn(SOCKSHOP_LOGIN_URL_SUPPLEMENT);
         when(httpSessionMock.doGet(eq(APPLICATION_URL), eq(SOCKSHOP_LOGIN_URL_SUPPLEMENT), any(Map.class)))
                 .thenReturn(successfulResponseMock);
         mockSuccessfulResponse();
     }
 
-    protected void mockSuccessfulResponse() {
+    protected void mockSuccessfulResponse() throws IOException {
         mockResponse(successfulResponseMock, 200);
+        doAnswer(i -> {
+            HttpResponse response = i.getArgument(0);
+            return EntityUtils.toString(response.getEntity());
+        }).when(httpServiceMock).getResponseEntityAsString(any(HttpResponse.class));
     }
 
     protected void mockUnsuccessfulResponse() {

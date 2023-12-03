@@ -3,16 +3,18 @@ package org.k8loud.executor.datastorage;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.k8loud.executor.exception.DataStorageException;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import static org.k8loud.executor.exception.code.DataStorageExceptionCode.STORE_IMAGE_FAILED;
 
 @Slf4j
 @Service
@@ -21,15 +23,40 @@ public class DataStorageServiceImpl implements DataStorageService {
     private static final DateTimeFormatter UNIQUE_FILE_NAME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
     private final DataStorageProperties dataStorageProperties;
 
+    // TODO: Change from null on fail to throwing an exception which better fits the way we handle errors
     @Nullable
     @Override
     public String store(String fileName, String content) {
         log.debug("Storing in file, the passed fileName is '{}'", fileName);
-        fileName = assureFileName(fileName);
-        String uniqueFullPath = getUniqueFullPath(fileName);
+        String uniqueFullPath = getUniqueFullPath(assureFileName(fileName));
         log.debug("Actual path '{}'", uniqueFullPath);
         File file = new File(uniqueFullPath);
         return safelyCreateFile(file) && writeToFile(file, content) ? uniqueFullPath : null;
+    }
+
+    // https://stackoverflow.com/questions/10292792/getting-image-from-url-java
+    @Override
+    public String storeImage(String fileName, String sourceUrl) throws DataStorageException {
+        try {
+            URL url = new URL(sourceUrl);
+            InputStream is = url.openStream();
+            String uniqueFullPath = getUniqueFullPath(assureFileName(fileName));
+            log.debug("Actual path '{}'", uniqueFullPath);
+            OutputStream os = new FileOutputStream(uniqueFullPath);
+            byte[] b = new byte[2048];
+            int length;
+
+            while ((length = is.read(b)) != -1) {
+                os.write(b, 0, length);
+            }
+
+            is.close();
+            os.close();
+            return uniqueFullPath;
+        } catch (IOException e) {
+            throw new DataStorageException(String.format("Failed to store image '%s' from URL %s, the exception: '%s'",
+                    fileName, sourceUrl, e), STORE_IMAGE_FAILED);
+        }
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.k8loud.executor.exception.ValidationException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +31,7 @@ public class RegisterUserTest extends SockShopBaseTest {
     }
 
     @Test
-    void testRegisterUser() throws CNAppException, HTTPException, ValidationException {
+    void testRegisterUser() throws CNAppException, HTTPException, ValidationException, IOException {
         // given
         when(httpSessionMock.doPost(anyString(), anyString(), any())).thenReturn(successfulResponseMock);
         mockSuccessfulResponse();

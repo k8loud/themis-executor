@@ -101,7 +101,7 @@ public class DroolsService {
                 .map(ExecutionRS::toString)
                 .collect(Collectors.joining("\n")));
 
-        log.info("Next task in {} s", droolsProperties.getQueryAndProcessFixedRateSeconds());
+        log.info("Next session in {} s", droolsProperties.getQueryAndProcessFixedRateSeconds());
         log.info("========== End session ==========");
     }
 

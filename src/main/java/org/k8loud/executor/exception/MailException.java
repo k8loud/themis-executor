@@ -14,4 +14,9 @@ public class MailException extends CustomException {
     public MailException(String message, @NotNull Enum exceptionCode) {
         super(message, exceptionCode);
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s, cause: %s", super.toString(), this.getCause());
+    }
 }
