@@ -19,7 +19,7 @@ spec:
       serviceAccountName: themis-executor
       containers:
         - name: executor
-          image: k8loud/themis-executor:0.0.3.1-scenario-sockshop-notify-customers
+          image: k8loud/themis-executor:0.0.3.3
           imagePullPolicy: "IfNotPresent"
 #          imagePullPolicy: "Always"
           env:
