@@ -3,7 +3,8 @@ package org.k8loud.executor.db;
 import com.github.vincentrussell.query.mongodb.sql.converter.MongoDBQueryHolder;
 import com.github.vincentrussell.query.mongodb.sql.converter.ParseException;
 import com.github.vincentrussell.query.mongodb.sql.converter.QueryConverter;
-import com.mongodb.client.*;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.k8loud.executor.exception.DBException;
@@ -11,11 +12,11 @@ import org.k8loud.executor.exception.code.DBExceptionCode;
 import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 import org.springframework.stereotype.Service;
 
-import static org.k8loud.executor.util.Util.resultMap;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import static org.k8loud.executor.util.Util.resultMap;
 
 @Service
 @Slf4j
