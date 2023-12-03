@@ -7,6 +7,8 @@ import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import static org.k8loud.executor.util.Util.resultMap;
 
@@ -41,13 +43,28 @@ public class MySQLService implements DBService<Connection> {
     @Override
     public Map<String, String> runQuery(String query, SuperConnection<Connection> connection) throws DBException {
 
-        ResultSet result;
+        List<String> result;
         try(Statement statement = connection.getConnection().createStatement()) {
-            result = statement.executeQuery(query);
+            ResultSet resultSet = statement.executeQuery(query);
+            result = parseResult(resultSet);
         } catch (SQLException e) {
             throw new DBException(e, DBExceptionCode.QUERY_FAILED);
         }
         
-        return resultMap(String.format("Query result: %s", result.toString()));
+        return resultMap(String.format("Query result: %s", result));
+    }
+
+    private List<String> parseResult(ResultSet resultSet) throws SQLException {
+        List<String> result = new LinkedList<>();
+        ResultSetMetaData metaData = resultSet.getMetaData();
+        int columnCount = metaData.getColumnCount();
+        while (resultSet.next()) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 1; i <= columnCount; i++) {
+                sb.append(String.format("%s;", resultSet.getString(i)));
+            }
+            result.add(sb.toString());
+        }
+        return result;
     }
 }

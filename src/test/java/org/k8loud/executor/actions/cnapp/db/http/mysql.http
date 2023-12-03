@@ -4,6 +4,21 @@ Content-Type: application/json
 
 {
   "collectionName": "cnapp.db.mysql",
+  "actionName": "MySqlQueryAction",
+  "params": {
+    "params": {
+      "connString": "jdbc:mysql://localhost:8082/socksdb?user=root&password=fake_password",
+      "query": "select * from sock"
+    }
+  }
+}
+###
+# create address
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "cnapp.db.mysql",
   "actionName": "MySqlUpdateAction",
   "params": {
     "params": {
