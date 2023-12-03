@@ -5,7 +5,7 @@ metadata:
   labels:
     app: themis-executor
     name: themis-executor
-  namespace: ppycia
+  namespace: themis-executor
 spec:
   replicas: 1
   selector:
