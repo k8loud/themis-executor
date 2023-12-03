@@ -24,7 +24,8 @@ public class MailServiceImpl implements MailService {
     @Override
     public CompletableFuture<Void> sendMail(String receiver, String senderDisplayName, String subject, String content)
             throws org.k8loud.executor.exception.MailException {
-        return doSendMail(getMailBase(receiver, senderDisplayName, subject, content)
+        return doSendMail(getMailBase(receiver, senderDisplayName, subject)
+                .withPlainText(content)
                 .buildEmail());
     }
 
@@ -32,8 +33,9 @@ public class MailServiceImpl implements MailService {
     public CompletableFuture<Void> sendMailWithEmbeddedImages(String receiver, String senderDisplayName, String subject,
                                                               String content, Map<String, String> imageTitleToPath)
             throws org.k8loud.executor.exception.MailException {
-        EmailPopulatingBuilder emailBuilder = getMailBase(receiver, senderDisplayName, subject, content);
+        EmailPopulatingBuilder emailBuilder = getMailBase(receiver, senderDisplayName, subject);
         StringBuilder htmlText = new StringBuilder();
+        htmlText.append(String.format("<p>%s</p>", content.replace("\n", "<br>")));
         for (Map.Entry<String, String> e : imageTitleToPath.entrySet()) {
             final String title = e.getKey();
             final String path = e.getValue();
@@ -46,15 +48,13 @@ public class MailServiceImpl implements MailService {
                 .buildEmail());
     }
 
-    private EmailPopulatingBuilder getMailBase(String receiver, String senderDisplayName, String subject,
-                                                String content) {
-        log.info("Creating mail base: receiver = {}, senderDisplayName = '{}', subject = '{}', content = '{}'",
-                receiver, senderDisplayName, subject, content);
+    private EmailPopulatingBuilder getMailBase(String receiver, String senderDisplayName, String subject) {
+        log.info("Creating mail base: receiver = {}, senderDisplayName = '{}', subject = '{}'",
+                receiver, senderDisplayName, subject);
         return EmailBuilder.startingBlank()
                 .from(senderDisplayName, mailProperties.getAddress())
                 .to(receiver)
-                .withSubject(subject)
-                .withPlainText(content);
+                .withSubject(subject);
     }
 
     private CompletableFuture<Void> doSendMail(Email email) throws org.k8loud.executor.exception.MailException {

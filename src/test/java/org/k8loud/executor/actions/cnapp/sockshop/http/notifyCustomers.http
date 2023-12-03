@@ -27,7 +27,7 @@ Content-Type: application/json
       "applicationUrl": "http://localhost:8082",
       "senderDisplayName": "Cool socks seller",
       "subject": "Cool socks",
-      "content": "They are cool",
+      "content": "They are cool\nNewline test",
       "imagesUrls": "http://localhost:8082/catalogue/images/WAT.jpg,http://localhost:8082/catalogue/images/WAT2.jpg"
     }
   }
