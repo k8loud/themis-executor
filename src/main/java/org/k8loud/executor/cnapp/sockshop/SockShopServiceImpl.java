@@ -100,7 +100,7 @@ public class SockShopServiceImpl implements SockShopService {
             exceptionCode = "SOCK_SHOP_NOTIFY_CUSTOMERS_FAILED")
     public Map<String, String> notifyCustomers(String applicationUrl, String senderDisplayName, String subject,
                                                String content, List<String> imagesUrls)
-            throws CNAppException, HTTPException, MailException {
+            throws CNAppException, HTTPException {
         log.info("Notifying customers; senderDisplayName = '{}', subject = '{}', content = '{}', imageUrls = {}",
                 senderDisplayName, subject, content, imagesUrls);
 

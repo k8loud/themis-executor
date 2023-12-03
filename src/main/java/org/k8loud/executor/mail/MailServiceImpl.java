@@ -49,8 +49,8 @@ public class MailServiceImpl implements MailService {
     }
 
     private EmailPopulatingBuilder getMailBase(String receiver, String senderDisplayName, String subject) {
-        log.info("Creating mail base: receiver = {}, senderDisplayName = '{}', subject = '{}'",
-                receiver, senderDisplayName, subject);
+        log.info("Creating mail base: sender = {}, senderDisplayName = '{}', receiver = {},  subject = '{}'",
+                mailProperties.getAddress(), receiver, senderDisplayName, subject);
         return EmailBuilder.startingBlank()
                 .from(senderDisplayName, mailProperties.getAddress())
                 .to(receiver)
