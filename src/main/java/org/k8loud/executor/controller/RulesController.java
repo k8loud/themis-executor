@@ -1,12 +1,7 @@
 package org.k8loud.executor.controller;
 
-import org.apache.http.protocol.HTTP;
 import org.k8loud.executor.drools.DroolsService;
-import org.k8loud.executor.drools.RulePackage;
-import org.kie.api.definition.KiePackage;
-import org.kie.api.definition.rule.Rule;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +11,7 @@ import java.util.List;
 
 
 @RestController
+@ConditionalOnProperty(value="service.enabled.drools", havingValue = "true", matchIfMissing = true)
 public class RulesController {
 
     private final DroolsService droolsService;
