@@ -1,0 +1,8 @@
+### rules
+GET localhost:8080/rules
+
+### rules/defaultpkg
+GET localhost:8080/rules/defaultpkg
+
+### rules/defaultpkg/test
+GET localhost:8080/rules/defaultpkg/test

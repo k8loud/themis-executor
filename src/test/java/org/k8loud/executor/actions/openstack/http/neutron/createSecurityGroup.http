@@ -6,10 +6,8 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "CreateSecurityGroupAction",
   "params": {
-    "params": {
-      "region": "RegionOne",
-      "name": "security-group-test",
-      "description": "some description"
-    }
+    "region": "RegionOne",
+    "name": "security-group-test",
+    "description": "some description"
   }
 }

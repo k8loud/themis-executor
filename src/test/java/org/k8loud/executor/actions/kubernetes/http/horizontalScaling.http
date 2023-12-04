@@ -6,11 +6,9 @@ Content-Type: application/json
   "collectionName": "kubernetes",
   "actionName": "HorizontalScalingAction",
   "params": {
-    "params": {
-      "resourceType": "Deployment",
-      "resourceName": "nginx-deployment",
-      "namespace": "default",
-      "replicas": "1"
-    }
+    "resourceType": "Deployment",
+    "resourceName": "nginx-deployment",
+    "namespace": "default",
+    "replicas": "1"
   }
 }

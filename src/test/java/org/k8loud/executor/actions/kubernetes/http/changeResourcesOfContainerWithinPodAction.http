@@ -6,15 +6,13 @@ Content-Type: application/json
   "collectionName": "kubernetes",
   "actionName": "ChangeResourcesOfContainerWithinPodAction",
   "params": {
-    "params": {
-      "namespace": "default",
-      "podName": "change-resources-test",
-      "containerName": "nginx",
-      "limitsCpu": "400m",
-      "limitsMemory": "250Mi",
-      "requestsCpu": "250m",
-      "requestsMemory": "100Mi"
-    }
+    "namespace": "default",
+    "podName": "change-resources-test",
+    "containerName": "nginx",
+    "limitsCpu": "400m",
+    "limitsMemory": "250Mi",
+    "requestsCpu": "250m",
+    "requestsMemory": "100Mi"
   }
 }
 
@@ -27,10 +25,8 @@ Content-Type: application/json
   "collectionName": "kubernetes",
   "actionName": "AddResourceAction",
   "params": {
-    "params": {
-      "namespace": "default",
-      "resourceDescription": "apiVersion: v1\r\nkind: Pod\r\nmetadata:\r\n  name: change-resources-test\r\nspec:\r\n  containers:\r\n  - name: nginx\r\n    image: nginx:1.14.2\r\n    ports:\r\n    - containerPort: 80\r\n    resources:\r\n      limits:\r\n        cpu: 200m\r\n        memory: 300Mi\r\n      requests:\r\n        cpu: 150m\r\n        memory: 250Mi"
-    }
+    "namespace": "default",
+    "resourceDescription": "apiVersion: v1\r\nkind: Pod\r\nmetadata:\r\n  name: change-resources-test\r\nspec:\r\n  containers:\r\n  - name: nginx\r\n    image: nginx:1.14.2\r\n    ports:\r\n    - containerPort: 80\r\n    resources:\r\n      limits:\r\n        cpu: 200m\r\n        memory: 300Mi\r\n      requests:\r\n        cpu: 150m\r\n        memory: 250Mi"
   }
 }
 
@@ -43,11 +39,9 @@ Content-Type: application/json
   "collectionName": "kubernetes",
   "actionName": "DeleteResourceAction",
   "params": {
-    "params": {
-      "resourceType": "Pod",
-      "resourceName": "change-resources-test",
-      "namespace": "default",
-      "gracePeriodSeconds": "60"
-    }
+    "resourceType": "Pod",
+    "resourceName": "change-resources-test",
+    "namespace": "default",
+    "gracePeriodSeconds": "60"
   }
 }

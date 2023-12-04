@@ -6,11 +6,9 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "AttachVolumeAction",
   "params": {
-    "params": {
-      "region": "RegionOne",
-      "serverId": "PUT_ID",
-      "volumeId": "786d2d41-4ca7-4412-a99a-579facc7bba7",
-      "device": "/dev/vda"
-    }
+    "region": "RegionOne",
+    "serverId": "PUT_ID",
+    "volumeId": "786d2d41-4ca7-4412-a99a-579facc7bba7",
+    "device": "/dev/vda"
   }
 }

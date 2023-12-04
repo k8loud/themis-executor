@@ -6,9 +6,7 @@ Content-Type: application/json
   "collectionName": "cnapp.sockshop",
   "actionName": "DeleteUserAction",
   "params": {
-    "params": {
-      "applicationUrl": "http://localhost:8082",
-      "userId": "655cd9edcb8de600019db12f"
-    }
+    "applicationUrl": "http://localhost:8082",
+    "userId": "655cd9edcb8de600019db12f"
   }
 }

@@ -6,13 +6,10 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "CreateServerSnapshotAction",
   "params": {
-    "params": {
-      "region": "RegionOne",
-      "serverId": "PUT_ID"
-    }
+    "region": "RegionOne",
+    "serverId": "PUT_ID"
   }
 }
-
 
 ### create server snapshot with optional name
 POST localhost:8080/execute
@@ -22,11 +19,9 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "CreateServerSnapshotAction",
   "params": {
-    "params": {
-      "region": "RegionOne",
-      "serverId": "PUT_ID",
-      "snapshotName": "Snapshot-name-test"
-    }
+    "region": "RegionOne",
+    "serverId": "PUT_ID",
+    "snapshotName": "Snapshot-name-test"
   }
 }
 
@@ -38,10 +33,8 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "CreateServerSnapshotAction",
   "params": {
-    "params": {
-      "region": "RegionOne",
-      "serverId": "PUT_ID",
-      "stopInstance": "true"
-    }
+    "region": "RegionOne",
+    "serverId": "PUT_ID",
+    "stopInstance": "true"
   }
 }

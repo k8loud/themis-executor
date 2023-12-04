@@ -6,11 +6,9 @@ Content-Type: application/json
   "collectionName": "kubernetes",
   "actionName": "UpdateConfigMapAction",
   "params": {
-    "params": {
-      "resourceName": "cm1",
-      "namespace": "default",
-      "k1": "k55",
-      "v1": "v55"
-    }
+    "resourceName": "cm1",
+    "namespace": "default",
+    "k1": "k55",
+    "v1": "v55"
   }
 }

@@ -6,17 +6,14 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "AddRuleToSecurityGroupAction",
   "params": {
-    "params": {
-      "region": "RegionOne",
-      "securityGroupId": "PUT_ID",
-      "ethertype": "IPv4",
-      "direction": "ingress",
-      "remoteIpPrefix": "172.42.0.0/16",
-      "protocol": "TCP",
-      "portRangeMin": "80",
-      "portRangeMax": "80",
-      "description": "optional description"
-    }
+    "region": "RegionOne",
+    "securityGroupId": "PUT_ID",
+    "ethertype": "IPv4",
+    "direction": "ingress",
+    "remoteIpPrefix": "172.42.0.0/16",
+    "protocol": "TCP",
+    "portRangeMin": "80",
+    "portRangeMax": "80",
+    "description": "optional description"
   }
 }
-

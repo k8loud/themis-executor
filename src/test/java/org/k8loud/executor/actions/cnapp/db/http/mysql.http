@@ -1,4 +1,4 @@
-# create address
+### mysql select
 POST localhost:8080/execute
 Content-Type: application/json
 
@@ -6,14 +6,12 @@ Content-Type: application/json
   "collectionName": "cnapp.db.mysql",
   "actionName": "MySqlQueryAction",
   "params": {
-    "params": {
-      "connString": "jdbc:mysql://localhost:8082/socksdb?user=root&password=fake_password",
-      "query": "select * from sock"
-    }
+    "connString": "jdbc:mysql://localhost:8082/socksdb?user=root&password=fake_password",
+    "query": "select * from sock"
   }
 }
-###
-# create address
+
+### mysql update
 POST localhost:8080/execute
 Content-Type: application/json
 
@@ -21,14 +19,12 @@ Content-Type: application/json
   "collectionName": "cnapp.db.mysql",
   "actionName": "MySqlUpdateAction",
   "params": {
-    "params": {
-      "connString": "jdbc:mysql://localhost:8082/socksdb?user=root&password=fake_password",
-      "query": "update sock set price = 92 where name = 'Holy'"
-    }
+    "connString": "jdbc:mysql://localhost:8082/socksdb?user=root&password=fake_password",
+    "query": "update sock set price = 92 where name = 'Holy'"
   }
 }
-###
-# create address
+
+### mongodb select
 POST localhost:8080/execute
 Content-Type: application/json
 
@@ -36,9 +32,7 @@ Content-Type: application/json
   "collectionName": "cnapp.db.mongo",
   "actionName": "MongoQueryAction",
   "params": {
-    "params": {
-      "connString": "mongodb://localhost:8081;users",
-      "query": "select * from customers where username=kapitanjacekwrobel"
-    }
+    "connString": "mongodb://localhost:8081;users",
+    "query": "select * from customers where username=kapitanjacekwrobel"
   }
 }

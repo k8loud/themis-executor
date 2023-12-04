@@ -1,7 +1,5 @@
 package org.k8loud.executor.actions.openstack.cinder;
 
-import org.k8loud.executor.model.ExecutionRS;
-import org.k8loud.executor.model.Params;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -9,6 +7,8 @@ import org.k8loud.executor.actions.openstack.CreateVolumeSnapshotAction;
 import org.k8loud.executor.actions.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
+import org.k8loud.executor.model.ExecutionRS;
+import org.k8loud.executor.model.Params;
 
 import java.util.Collections;
 import java.util.Map;
@@ -33,7 +33,7 @@ public class CreateVolumeSnapshotActionTest extends OpenstackActionBaseTest {
         ExecutionRS response = createVolumeSnapshotAction.execute();
 
         // then
-        String snapshotName = params.getParams().get("snapshotName");
+        String snapshotName = params.get("snapshotName");
         verify(openstackServiceMock).createVolumeSnapshot(eq(REGION), eq(VOLUME_ID), eq(snapshotName));
         assertSuccessResponse(response);
     }

@@ -6,13 +6,10 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "DeleteServerSnapshotAction",
   "params": {
-    "params": {
-      "region": "RegionOne",
-      "serverId": "PUT_ID"
-    }
+    "region": "RegionOne",
+    "serverId": "PUT_ID"
   }
 }
-
 
 ### delete server snapshot with flag keepOneSnapshot = false
 POST localhost:8080/execute
@@ -22,10 +19,8 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "DeleteServerSnapshotAction",
   "params": {
-    "params": {
-      "region": "RegionOne",
-      "serverId": "PUT_ID",
-      "keepOneSnapshot": "false"
-    }
+    "region": "RegionOne",
+    "serverId": "PUT_ID",
+    "keepOneSnapshot": "false"
   }
 }
