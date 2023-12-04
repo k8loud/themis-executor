@@ -6,7 +6,6 @@ Content-Type: application/json
   "collectionName": "command",
   "actionName": "ClearStorageAction",
   "params": {
-    "params": {
       "host": "",
       "port": "22",
       "privateKey": "",
@@ -15,6 +14,5 @@ Content-Type: application/json
       "regexPattern": "to_delete*",
       "dateFrom": "2022-01-05T10:25:33",
       "dateTo": "2024-01-05T10:25:33"
-    }
   }
 }

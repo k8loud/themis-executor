@@ -6,11 +6,9 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "VerticalScalingUpAction",
   "params": {
-    "params": {
       "region": "RegionOne",
       "serverId": "PUT_ID",
       "flavorId": "414a6a89-57c3-4331-9a05-0a53fc9a7d02"
-    }
   }
 }
 
@@ -22,11 +20,9 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "VerticalScalingUpAction",
   "params": {
-    "params": {
       "region": "RegionOne",
       "serverId": "PUT_ID",
       "flavorId": "13a343c9-1fc5-4dae-9a74-203d290d736b"
-    }
   }
 }
 
@@ -38,10 +34,8 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "VerticalScalingUpAction",
   "params": {
-    "params": {
       "region": "RegionOne",
       "serverId": "PUT_ID",
       "flavorId": "f2559863-ef7d-416c-907e-4ea4043d4831"
-    }
   }
 }

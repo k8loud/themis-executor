@@ -6,10 +6,8 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "AddSecurityGroupToInstanceAction",
   "params": {
-    "params": {
       "region": "RegionOne",
       "securityGroupId": "9570286e-6294-4ce1-986a-cea4662af917",
       "serverId": "d0f0afdb-051b-4462-add3-bd51fe427541"
-    }
   }
 }

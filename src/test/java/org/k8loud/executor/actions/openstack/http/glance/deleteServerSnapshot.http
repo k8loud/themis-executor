@@ -6,10 +6,8 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "DeleteServerSnapshotAction",
   "params": {
-    "params": {
       "region": "RegionOne",
       "serverId": "PUT_ID"
-    }
   }
 }
 
@@ -22,10 +20,8 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "DeleteServerSnapshotAction",
   "params": {
-    "params": {
       "region": "RegionOne",
       "serverId": "PUT_ID",
       "keepOneSnapshot": "false"
-    }
   }
 }

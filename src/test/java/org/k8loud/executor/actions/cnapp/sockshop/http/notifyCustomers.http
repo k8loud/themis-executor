@@ -6,12 +6,10 @@ Content-Type: application/json
   "collectionName": "cnapp.sockshop",
   "actionName": "NotifyCustomersAction",
   "params": {
-    "params": {
       "applicationUrl": "http://localhost:8082",
       "senderDisplayName": "SockShop Marketing",
       "subject": "Popular products",
       "content": "1. Holy - Socks fit for a Messiah. You too can experience walking in water with these special edition beauties. Each hole is lovingly proggled to leave smooth edges.\n2. SuperSport XL - Ready for action.\n3. Classic - Keep it simple."
-    }
   }
 }
 
@@ -23,12 +21,10 @@ Content-Type: application/json
   "collectionName": "cnapp.sockshop",
   "actionName": "NotifyCustomersAction",
   "params": {
-    "params": {
       "applicationUrl": "http://localhost:8082",
       "senderDisplayName": "Cool socks seller",
       "subject": "Cool socks",
       "content": "They are cool\nNewline test",
       "imagesUrls": "http://localhost:8082/catalogue/images/WAT.jpg,http://localhost:8082/catalogue/images/WAT2.jpg"
-    }
   }
 }

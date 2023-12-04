@@ -6,10 +6,8 @@ Content-Type: application/json
   "collectionName": "kubernetes",
   "actionName": "AddResourceAction",
   "params": {
-    "params": {
       "namespace": "default",
       "resourceDescription": "            kind: ConfigMap\r\n            metadata:\r\n              creationTimestamp: 2022-02-18T18:52:05Z\r\n              name: game2-config\r\n              namespace: default\r\n              uid: b4952dc3-d670-11e5-8cd0-68f728db1985\r\n            data:\r\n              game.properties: |\r\n                enemies=aliens\r\n                lives=3\r\n                enemies.cheat=true\r\n                enemies.cheat.level=noGoodRotten\r\n                secret.code.passphrase=UUDDLRLRBABAS\r\n                secret.code.allowed=true\r\n                secret.code.lives=30\r\n              ui.properties: |\r\n                color.good=purple\r\n                color.bad=yellow\r\n                allow.textmode=true\r\n                how.nice.to.look=fairlyNice"
-    }
   }
 }
 
@@ -21,10 +19,8 @@ Content-Type: application/json
   "collectionName": "kubernetes",
   "actionName": "AddResourceAction",
   "params": {
-    "params": {
       "namespace": "default",
       "resourceDescription": "apiVersion: apps/v1\r\nkind: Deployment\r\nmetadata:\r\n  name: nginx-deployment\r\n  labels:\r\n    app: nginx\r\nspec:\r\n  replicas: 3\r\n  selector:\r\n    matchLabels:\r\n      app: nginx\r\n  template:\r\n    metadata:\r\n      labels:\r\n        app: nginx\r\n    spec:\r\n      containers:\r\n      - name: nginx\r\n        image: nginx:1.14.2\r\n        ports:\r\n        - containerPort: 80"
-    }
   }
 }
 
@@ -36,9 +32,7 @@ Content-Type: application/json
   "collectionName": "kubernetes",
   "actionName": "AddResourceAction",
   "params": {
-    "params": {
       "resourceDescription": "            apiVersion: v1\r\n            kind: Pod\r\n            metadata:\r\n              name: nginx-with-namespace\r\n              namespace: namespace-from-resource-description\r\n            spec:\r\n              containers:\r\n              - name: nginx-with-namespace\r\n                image: nginx:1.14.2"
-    }
   }
 }
 
@@ -50,9 +44,7 @@ Content-Type: application/json
   "collectionName": "kubernetes",
   "actionName": "AddResourceAction",
   "params": {
-    "params": {
       "namespace": "default",
       "resourceDescription": "            apiVersion: v1\r\n            kind: Pod\r\n            metadata:\r\n              name: nginx-with-namespace\r\n              namespace: namespace-from-resource-description\r\n            spec:\r\n              containers:\r\n              - name: nginx-with-namespace\r\n                image: nginx:1.14.2"
-    }
   }
 }

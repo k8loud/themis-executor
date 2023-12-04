@@ -6,11 +6,9 @@ Content-Type: application/json
   "collectionName": "cnapp.sockshop",
   "actionName": "DeleteAddressAction",
   "params": {
-    "params": {
       "applicationUrl": "http://localhost:8082",
       "username": "user997",
       "password": "pass997",
       "addressId": "655cda35cb8de600019db131"
-    }
   }
 }

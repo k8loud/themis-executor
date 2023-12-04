@@ -3,7 +3,6 @@ package org.k8loud.executor.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.k8loud.executor.exception.ParamNotFoundException;
 
 import java.text.ParseException;
@@ -13,26 +12,23 @@ import java.util.*;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
-public class Params {
-    private Map<String, String> params;
-
+public class Params extends HashMap<String, String> {
     public String getRequiredParam(String param) {
-        if (!params.containsKey(param)) {
+        if (!this.containsKey(param)) {
             throw new ParamNotFoundException(
                     String.format("Param '%s' is declared as required and was not found", param));
         }
-        return params.get(param);
+        return this.get(param);
     }
 
     public String getOptionalParam(String param, String defaultValue) {
-        return params.getOrDefault(param, defaultValue);
+        return this.getOrDefault(param, defaultValue);
     }
 
     public Date getOptionalParamAsDate(String param, Date defaultValue, SimpleDateFormat dateFormatter) {
-        if (params.containsKey(param)) {
+        if (this.containsKey(param)) {
             try {
-                return dateFormatter.parse(params.get(param));
+                return dateFormatter.parse(this.get(param));
             } catch (ParseException ignored) {
             }
         }
@@ -44,11 +40,11 @@ public class Params {
     }
 
     public Long getOptionalParamAsLong(String param, Long defaultValue) {
-        return Optional.ofNullable(params.get(param)).map(Long::parseLong).orElse(defaultValue);
+        return Optional.ofNullable(this.get(param)).map(Long::parseLong).orElse(defaultValue);
     }
 
     public Integer getOptionalParamAsInt(String param, Integer defaultValue) {
-        return Optional.ofNullable(params.get(param)).map(Integer::parseInt).orElse(defaultValue);
+        return Optional.ofNullable(this.get(param)).map(Integer::parseInt).orElse(defaultValue);
     }
 
     public boolean getOptionalParamAsBoolean(String param, String defaultValue) {
@@ -56,7 +52,7 @@ public class Params {
     }
 
     public List<String> getOptionalParamAsListOfStrings(String param, List<String> defaultValue) {
-        return Optional.ofNullable(params.get(param))
+        return Optional.ofNullable(this.get(param))
                 .map(p -> Arrays.stream(p.split(",")).toList())
                 .orElse(defaultValue);
     }

@@ -6,7 +6,6 @@ Content-Type: application/json
   "collectionName": "cnapp.sockshop",
   "actionName": "CreateAddressAction",
   "params": {
-    "params": {
       "applicationUrl": "http://localhost:8082",
       "username": "user997",
       "password": "pass997",
@@ -16,6 +15,5 @@ Content-Type: application/json
       "postcode": "31-005",
       "street": "Bracka",
       "number": "3"
-    }
   }
 }

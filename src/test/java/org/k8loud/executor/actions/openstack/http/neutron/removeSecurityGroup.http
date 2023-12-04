@@ -6,10 +6,8 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "RemoveSecurityGroupAction",
   "params": {
-    "params": {
       "region": "RegionOne",
       "securityGroupId": "9570286e-6294-4ce1-986a-cea4662af917"
-    }
   }
 }
 

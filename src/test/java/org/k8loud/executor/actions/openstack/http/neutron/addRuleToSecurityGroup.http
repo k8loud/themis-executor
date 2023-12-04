@@ -6,7 +6,6 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "AddRuleToSecurityGroupAction",
   "params": {
-    "params": {
       "region": "RegionOne",
       "securityGroupId": "PUT_ID",
       "ethertype": "IPv4",
@@ -16,7 +15,6 @@ Content-Type: application/json
       "portRangeMin": "80",
       "portRangeMax": "80",
       "description": "optional description"
-    }
   }
 }
 

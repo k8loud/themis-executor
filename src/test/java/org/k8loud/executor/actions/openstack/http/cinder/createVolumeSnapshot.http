@@ -6,10 +6,8 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "CreateVolumeSnapshotAction",
   "params": {
-    "params": {
       "region": "RegionOne",
       "volumeId": "PUT_ID"
-    }
   }
 }
 
@@ -22,10 +20,8 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "CreateVolumeSnapshotAction",
   "params": {
-    "params": {
       "region": "RegionOne",
       "volumeId": "PUT_ID",
       "snapshotName": "volume-snapshot-test"
-    }
   }
 }
