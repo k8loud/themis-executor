@@ -64,6 +64,8 @@ public final class Util {
     public static boolean hasCommonSubnet(String subnet1, String subnet2) {
         if (Utils.isNullOrEmpty(subnet1) || Utils.isNullOrEmpty(subnet2)){
             return false;
+        } else if (subnet1.equals("0.0.0.0/0")) {
+            return true;
         }
 
         List<String> addresses1 = List.of(new SubnetUtils(subnet1).getInfo().getAllAddresses());
