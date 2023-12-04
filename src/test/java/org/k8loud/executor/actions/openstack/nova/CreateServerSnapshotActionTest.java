@@ -1,7 +1,5 @@
 package org.k8loud.executor.actions.openstack.nova;
 
-import org.k8loud.executor.model.ExecutionRS;
-import org.k8loud.executor.model.Params;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -10,6 +8,8 @@ import org.k8loud.executor.actions.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.exception.ValidationException;
+import org.k8loud.executor.model.ExecutionRS;
+import org.k8loud.executor.model.Params;
 
 import java.util.Collections;
 import java.util.Map;
@@ -35,8 +35,8 @@ public class CreateServerSnapshotActionTest extends OpenstackActionBaseTest {
         ExecutionRS response = createServerSnapshotAction.execute();
 
         // then
-        String snapshotName = params.getParams().get("snapshotName");
-        boolean stopInstance = Boolean.parseBoolean(Optional.ofNullable(params.getParams()
+        String snapshotName = params.get("snapshotName");
+        boolean stopInstance = Boolean.parseBoolean(Optional.ofNullable(params
                 .get("stopInstance")).orElse("false"));
 
         verify(openstackServiceMock).createServerSnapshot(eq(REGION), eq(SERVER_ID), eq(snapshotName),

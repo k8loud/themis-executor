@@ -1,7 +1,5 @@
 package org.k8loud.executor.actions.openstack.nova;
 
-import org.k8loud.executor.model.ExecutionRS;
-import org.k8loud.executor.model.Params;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -10,6 +8,8 @@ import org.k8loud.executor.actions.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.exception.ValidationException;
+import org.k8loud.executor.model.ExecutionRS;
+import org.k8loud.executor.model.Params;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -41,11 +41,11 @@ public class AddInstanceActionTest extends OpenstackActionBaseTest {
         ExecutionRS response = addInstanceAction.execute();
 
         // then
-        String keypair = params.getParams().getOrDefault("keypairName", "default");
-        String securityGroup = params.getParams().get("securityGroup");
-        String userData = params.getParams().get("userData");
-        int count = Integer.parseInt(params.getParams().getOrDefault("count", "1"));
-        int waitActiveSec = Integer.parseInt(params.getParams().getOrDefault("waitActiveSec", "300"));
+        String keypair = params.getOrDefault("keypairName", "default");
+        String securityGroup = params.get("securityGroup");
+        String userData = params.get("userData");
+        int count = Integer.parseInt(params.getOrDefault("count", "1"));
+        int waitActiveSec = Integer.parseInt(params.getOrDefault("waitActiveSec", "300"));
         verify(openstackServiceMock).createServers(eq(REGION), eq(NAME), eq(IMAGE_ID), eq(FLAVOR_ID), eq(keypair),
                 eq(securityGroup), eq(userData), eq(count), eq(waitActiveSec));
         assertSuccessResponse(response);

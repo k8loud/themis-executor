@@ -3,6 +3,7 @@ package org.k8loud.executor.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.jetbrains.annotations.TestOnly;
 import org.k8loud.executor.exception.ParamNotFoundException;
 
 import java.text.ParseException;
@@ -13,6 +14,11 @@ import java.util.*;
 @Builder
 @AllArgsConstructor
 public class Params extends HashMap<String, String> {
+    @TestOnly
+    public Params(Map<String, String> map) {
+        this.putAll(map);
+    }
+
     public String getRequiredParam(String param) {
         if (!this.containsKey(param)) {
             throw new ParamNotFoundException(

@@ -1,7 +1,5 @@
 package org.k8loud.executor.service;
 
-import org.k8loud.executor.model.ExecutionRQ;
-import org.k8loud.executor.model.Params;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,6 +10,8 @@ import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CustomException;
 import org.k8loud.executor.exception.MapperException;
 import org.k8loud.executor.exception.code.ActionExceptionCode;
+import org.k8loud.executor.model.ExecutionRQ;
+import org.k8loud.executor.model.Params;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -19,10 +19,10 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.k8loud.executor.model.ExecutionRQ.createExecutionRQ;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.k8loud.executor.model.ExecutionRQ.createExecutionRQ;
 
 @SpringBootTest
 class MapperServiceImplTest {
@@ -110,7 +110,7 @@ class MapperServiceImplTest {
     }
 
     private void checkFieldsValues(Object object, Params params) {
-        for (Map.Entry<String, String> entry : params.getParams().entrySet()) {
+        for (Map.Entry<String, String> entry : params.entrySet()) {
             checkFieldValue(object, object.getClass(), entry.getKey(), entry.getValue());
         }
     }

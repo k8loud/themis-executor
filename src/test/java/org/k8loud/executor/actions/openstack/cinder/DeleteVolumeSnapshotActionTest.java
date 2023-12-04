@@ -1,7 +1,5 @@
 package org.k8loud.executor.actions.openstack.cinder;
 
-import org.k8loud.executor.model.ExecutionRS;
-import org.k8loud.executor.model.Params;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -9,6 +7,8 @@ import org.k8loud.executor.actions.openstack.DeleteVolumeSnapshotAction;
 import org.k8loud.executor.actions.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
+import org.k8loud.executor.model.ExecutionRS;
+import org.k8loud.executor.model.Params;
 
 import java.util.Collections;
 import java.util.Map;
@@ -34,7 +34,7 @@ public class DeleteVolumeSnapshotActionTest extends OpenstackActionBaseTest {
         ExecutionRS response = deleteVolumeSnapshotAction.execute();
 
         // then
-        boolean keepOneSnapshot = Boolean.parseBoolean(Optional.ofNullable(params.getParams()
+        boolean keepOneSnapshot = Boolean.parseBoolean(Optional.ofNullable(params
                 .getOrDefault("keepOneSnapshot", "true")).orElse("true"));
         verify(openstackServiceMock).deleteTheOldestVolumeSnapshot(eq(REGION), eq(VOLUME_ID), eq(keepOneSnapshot));
         assertSuccessResponse(response);
