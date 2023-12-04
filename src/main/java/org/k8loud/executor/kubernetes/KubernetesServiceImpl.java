@@ -53,7 +53,7 @@ public class KubernetesServiceImpl implements KubernetesService {
     }
 
     private int getDeploymentReplicasNumber(String namespace, String resourceName) {
-        return clientProvider.getKubernetesClient()
+        return clientProvider.getClient()
                 .apps()
                 .deployments()
                 .inNamespace(namespace)
