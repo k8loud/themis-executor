@@ -6,11 +6,10 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "DeleteVolumeSnapshotAction",
   "params": {
-      "region": "RegionOne",
-      "volumeId": "PUT_ID"
+    "region": "RegionOne",
+    "volumeId": "PUT_ID"
   }
 }
-
 
 ### delete volume snapshot with flag keepOneSnapshot = false
 POST localhost:8080/execute
@@ -20,8 +19,8 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "DeleteVolumeSnapshotAction",
   "params": {
-      "region": "RegionOne",
-      "volumeId": "PUT_ID",
-      "keepOneSnapshot": "false"
+    "region": "RegionOne",
+    "volumeId": "PUT_ID",
+    "keepOneSnapshot": "false"
   }
 }

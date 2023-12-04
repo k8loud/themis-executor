@@ -6,7 +6,7 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "UnpauseServerAction",
   "params": {
-      "region": "RegionOne",
-      "serverId": "d0f0afdb-051b-4462-add3-bd51fe427541"
+    "region": "RegionOne",
+    "serverId": "d0f0afdb-051b-4462-add3-bd51fe427541"
   }
 }

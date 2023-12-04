@@ -6,13 +6,12 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "IpThrottleAction",
   "params": {
-      "region": "RegionOne",
-      "serverId": "d0f0afdb-051b-4462-add3-bd51fe427541",
-      "ethertype": "IPv4",
-      "remoteIpPrefix": "192.168.1.160/27",
-      "protocol": "TCP",
-      "portRangeMin": "80",
-      "portRangeMax": "80"
+    "region": "RegionOne",
+    "serverId": "d0f0afdb-051b-4462-add3-bd51fe427541",
+    "ethertype": "IPv4",
+    "remoteIpPrefix": "192.168.1.160/27",
+    "protocol": "TCP",
+    "portRangeMin": "80",
+    "portRangeMax": "80"
   }
 }
-

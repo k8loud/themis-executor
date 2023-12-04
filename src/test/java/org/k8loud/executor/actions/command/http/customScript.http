@@ -6,10 +6,10 @@ Content-Type: application/json
   "collectionName": "command",
   "actionName": "CustomScriptAction",
   "params": {
-      "host": "",
-      "port": "22",
-      "privateKey": "",
-      "user": "ubuntu",
-      "command": "echo \"Hello $(whoami)\""
+    "host": "",
+    "port": "22",
+    "privateKey": "",
+    "user": "ubuntu",
+    "command": "echo \"Hello $(whoami)\""
   }
 }

@@ -6,11 +6,11 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "AddInstanceAction",
   "params": {
-      "region": "RegionOne",
-      "name": "test",
-      "count": "2",
-      "imageId": "be6ec33c-60c8-48fa-ac83-afe934feba04",
-      "flavorId": "13a343c9-1fc5-4dae-9a74-203d290d736b"
+    "region": "RegionOne",
+    "name": "test",
+    "count": "2",
+    "imageId": "be6ec33c-60c8-48fa-ac83-afe934feba04",
+    "flavorId": "13a343c9-1fc5-4dae-9a74-203d290d736b"
   }
 }
 
@@ -22,11 +22,11 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "AddInstanceAction",
   "params": {
-      "region": "RegionOne",
-      "name": "test",
-      "imageId": "PUT_IMAGE_ID",
-      "flavorId": "PUT_FLAVOR_ID",
-      "count": "2",
-      "userData": "#!/bin/bash\nsudo apt -y install nmap\nsudo cp /home/ubuntu/kubernetes-lab-setup/configs/join_cluster.service /etc/systemd/system/join_cluster.service\nchmod +x /home/ubuntu/kubernetes-lab-setup/scripts/kube_setup/join_cluster.sh\nsudo systemctl enable join_cluster.service\nsudo systemctl start join_cluster.service"
+    "region": "RegionOne",
+    "name": "test",
+    "imageId": "PUT_IMAGE_ID",
+    "flavorId": "PUT_FLAVOR_ID",
+    "count": "2",
+    "userData": "#!/bin/bash\nsudo apt -y install nmap\nsudo cp /home/ubuntu/kubernetes-lab-setup/configs/join_cluster.service /etc/systemd/system/join_cluster.service\nchmod +x /home/ubuntu/kubernetes-lab-setup/scripts/kube_setup/join_cluster.sh\nsudo systemctl enable join_cluster.service\nsudo systemctl start join_cluster.service"
   }
 }

@@ -6,9 +6,9 @@ Content-Type: application/json
   "collectionName": "cnapp.sockshop",
   "actionName": "RegisterUserAction",
   "params": {
-      "applicationUrl": "http://localhost:8082",
-      "username": "user994",
-      "password": "pass994",
-      "email": "totallynotfakeemail@yahoo.com"
+    "applicationUrl": "http://localhost:8082",
+    "username": "user994",
+    "password": "pass994",
+    "email": "totallynotfakeemail@yahoo.com"
   }
 }

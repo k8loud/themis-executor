@@ -6,13 +6,13 @@ Content-Type: application/json
   "collectionName": "command",
   "actionName": "ClearStorageAction",
   "params": {
-      "host": "",
-      "port": "22",
-      "privateKey": "",
-      "user": "ubuntu",
-      "paths": "/home/ubuntu /dev/null",
-      "regexPattern": "to_delete*",
-      "dateFrom": "2022-01-05T10:25:33",
-      "dateTo": "2024-01-05T10:25:33"
+    "host": "",
+    "port": "22",
+    "privateKey": "",
+    "user": "ubuntu",
+    "paths": "/home/ubuntu /dev/null",
+    "regexPattern": "to_delete*",
+    "dateFrom": "2022-01-05T10:25:33",
+    "dateTo": "2024-01-05T10:25:33"
   }
 }

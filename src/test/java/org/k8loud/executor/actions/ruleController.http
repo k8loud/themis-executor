@@ -1,5 +1,0 @@
-GET localhost:8080/rules
-###
-GET localhost:8080/rules/defaultpkg
-###
-GET localhost:8080/rules/defaultpkg/test

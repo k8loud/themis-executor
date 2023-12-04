@@ -6,8 +6,8 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "DeleteInstanceAction",
   "params": {
-      "region": "RegionOne",
-      "name": "test"
+    "region": "RegionOne",
+    "name": "test"
   }
 }
 
@@ -19,8 +19,8 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "DeleteInstanceAction",
   "params": {
-      "region": "RegionOne",
-      "name": "anything",
-      "serverIds": "id1,id2,...,idN"
+    "region": "RegionOne",
+    "name": "anything",
+    "serverIds": "id1,id2,...,idN"
   }
 }

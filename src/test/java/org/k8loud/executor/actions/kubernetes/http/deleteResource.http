@@ -6,10 +6,10 @@ Content-Type: application/json
   "collectionName": "kubernetes",
   "actionName": "DeleteResourceAction",
   "params": {
-      "resourceType": "Pod",
-      "resourceName": "nginx",
-      "namespace": "default",
-      "gracePeriodSeconds": "60"
+    "resourceType": "Pod",
+    "resourceName": "nginx",
+    "namespace": "default",
+    "gracePeriodSeconds": "60"
   }
 }
 
@@ -21,8 +21,8 @@ Content-Type: application/json
   "collectionName": "kubernetes",
   "actionName": "DeleteResourceAction",
   "params": {
-      "resourceType": "ConfigMap",
-      "resourceName": "cm1",
-      "namespace": "default"
+    "resourceType": "ConfigMap",
+    "resourceName": "cm1",
+    "namespace": "default"
   }
 }

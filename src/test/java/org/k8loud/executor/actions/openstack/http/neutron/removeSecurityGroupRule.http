@@ -6,8 +6,7 @@ Content-Type: application/json
   "collectionName": "openstack",
   "actionName": "RemoveRuleFromSecurityGroupAction",
   "params": {
-      "region": "RegionOne",
-      "securityGroupRuleId": "PUT_ID"
+    "region": "RegionOne",
+    "securityGroupRuleId": "PUT_ID"
   }
 }
-
