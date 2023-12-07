@@ -22,6 +22,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
 import static org.k8loud.executor.util.Util.resultMap;
@@ -67,6 +68,22 @@ public class OpenstackServiceImpl implements OpenstackService {
         validateFlavors(server.getFlavor(), newFlavor);
 
         return resizeServer(server, newFlavor, 120, client);
+    }
+
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "GET_SERVER_NAMES_FAILED")
+    public Map<String, String> getServerNames(String region, String namePattern)
+            throws OpenstackException, ValidationException {
+        log.info("Getting servers in region '{}' with namePattern '{}'", region, namePattern);
+        OSClientV3 client = openstackClientWithRegion(region);
+
+        String serverNames = openstackNovaService.getServers(client, Pattern.compile(namePattern)).stream()
+                .map(Server::getName)
+                .collect(Collectors.joining(","));
+
+        String result = String.format("Getting servers in region '%s' with namePattern '%s' finished with success",
+                region, namePattern);
+        return resultMap(result, Map.of("serverNames", serverNames));
     }
 
     @Override
