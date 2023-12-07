@@ -1,17 +1,14 @@
 package org.k8loud.executor.actions.openstack;
 
-import lombok.EqualsAndHashCode;
-import org.k8loud.executor.exception.ParamNotFoundException;
-import org.k8loud.executor.exception.code.ActionExceptionCode;
-import org.k8loud.executor.model.Params;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import org.apache.commons.collections4.CollectionUtils;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
+import org.k8loud.executor.exception.ParamNotFoundException;
 import org.k8loud.executor.exception.ValidationException;
+import org.k8loud.executor.model.Params;
 import org.k8loud.executor.openstack.OpenstackService;
-
-import static org.k8loud.executor.exception.code.ActionExceptionCode.UNPACKING_PARAMS_FAILURE;
-import static org.k8loud.executor.util.Util.resultMap;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,10 +42,11 @@ public class DeleteInstanceAction extends OpenstackAction {
 
     @Override
     protected Map<String, String> executeBody() throws OpenstackException, ValidationException {
-        if (namePattern == null && (serverIds == null || serverIds.isEmpty())) {
+        final boolean serverIdsIsEmpty = CollectionUtils.isEmpty(serverIds);
+        if (namePattern == null && serverIdsIsEmpty) {
             throw new ParamNotFoundException("Either namePattern or serverIds should be provided");
         }
-        if (serverIds.isEmpty()) {
+        if (serverIdsIsEmpty) {
             return openstackService.deleteServers(region, namePattern);
         }
         return openstackService.deleteServers(region, serverIds);
