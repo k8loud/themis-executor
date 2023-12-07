@@ -2,7 +2,7 @@ package org.k8loud.executor.openstack;
 
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.util.Util;
+import org.k8loud.executor.util.SubnetHelper;
 import org.openstack4j.api.Builders;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.model.common.ActionResponse;
@@ -86,10 +86,8 @@ public class OpenstackNeutronServiceImpl implements OpenstackNeutronService {
         rulesToModify.keySet().stream().parallel().forEach(group -> {
             rulesToModify.get(group).stream().parallel().forEach(rule -> {
                 String subnet = rule.getRemoteIpPrefix();
-                Util.getDifferenceCIDRS(subnet, remoteIpPrefix).forEach(cidr -> {
+                SubnetHelper.getDifferenceCIDRS(subnet, remoteIpPrefix).forEach(cidr -> {
                     try {
-                        //TODO: for now, we don care about ports. Should recreate current rule without ports range
-                        // defined in action, and create throttling rule for defined range
                         throttlingRules.add(
                                 addSecurityGroupRule(group, rule.getEtherType(), rule.getDirection(),
                                         cidr.getInfo().getCidrSignature(), rule.getProtocol(), rule.getPortRangeMin(),
@@ -104,7 +102,7 @@ public class OpenstackNeutronServiceImpl implements OpenstackNeutronService {
         });
 
         return throttlingRules;
-    };
+    }
 
     @Override
     public Map<SecurityGroup, Set<SecurityGroupRule>> getThrottlingRules(Server server, String ethertype,
@@ -169,15 +167,15 @@ public class OpenstackNeutronServiceImpl implements OpenstackNeutronService {
 
     private boolean checkThrottlingRule(SecurityGroupRule rule, String ethertype, String remoteIpPrefix,
                                         String protocol, int portRangeMin, int portRangeMax) {
-        //TODO: for now, we don care about ports. In Future: uncomment port condition and change logic in
-        // getThrottlingRules to use specific port ranges
+        //TODO: check if rule port ranges are not equals but overlap. Change also logic for creation temporary rules
         log.info(rule.toString());
         Stream<Boolean> conditions = Stream.of(
                 rule.getDirection().equals("ingress"),
                 rule.getEtherType().equals(ethertype),
                 protocol.equalsIgnoreCase(rule.getProtocol()),
-//                !Boolean.logicalOr(rule.getPortRangeMax() < portRangeMin, rule.getPortRangeMin() > portRangeMax),
-                Util.hasCommonSubnet(rule.getRemoteIpPrefix(), remoteIpPrefix)
+                Optional.ofNullable(rule.getPortRangeMin()).orElse(-1) == portRangeMin,
+                Optional.ofNullable(rule.getPortRangeMax()).orElse(-1) == portRangeMax,
+                SubnetHelper.hasCommonSubnet(rule.getRemoteIpPrefix(), remoteIpPrefix)
         );
 
         return conditions.allMatch(condition -> condition.equals(true));
