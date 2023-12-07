@@ -17,7 +17,7 @@ public interface OpenstackService {
     Map<String, String> createServers(String region, String name, String imageId, String flavorId, String keypairName,
                          String securityGroup, String userData, int count, int waitActiveSec) throws OpenstackException, ValidationException;
 
-    Map<String, String> deleteServers(String region, String name) throws OpenstackException, ValidationException;
+    Map<String, String> deleteServers(String region, String namePattern) throws OpenstackException, ValidationException;
 
     Map<String, String> deleteServers(String region, List<String> serverIds) throws OpenstackException, ValidationException;
 

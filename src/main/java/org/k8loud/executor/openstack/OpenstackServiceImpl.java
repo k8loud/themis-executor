@@ -103,14 +103,14 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "DELETE_SERVER_FAILED")
-    public Map<String, String> deleteServers(String region, String name)
+    public Map<String, String> deleteServers(String region, String namePattern)
             throws OpenstackException, ValidationException {
-        Pattern namePattern = Pattern.compile(name + "-.{8}");
+        Pattern namePatternObj = Pattern.compile(namePattern);
 
-        List<String> deletedServers = openstackNovaService.deleteServers(namePattern, clientSupplier(region));
+        List<String> deletedServers = openstackNovaService.deleteServers(namePatternObj, clientSupplier(region));
 
         String result = String.format("Deleting instances named with pattern %s finished with success.",
-                namePattern.pattern());
+                namePattern);
         return resultMap(result, Map.of("deletedServers", deletedServers.toString()));
     }
 
