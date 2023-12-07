@@ -7,6 +7,6 @@ Content-Type: application/json
   "actionName": "GetServerNamesAction",
   "params": {
     "region": "RegionOne",
-    "namePattern": "kube-worker-.*"
+    "namePattern": "kube-worker-quick-spawn-.*"
   }
 }

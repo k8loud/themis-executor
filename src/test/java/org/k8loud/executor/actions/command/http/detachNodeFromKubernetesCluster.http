@@ -1,0 +1,15 @@
+### custom script
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "command",
+  "actionName": "DetachNodeFromKubernetesClusterAction",
+  "params": {
+    "host": "",
+    "port": "22",
+    "privateKey": "",
+    "user": "ubuntu",
+    "nodeName": "kube-worker-quick-spawn-test-020f4280"
+  }
+}
