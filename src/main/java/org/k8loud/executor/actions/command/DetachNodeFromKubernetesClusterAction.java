@@ -15,8 +15,10 @@ public class DetachNodeFromKubernetesClusterAction extends CommandAction {
 
     @Builder
     public DetachNodeFromKubernetesClusterAction(CommandExecutionService commandExecutionService, String host,
-                                                 Integer port, String privateKey, String user) {
+                                                 Integer port, String privateKey, String user,
+                                                 String nodeName) {
         super(commandExecutionService, host, port, privateKey, user);
+        this.nodeName = nodeName;
     }
 
     @Override
