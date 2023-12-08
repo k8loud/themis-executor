@@ -91,7 +91,8 @@ public class DroolsService {
         log.info("========== Start session @ {} ==========", sessionStartDate);
         StatelessKieSession session = createSession();
         session.setGlobal("usableServices", usableServices);
-        session.setGlobal("sessionStartDate", sessionStartDate);
+        session.setGlobal("cronChecker", new CronChecker(sessionStartDate,
+                droolsProperties.getQueryAndProcessFixedRateSeconds()));
 
         List<Metric> metrics = hephaestusService.queryMetrics();
 
