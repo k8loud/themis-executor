@@ -29,7 +29,7 @@ public class DetachNodeFromKubernetesClusterAction extends CommandAction {
     @Override
     protected String buildCommand() {
         System.out.println(nodeName);
-        return String.format("kubectl drain %1$s --ignore-daemonsets --delete-local-data && " +
+        return String.format("kubectl drain %1$s --ignore-daemonsets --delete-emptydir-data && " +
                 "kubectl delete node %1$s", nodeName);
     }
 }
