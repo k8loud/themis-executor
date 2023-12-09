@@ -19,20 +19,7 @@ Content-Type: application/json
   "collectionName": "cnapp.db.mysql",
   "actionName": "MySqlUpdateAction",
   "params": {
-    "connString": "jdbc:mysql://localhost:8082/socksdb?user=root&password=fake_password",
-    "query": "update sock set price = 92 where name = 'Holy'"
-  }
-}
-
-### mongodb select
-POST localhost:8080/execute
-Content-Type: application/json
-
-{
-  "collectionName": "cnapp.db.mongo",
-  "actionName": "MongoQueryAction",
-  "params": {
-    "connString": "mongodb://localhost:8081;users",
-    "query": "select * from customers where username=kapitanjacekwrobel"
+    "connString": "jdbc:mysql://localhost:33061/socksdb?user=root&password=fake_password",
+    "query": "update sock set price = 15 where name = 'SuperSport XL'"
   }
 }
