@@ -19,7 +19,6 @@ public class UsableServices {
     private final KubernetesService kubernetesService;
     private final OpenstackService openstackService;
 
-    private final CronCheckerService cronCheckerService;
     private final HTTPService httpService;
     private final MailService mailService;
 }

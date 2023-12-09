@@ -22,6 +22,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
 import static org.k8loud.executor.util.Util.resultMap;
@@ -70,6 +71,22 @@ public class OpenstackServiceImpl implements OpenstackService {
     }
 
     @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "GET_SERVER_NAMES_FAILED")
+    public Map<String, String> getServerNames(String region, String namePattern)
+            throws OpenstackException, ValidationException {
+        log.info("Getting servers in region '{}' with namePattern '{}'", region, namePattern);
+        OSClientV3 client = openstackClientWithRegion(region);
+
+        String serverNames = openstackNovaService.getServers(client, Pattern.compile(namePattern)).stream()
+                .map(Server::getName)
+                .collect(Collectors.joining(","));
+
+        String result = String.format("Getting servers in region '%s' with namePattern '%s' finished with success",
+                region, namePattern);
+        return resultMap(result, Map.of("serverNames", serverNames));
+    }
+
+    @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "CREATE_SERVER_FAILED")
     public Map<String, String> createServers(String region, String name, String imageId, String flavorId,
                                              String keypairName, String securityGroup, String userData, int count,
@@ -86,14 +103,14 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "DELETE_SERVER_FAILED")
-    public Map<String, String> deleteServers(String region, String name)
+    public Map<String, String> deleteServers(String region, String namePattern)
             throws OpenstackException, ValidationException {
-        Pattern namePattern = Pattern.compile(name + "-.{8}");
+        Pattern namePatternObj = Pattern.compile(namePattern);
 
-        List<String> deletedServers = openstackNovaService.deleteServers(namePattern, clientSupplier(region));
+        List<String> deletedServers = openstackNovaService.deleteServers(namePatternObj, clientSupplier(region));
 
         String result = String.format("Deleting instances named with pattern %s finished with success.",
-                namePattern.pattern());
+                namePattern);
         return resultMap(result, Map.of("deletedServers", deletedServers.toString()));
     }
 

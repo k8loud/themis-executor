@@ -1,0 +1,12 @@
+### get server names
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "openstack",
+  "actionName": "GetServerNamesAction",
+  "params": {
+    "region": "RegionOne",
+    "namePattern": "kube-worker-quick-spawn-.*"
+  }
+}

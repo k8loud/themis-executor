@@ -3,10 +3,7 @@ package org.k8loud.executor.drools;
 import io.github.hephaestusmetrics.model.metrics.Metric;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.k8loud.executor.actions.Action;
 import org.k8loud.executor.hephaestus.HephaestusService;
-import org.k8loud.executor.model.ActionList;
-import org.k8loud.executor.model.ExecutionRS;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -15,21 +12,24 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.io.ResourceFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 @Slf4j
 @Service
+@EnableAsync
 @RequiredArgsConstructor
 @ConditionalOnProperty(value="service.enabled.drools", havingValue = "true", matchIfMissing = true)
 public class DroolsService {
@@ -84,35 +84,24 @@ public class DroolsService {
         return kieSession;
     }
 
+    @Async
     @Scheduled(fixedRateString = "${drools.query.and.process.fixed.rate.seconds}000")
-    private void queryMetricsAndProcessRules() {
-        log.info("========== Start session ==========");
+    void queryMetricsAndProcessRules() {
+        Date sessionStartDate = new Date();
+        log.info("========== Start session @ {} ==========", sessionStartDate);
         StatelessKieSession session = createSession();
+        session.setGlobal("usableServices", usableServices);
+        session.setGlobal("cronChecker", new CronChecker(sessionStartDate,
+                droolsProperties.getQueryAndProcessFixedRateSeconds()));
+
         List<Metric> metrics = hephaestusService.queryMetrics();
-        ActionList actionList = initializeGlobals(session);
 
         log.info("===== Execute session =====");
         session.execute(metrics);
-        List<ExecutionRS> results = actionList.stream()
-                .map(Action::execute)
-                .toList();
 
-        log.info("===== Actions results =====\n{}", results.stream()
-                .map(ExecutionRS::toString)
-                .collect(Collectors.joining("\n")));
-
-        log.info("Next session in {} s", droolsProperties.getQueryAndProcessFixedRateSeconds());
-        log.info("========== End session ==========");
-    }
-
-    private ActionList initializeGlobals(StatelessKieSession session) {
-        log.info("Initializing globals");
-
-        ActionList actionList = new ActionList();
-        session.setGlobal("actions", actionList);
-
-        session.setGlobal("usableServices", usableServices);
-
-        return actionList;
+        Date sessionEndDate = new Date();
+        log.info("========== End session @ {}, took {} ms, next in {} s ==========", sessionEndDate,
+                sessionEndDate.getTime() - sessionStartDate.getTime(),
+                droolsProperties.getQueryAndProcessFixedRateSeconds());
     }
 }

@@ -22,12 +22,12 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 public class DeleteInstanceActionTest extends OpenstackActionBaseTest {
-    private static final String NAME = "name";
+    private static final String NAME_PATTERN = "namePattern";
 
     @Test
     void testNamePatter() throws ActionException, OpenstackException, ValidationException {
         // given
-        Params params = new Params(Map.of("name", NAME, "region", REGION));
+        Params params = new Params(Map.of("namePattern", NAME_PATTERN, "region", REGION));
         DeleteInstanceAction deleteInstanceAction = new DeleteInstanceAction(
                 params, openstackServiceMock);
         when(openstackServiceMock.deleteServers(anyString(), anyString()))
@@ -37,14 +37,15 @@ public class DeleteInstanceActionTest extends OpenstackActionBaseTest {
         ExecutionRS response = deleteInstanceAction.execute();
 
         // then
-        verify(openstackServiceMock).deleteServers(eq(REGION), eq(NAME));
+        verify(openstackServiceMock).deleteServers(eq(REGION), eq(NAME_PATTERN));
         assertSuccessResponse(response);
     }
 
     @Test
     void testServerList() throws ActionException, OpenstackException, ValidationException {
         // given
-        Params params = new Params(Map.of("name", NAME, "region", REGION, "serverIds", SERVER_IDS));
+        Params params = new Params(Map.of("namePattern", NAME_PATTERN, "region", REGION,
+                "serverIds", SERVER_IDS));
         DeleteInstanceAction deleteInstanceAction = new DeleteInstanceAction(
                 params, openstackServiceMock);
         when(openstackServiceMock.deleteServers(anyString(), anyList()))
@@ -58,24 +59,15 @@ public class DeleteInstanceActionTest extends OpenstackActionBaseTest {
         assertSuccessResponse(response);
     }
 
+    @Test
+    void testMissingRegion() {
+        // given
+        Params params = new Params(Map.of("namePattern", NAME_PATTERN));
 
-    @ParameterizedTest
-    @MethodSource
-    void testWrongParams(Params invalidParams, String missingParam) {
         // when
-        Throwable throwable = catchThrowable(
-                () -> new DeleteInstanceAction(invalidParams, openstackServiceMock));
+        Throwable throwable = catchThrowable(() -> new DeleteInstanceAction(params, openstackServiceMock));
 
         // then
-        assertMissingParamException(throwable, missingParam);
-    }
-
-    private static Stream<Arguments> testWrongParams() {
-        return Stream.of(
-                Arguments.of(
-                        new Params(Map.of("name", NAME)), "region"),
-                Arguments.of(
-                        new Params(Map.of("region", REGION)), "name")
-        );
+        assertMissingParamException(throwable, "region");
     }
 }

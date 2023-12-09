@@ -7,7 +7,7 @@ Content-Type: application/json
   "actionName": "DeleteInstanceAction",
   "params": {
     "region": "RegionOne",
-    "name": "test"
+    "namePattern": "kube-worker-quick-spawn-test-020f4280"
   }
 }
 
@@ -20,7 +20,6 @@ Content-Type: application/json
   "actionName": "DeleteInstanceAction",
   "params": {
     "region": "RegionOne",
-    "name": "anything",
     "serverIds": "id1,id2,...,idN"
   }
 }
