@@ -1,0 +1,12 @@
+### mongodb select
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "cnapp.db.mongo",
+  "actionName": "MongoQueryAction",
+  "params": {
+    "connString": "mongodb://localhost:8081;users",
+    "query": "select * from customers where username=kapitanjacekwrobel"
+  }
+}
