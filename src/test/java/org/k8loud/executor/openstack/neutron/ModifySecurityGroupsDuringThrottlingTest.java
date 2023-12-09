@@ -48,9 +48,9 @@ public class ModifySecurityGroupsDuringThrottlingTest extends OpenstackNeutronBa
                 rulesToModify, SUBNET_TO_EXCLUDE, PORT_RANGE_MIN, PORT_RANGE_MAX, () -> clientV3Mock);
 
         // then
-        //"192.168.1.0/27", "192.168.1.32/27", "192.168.1.64/27", "192.168.1.96/27", "192.168.1.128/27", "192.168.1.192/27", "192.168.1.224/27")
-        verify(securityGroupRuleServiceMock, times(7)).create(any(SecurityGroupRule.class));
-        assertThat(throttlingRules).hasSize(7);
+        // ["192.168.1.0/25", "192.168.1.128/27", "192.168.1.192/26"]
+        verify(securityGroupRuleServiceMock, times(3)).create(any(SecurityGroupRule.class));
+        assertThat(throttlingRules).hasSize(3);
 
         verify(securityGroupRuleServiceMock).delete(eq(RULE_ID));
     }
