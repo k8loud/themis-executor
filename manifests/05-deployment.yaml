@@ -19,7 +19,7 @@ spec:
       serviceAccountName: themis-executor
       containers:
         - name: executor
-          image: k8loud/themis-executor:0.0.3.6
+          image: k8loud/themis-executor:0.0.3.7
           imagePullPolicy: "IfNotPresent"
 #          imagePullPolicy: "Always"
           env:
