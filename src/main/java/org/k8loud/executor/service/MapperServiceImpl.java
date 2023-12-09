@@ -3,6 +3,7 @@ package org.k8loud.executor.service;
 import org.k8loud.executor.db.DBService;
 import org.k8loud.executor.db.MongoService;
 import org.k8loud.executor.db.MySQLService;
+import org.k8loud.executor.mail.MailService;
 import org.k8loud.executor.model.ExecutionRQ;
 import org.k8loud.executor.model.Params;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,7 @@ public class MapperServiceImpl implements MapperService {
     private final CommandExecutionService commandExecutionService;
     private final KubernetesService kubernetesService;
     private final SockShopService sockShopService;
+    private final MailService mailService;
 
     private final DBService mySQLService = new MySQLService();
     private final DBService mongoService = new MongoService();
@@ -62,6 +64,8 @@ public class MapperServiceImpl implements MapperService {
                     classParameters.add(new ClassParameter(DBService.class, mySQLService));
                 case "cnapp.db.mongo" ->
                     classParameters.add(new ClassParameter(DBService.class, mongoService));
+                case "cnapp.mail" ->
+                        classParameters.add(new ClassParameter(MailService.class, mailService));
             }
             return (Action) ClassHelper.getInstance(actionClass, classParameters.toArray(ClassParameter[]::new));
         } catch (NoSuchMethodException e) {

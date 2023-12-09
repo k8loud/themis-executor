@@ -1,0 +1,14 @@
+### send mail
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "cnapp.mail",
+  "actionName": "SendMailAction",
+  "params": {
+    "receiver": "k8loud@int.pl",
+    "senderDisplayName": "Themis Executor",
+    "subject": "Test mail",
+    "content": "empty"
+  }
+}
