@@ -1,0 +1,10 @@
+### create HTTP session
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "cnapp.http",
+  "actionName": "CreateSessionAction",
+  "params": {
+  }
+}
