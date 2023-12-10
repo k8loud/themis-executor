@@ -38,7 +38,7 @@ public class CommandExecutionServiceImpl implements CommandExecutionService {
     }
 
     @Override
-    public Map<String, String> executeCommand(@NotNull String host, @NotNull Integer port, @NotNull String privateKey,
+    public Map<String, Object> executeCommand(@NotNull String host, @NotNull Integer port, @NotNull String privateKey,
                                               @NotNull String user, @NotNull String command) throws CommandException {
         try (SSHClient client = initClient(host, port, privateKey, user);
              Session session = client.startSession()) {

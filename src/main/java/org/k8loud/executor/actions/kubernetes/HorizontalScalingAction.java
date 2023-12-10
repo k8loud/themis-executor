@@ -1,11 +1,11 @@
 package org.k8loud.executor.actions.kubernetes;
 
-import lombok.EqualsAndHashCode;
-import org.k8loud.executor.model.Params;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.KubernetesException;
 import org.k8loud.executor.kubernetes.KubernetesService;
+import org.k8loud.executor.model.Params;
 
 import java.util.Map;
 
@@ -36,7 +36,7 @@ public class HorizontalScalingAction extends KubernetesAction {
     }
 
     @Override
-    protected Map<String, String> executeBody() throws KubernetesException  {
+    protected Map<String, Object> executeBody() throws KubernetesException  {
         return kubernetesService.scaleHorizontally(namespace, resourceName, resourceType, replicas);
     }
 }

@@ -33,7 +33,7 @@ public class StoreImageAction extends DataStorageAction {
     }
 
     @Override
-    protected Map<String, String> executeBody() throws DataStorageException {
+    protected Map<String, Object> executeBody() throws DataStorageException {
         return resultMap(dataStorageService.storeImage(fileName, sourceUrl));
     }
 }

@@ -42,7 +42,7 @@ public abstract class OpenstackBaseTest extends OpenstackConstants {
 
     protected abstract void setUp() throws OpenstackException;
 
-    protected void assertResult(String expectedResult, Map<String, String> result){
+    protected void assertResult(String expectedResult, Map<String, Object> result){
         assertThat(result.get("result")).isEqualTo(expectedResult);
     }
 }

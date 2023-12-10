@@ -23,7 +23,7 @@ public class MySqlQueryAction extends DBAction<Connection> {
     }
 
     @Override
-    protected Map<String, String> executeBody() throws CustomException {
+    protected Map<String, Object> executeBody() throws CustomException {
         try (SuperConnection<Connection> connection = dbService.getConnection(connString)){
             return dbService.runQuery(query, connection);
         } catch (Exception e) {

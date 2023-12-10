@@ -1,12 +1,12 @@
 package org.k8loud.executor.actions.command;
 
-import org.k8loud.executor.model.Params;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.actions.Action;
 import org.k8loud.executor.command.CommandExecutionService;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CommandException;
+import org.k8loud.executor.model.Params;
 
 import java.util.Map;
 
@@ -36,7 +36,7 @@ public abstract class CommandAction extends Action {
     protected abstract void unpackAdditionalParams(Params params);
 
     @Override
-    protected Map<String, String> executeBody() throws CommandException {
+    protected Map<String, Object> executeBody() throws CommandException {
         return commandExecutionService.executeCommand(host, port, privateKey, user, buildCommand());
     }
 

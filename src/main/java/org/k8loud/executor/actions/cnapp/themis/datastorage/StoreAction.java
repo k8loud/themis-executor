@@ -32,7 +32,7 @@ public class StoreAction extends DataStorageAction {
     }
 
     @Override
-    protected Map<String, String> executeBody() {
+    protected Map<String, Object> executeBody() {
         String storedPath = dataStorageService.store(fileName, content);
         String result = storedPath == null ? String.format("Failed to store '%s'", fileName) : storedPath;
         return resultMap(result);

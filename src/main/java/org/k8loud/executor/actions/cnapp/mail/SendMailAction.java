@@ -30,7 +30,7 @@ public class SendMailAction extends MailAction {
     }
 
     @Override
-    protected Map<String, String> executeBody() throws MailException {
+    protected Map<String, Object> executeBody() throws MailException {
         String result = String.format("Sent mail: senderDisplayName = '%s', receiver = %s, subject = '%s', " +
                 "content = '%s'", senderDisplayName, receiver, subject, content);
         if (imageTitleToPath == null || imageTitleToPath.isEmpty()) {

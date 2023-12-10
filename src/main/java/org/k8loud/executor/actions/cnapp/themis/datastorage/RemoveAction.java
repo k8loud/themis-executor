@@ -29,7 +29,7 @@ public class RemoveAction extends DataStorageAction {
     }
 
     @Override
-    protected Map<String, String> executeBody() {
+    protected Map<String, Object> executeBody() {
         return resultMap(String.valueOf(dataStorageService.remove(path)));
     }
 }

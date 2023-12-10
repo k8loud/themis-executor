@@ -12,7 +12,6 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.VOLUME_ERROR;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -33,7 +32,7 @@ public class AttachVolumeTest extends OpenstackBaseTest {
         when(volumeMock.getStatus()).thenReturn(Volume.Status.AVAILABLE);
 
         // when
-        Map<String, String> res = openstackService.attachVolume(REGION, SERVER_ID, VOLUME_ID, DEVICE);
+        Map<String, Object> res = openstackService.attachVolume(REGION, SERVER_ID, VOLUME_ID, DEVICE);
 
         // then
         verify(clientV3Mock).useRegion(eq(REGION));

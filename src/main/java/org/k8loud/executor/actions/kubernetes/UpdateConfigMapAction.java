@@ -1,10 +1,10 @@
 package org.k8loud.executor.actions.kubernetes;
 
 import lombok.EqualsAndHashCode;
-import org.k8loud.executor.model.Params;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.KubernetesException;
 import org.k8loud.executor.kubernetes.KubernetesService;
+import org.k8loud.executor.model.Params;
 
 import java.util.Map;
 
@@ -39,7 +39,7 @@ public class UpdateConfigMapAction extends KubernetesAction {
      */
 
     @Override
-    public Map<String, String> executeBody() throws KubernetesException {
+    public Map<String, Object> executeBody() throws KubernetesException {
         return kubernetesService.updateConfigMap(namespace, resourceName, replacements);
     }
 }

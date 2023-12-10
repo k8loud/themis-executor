@@ -29,7 +29,7 @@ public abstract class Action {
     public abstract void unpackParams(Params params) throws ActionException;
 
     public ExecutionRS execute() {
-        Map<String, String> resultMap;
+        Map<String, Object> resultMap;
         try {
             resultMap = executeBody();
         } catch (CustomException e) {
@@ -40,7 +40,7 @@ public abstract class Action {
                     .build();
         }
         log.info("Result: {} [{}]", getClass().getName(), resultMap);
-        String result = resultMap.remove("result");
+        String result = (String) resultMap.remove("result");
         return ExecutionRS.builder()
                 .result(result)
                 .exitCode(ExecutionExitCode.OK)
@@ -48,5 +48,5 @@ public abstract class Action {
                 .build();
     }
 
-    protected abstract Map<String,String> executeBody() throws CustomException;
+    protected abstract Map<String, Object> executeBody() throws CustomException;
 }

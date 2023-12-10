@@ -13,6 +13,7 @@ import org.k8loud.executor.db.MongoService;
 import org.k8loud.executor.db.MySQLService;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.MapperException;
+import org.k8loud.executor.http.HTTPService;
 import org.k8loud.executor.kubernetes.KubernetesService;
 import org.k8loud.executor.mail.MailService;
 import org.k8loud.executor.model.ExecutionRQ;
@@ -40,6 +41,7 @@ public class MapperServiceImpl implements MapperService {
     private final SockShopService sockShopService;
     private final MailService mailService;
     private final DataStorageService dataStorageService;
+    private final HTTPService httpService;
 
     private final DBService mySQLService = new MySQLService();
     private final DBService mongoService = new MongoService();
@@ -67,6 +69,7 @@ public class MapperServiceImpl implements MapperService {
                 case "cnapp.mail" -> classParameters.add(new ClassParameter(MailService.class, mailService));
                 case "cnapp.themis.datastorage" ->
                         classParameters.add(new ClassParameter(DataStorageService.class, dataStorageService));
+                case "cnapp.http" -> classParameters.add(new ClassParameter(HTTPService.class, httpService));
             }
             return (Action) ClassHelper.getInstance(actionClass, classParameters.toArray(ClassParameter[]::new));
         } catch (NoSuchMethodException e) {

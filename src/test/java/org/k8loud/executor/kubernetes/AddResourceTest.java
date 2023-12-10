@@ -35,7 +35,7 @@ public class AddResourceTest extends KubernetesBaseTest {
         final String resourceType = POD.toString();
 
         // when
-        Map<String, String> res = kubernetesService.addResource(NAMESPACE, resourceType, RESOURCE_DESCRIPTION_POD);
+        Map<String, Object> res = kubernetesService.addResource(NAMESPACE, resourceType, RESOURCE_DESCRIPTION_POD);
         Pod pod = client.pods().inNamespace(NAMESPACE).withName(resourceName).get();
 
         // then
@@ -50,7 +50,7 @@ public class AddResourceTest extends KubernetesBaseTest {
         final String resourceType = CONFIG_MAP.toString();
 
         // when
-        Map<String, String> res = kubernetesService.addResource(NAMESPACE, resourceType, RESOURCE_DESCRIPTION_CONFIG_MAP);
+        Map<String, Object> res = kubernetesService.addResource(NAMESPACE, resourceType, RESOURCE_DESCRIPTION_CONFIG_MAP);
         ConfigMap cm = client.configMaps().inNamespace(NAMESPACE).withName(resourceName).get();
 
         // then
@@ -65,7 +65,7 @@ public class AddResourceTest extends KubernetesBaseTest {
         final String resourceType = POD.toString();
 
         // when
-        Map<String, String> res = kubernetesService.addResource(NAMESPACE, POD.toString(), RESOURCE_DESCRIPTION_POD);
+        Map<String, Object> res = kubernetesService.addResource(NAMESPACE, POD.toString(), RESOURCE_DESCRIPTION_POD);
         Pod pod1 = client.pods().inNamespace(NAMESPACE).withName(resourceName).get();
 
         // then

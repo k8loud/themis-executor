@@ -12,8 +12,8 @@ import io.fabric8.kubernetes.client.dsl.internal.HasMetadataOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.k8loud.executor.exception.KubernetesException;
 import org.k8loud.executor.datastorage.DataStorageService;
+import org.k8loud.executor.exception.KubernetesException;
 import org.k8loud.executor.util.Util;
 import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class KubernetesServiceImpl implements KubernetesService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException", exceptionCode = "SCALE_HORIZONTALLY_FAILED")
-    public Map<String, String> scaleHorizontally(String namespace, String resourceName, String resourceType,
+    public Map<String, Object> scaleHorizontally(String namespace, String resourceName, String resourceType,
                                                  Integer replicas) throws KubernetesException {
         log.info("Scaling {} to {}", getFullResourceName(resourceType, resourceName), replicas);
         getResource(namespace, resourceType, resourceName)
@@ -47,7 +47,7 @@ public class KubernetesServiceImpl implements KubernetesService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException", exceptionCode = "ADD_RESOURCE_FAILED")
-    public <T extends HasMetadata> Map<String, String> addResource(final String namespace, final String resourceType,
+    public <T extends HasMetadata> Map<String, Object> addResource(final String namespace, final String resourceType,
                                                                    String resourceDescription) throws KubernetesException {
         log.info("Adding resource of type {} to namespace {} from description", resourceType, namespace);
         Resource<T> resource = loadResource(resourceType, resourceDescription);
@@ -75,7 +75,7 @@ public class KubernetesServiceImpl implements KubernetesService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException", exceptionCode = "DELETE_RESOURCE_FAILED")
-    public Map<String, String> deleteResource(String namespace, String resourceName, String resourceType,
+    public Map<String, Object> deleteResource(String namespace, String resourceName, String resourceType,
                                               Long gracePeriodSeconds)
             throws KubernetesException {
         log.info("Deleting {}, giving {} seconds for shutdown", getFullResourceName(resourceType, resourceName),
@@ -89,7 +89,7 @@ public class KubernetesServiceImpl implements KubernetesService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException", exceptionCode = "UPDATE_CONFIG_MAP_FAILED")
-    public Map<String, String> updateConfigMap(String namespace, String resourceName, Map<String, String> replacements)
+    public Map<String, Object> updateConfigMap(String namespace, String resourceName, Map<String, String> replacements)
             throws KubernetesException {
         log.info("Updating {} with {}", getFullResourceName(CONFIG_MAP.toString(), resourceName), replacements);
         getResource(namespace, CONFIG_MAP.toString(), resourceName)
@@ -104,7 +104,7 @@ public class KubernetesServiceImpl implements KubernetesService {
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException",
             exceptionCode = "CHANGE_RESOURCES_OF_CONTAINER_WITHIN_POD_FAILED")
-    public Map<String, String> changeResourcesOfContainerWithinPodAction(String namespace, String podName,
+    public Map<String, Object> changeResourcesOfContainerWithinPodAction(String namespace, String podName,
                                                                          String containerName, String limitsCpu,
                                                                          String limitsMemory, String requestsCpu,
                                                                          String requestsMemory)
@@ -151,7 +151,7 @@ public class KubernetesServiceImpl implements KubernetesService {
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException",
             exceptionCode = "CHANGE_RESOURCES_OF_CONTAINER_WITHIN_DEPLOYMENT_FAILED")
-    public Map<String, String> changeResourcesOfContainerWithinDeploymentAction(String namespace, String deploymentName,
+    public Map<String, Object> changeResourcesOfContainerWithinDeploymentAction(String namespace, String deploymentName,
                                                                          String containerName, String limitsCpu,
                                                                          String limitsMemory, String requestsCpu,
                                                                          String requestsMemory)

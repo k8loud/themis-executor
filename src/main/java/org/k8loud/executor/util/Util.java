@@ -29,16 +29,16 @@ public final class Util {
         return getFullResourceName(resourceType, resourceName, "/");
     }
 
-    public static Map<String, String> resultMap(String result) {
+    public static Map<String, Object> resultMap(String result) {
         return new HashMap<>(Map.of("result", result));
     }
 
-    public static Map<String, String> resultMap(String result, Map<String, String> additionalData)
+    public static Map<String, Object> resultMap(String result, Map<String, Object> additionalData)
             throws ValidationException {
         if (additionalData.containsKey("result")) {
             throw new ValidationException(ADDITIONAL_DATA_WRONG_KEY);
         }
-        Map<String, String> resultMap = new HashMap<>(additionalData);
+        Map<String, Object> resultMap = new HashMap<>(additionalData);
         resultMap.put("result", result);
         return resultMap;
     }

@@ -10,6 +10,7 @@ import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import static org.k8loud.executor.util.Util.resultMap;
 
 @Service
@@ -28,7 +29,7 @@ public class MySQLService implements DBService<Connection> {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "DBException", exceptionCode = "QUERY_FAILED")
-    public Map<String, String> runUpdate(String query, SuperConnection<Connection> connection) throws DBException {
+    public Map<String, Object> runUpdate(String query, SuperConnection<Connection> connection) throws DBException {
 
         int rowsAffected;
         try(Statement statement = connection.getConnection().createStatement()) {
@@ -41,7 +42,7 @@ public class MySQLService implements DBService<Connection> {
     }
 
     @Override
-    public Map<String, String> runQuery(String query, SuperConnection<Connection> connection) throws DBException {
+    public Map<String, Object> runQuery(String query, SuperConnection<Connection> connection) throws DBException {
 
         List<String> result;
         try(Statement statement = connection.getConnection().createStatement()) {

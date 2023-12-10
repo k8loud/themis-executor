@@ -49,7 +49,7 @@ public class KubernetesBaseTest {
         }
     }
 
-    protected void assertResult(String expectedResult, Map<String, String> result){
+    protected void assertResult(String expectedResult, Map<String, Object> result){
         assertThat(result.get("result")).isEqualTo(expectedResult);
     }
 }

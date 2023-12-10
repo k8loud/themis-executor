@@ -29,7 +29,7 @@ public class MongoQueryAction extends DBAction<MongoDatabase> {
 
 
     @Override
-    protected Map<String, String> executeBody() throws CustomException {
+    protected Map<String, Object> executeBody() throws CustomException {
         try(SuperConnection<MongoDatabase> connection = dbService.getConnection(connString)) {
             return dbService.runQuery(query, connection);
         } catch (Exception e) {

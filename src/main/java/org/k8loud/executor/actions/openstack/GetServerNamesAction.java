@@ -31,7 +31,7 @@ public class GetServerNamesAction extends OpenstackAction {
     }
 
     @Override
-    protected Map<String, String> executeBody() throws CustomException {
+    protected Map<String, Object> executeBody() throws CustomException {
         return openstackService.getServerNames(region, namePattern);
     }
 }

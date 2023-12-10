@@ -10,5 +10,5 @@ import java.util.Map;
 public class ExecutionRS {
     String result;
     ExecutionExitCode exitCode;
-    Map<String, String> additionalData;
+    Map<String, Object> additionalData;
 }

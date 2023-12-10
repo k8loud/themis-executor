@@ -45,7 +45,7 @@ public class OpenstackServiceImpl implements OpenstackService {
     //TODO resize with looking for bigger/smaller available flavor
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "RESIZE_SERVER_FAILED")
-    public Map<String, String> resizeServerUp(String region, String serverId,
+    public Map<String, Object> resizeServerUp(String region, String serverId,
                                               String newFlavorId) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
@@ -58,7 +58,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "RESIZE_SERVER_FAILED")
-    public Map<String, String> resizeServerDown(String region, String serverId,
+    public Map<String, Object> resizeServerDown(String region, String serverId,
                                                 String newFlavorId) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
@@ -72,7 +72,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "GET_SERVER_NAMES_FAILED")
-    public Map<String, String> getServerNames(String region, String namePattern)
+    public Map<String, Object> getServerNames(String region, String namePattern)
             throws OpenstackException, ValidationException {
         log.info("Getting servers in region '{}' with namePattern '{}'", region, namePattern);
         OSClientV3 client = openstackClientWithRegion(region);
@@ -88,7 +88,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "CREATE_SERVER_FAILED")
-    public Map<String, String> createServers(String region, String name, String imageId, String flavorId,
+    public Map<String, Object> createServers(String region, String name, String imageId, String flavorId,
                                              String keypairName, String securityGroup, String userData, int count,
                                              int waitActiveSec) throws OpenstackException, ValidationException {
         OSClientV3 client = openstackClientWithRegion(region);
@@ -103,7 +103,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "DELETE_SERVER_FAILED")
-    public Map<String, String> deleteServers(String region, String namePattern)
+    public Map<String, Object> deleteServers(String region, String namePattern)
             throws OpenstackException, ValidationException {
         Pattern namePatternObj = Pattern.compile(namePattern);
 
@@ -115,7 +115,7 @@ public class OpenstackServiceImpl implements OpenstackService {
     }
 
     @Override
-    public Map<String, String> deleteServers(String region, List<String> serverIds)
+    public Map<String, Object> deleteServers(String region, List<String> serverIds)
             throws OpenstackException, ValidationException {
         List<Server> servers = serverIds.stream()
                 .parallel()
@@ -136,7 +136,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "ATTACH_VOLUME_FAILED")
-    public Map<String, String> attachVolume(String region, String serverId, String volumeId,
+    public Map<String, Object> attachVolume(String region, String serverId, String volumeId,
                                             String device) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
@@ -157,7 +157,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "DETACH_VOLUME_FAILED")
-    public Map<String, String> detachVolume(String region, String serverId, String volumeId) throws OpenstackException {
+    public Map<String, Object> detachVolume(String region, String serverId, String volumeId) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
         Volume volume = openstackCinderService.getVolume(volumeId, client);
@@ -175,19 +175,19 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "PAUSE_SERVER_FAILED")
-    public Map<String, String> pauseServer(String region, String serverId) throws OpenstackException {
+    public Map<String, Object> pauseServer(String region, String serverId) throws OpenstackException {
         return basicServerAction(region, serverId, PAUSE);
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "UNPAUSE_SERVER_FAILED")
-    public Map<String, String> unpauseServer(String region, String serverId) throws OpenstackException {
+    public Map<String, Object> unpauseServer(String region, String serverId) throws OpenstackException {
         return basicServerAction(region, serverId, UNPAUSE);
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "CREATE_SERVER_SNAPSHOT_FAILED")
-    public Map<String, String> createServerSnapshot(String region, String serverId, String snapshotName,
+    public Map<String, Object> createServerSnapshot(String region, String serverId, String snapshotName,
                                                     boolean stopInstance) throws OpenstackException, ValidationException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
@@ -204,7 +204,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "DELETE_SERVER_SNAPSHOT_FAILED")
-    public Map<String, String> deleteTheOldestServerSnapshot(String region, String serverId,
+    public Map<String, Object> deleteTheOldestServerSnapshot(String region, String serverId,
                                                              boolean keepOneSnapshot) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
@@ -214,7 +214,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "CREATE_VOLUME_SNAPSHOT_FAILED")
-    public Map<String, String> createVolumeSnapshot(String region, String volumeId,
+    public Map<String, Object> createVolumeSnapshot(String region, String volumeId,
                                                     String snapshotName) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Volume volume = openstackCinderService.getVolume(volumeId, client);
@@ -225,7 +225,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "DELETE_VOLUME_SNAPSHOT_FAILED")
-    public Map<String, String> deleteTheOldestVolumeSnapshot(String region, String volumeId,
+    public Map<String, Object> deleteTheOldestVolumeSnapshot(String region, String volumeId,
                                                              boolean keepOneSnapshot) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Volume volume = openstackCinderService.getVolume(volumeId, client);
@@ -235,7 +235,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "CREATE_SECURITY_GROUP_FAILED")
-    public Map<String, String> createSecurityGroup(String region, String name,
+    public Map<String, Object> createSecurityGroup(String region, String name,
                                                    String description) throws OpenstackException, ValidationException {
         OSClientV3 client = openstackClientWithRegion(region);
         SecurityGroup securityGroup = openstackNeutronService.createSecurityGroup(name, description, client);
@@ -246,7 +246,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "REMOVE_SECURITY_GROUP_FAILED")
-    public Map<String, String> removeSecurityGroup(String region, String securityGroupId) throws OpenstackException {
+    public Map<String, Object> removeSecurityGroup(String region, String securityGroupId) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         SecurityGroup securityGroup = openstackNeutronService.getSecurityGroup(securityGroupId, client);
         openstackNeutronService.removeSecurityGroup(securityGroup, client);
@@ -257,7 +257,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "ADD_SECURITY_GROUP_FAILED")
-    public Map<String, String> addSecurityGroupToInstance(String region, String securityGroupId,
+    public Map<String, Object> addSecurityGroupToInstance(String region, String securityGroupId,
                                                           String serverId) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
@@ -269,7 +269,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "REMOVE_SECURITY_GROUP_FAILED")
-    public Map<String, String> removeSecurityGroupFromInstance(String region, String securityGroupId,
+    public Map<String, Object> removeSecurityGroupFromInstance(String region, String securityGroupId,
                                                                String serverId) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
@@ -281,7 +281,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "ADD_RULE_FAILED")
-    public Map<String, String> addRuleToSecurityGroup(String region, String securityGroupId, String ethertype,
+    public Map<String, Object> addRuleToSecurityGroup(String region, String securityGroupId, String ethertype,
                                                       String direction, String remoteIpPrefix, String protocol,
                                                       int portRangeMin, int portRangeMax,
                                                       String description) throws OpenstackException, ValidationException {
@@ -297,7 +297,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "REMOVE_RULE_FAILED")
-    public Map<String, String> removeSecurityGroupRule(String region,
+    public Map<String, Object> removeSecurityGroupRule(String region,
                                                        String securityGroupRuleId) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         SecurityGroupRule securityGroupRule = openstackNeutronService.getSecurityGroupRule(securityGroupRuleId, client);
@@ -307,7 +307,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "IP_THROTTLE_FAILED")
-    public Map<String, String> throttle(String region, String serverId, String ethertype,
+    public Map<String, Object> throttle(String region, String serverId, String ethertype,
                                         String remoteIpPrefix, String protocol, int portRangeMin, int portRangeMax,
                                         long secDuration) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
@@ -365,7 +365,7 @@ public class OpenstackServiceImpl implements OpenstackService {
                 .forEach(rules -> openstackNeutronService.removeSecurityGroupRule(rules, clientSupplier(region).get()));
     }
 
-    private Map<String, String> resizeServer(Server server, Flavor newFlavor, int waitSecondsForVerifyStatus,
+    private Map<String, Object> resizeServer(Server server, Flavor newFlavor, int waitSecondsForVerifyStatus,
                                              OSClientV3 client) throws OpenstackException {
         openstackNovaService.resize(server, newFlavor, client);
         openstackNovaService.waitForServerStatus(server, Server.Status.VERIFY_RESIZE, waitSecondsForVerifyStatus,
@@ -395,7 +395,7 @@ public class OpenstackServiceImpl implements OpenstackService {
         }
     }
 
-    private Map<String, String> basicServerAction(String region, String serverId,
+    private Map<String, Object> basicServerAction(String region, String serverId,
                                                   Action action) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
