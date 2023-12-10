@@ -13,8 +13,3 @@ public abstract class DataStorageAction extends CNAppAction {
         this.dataStorageService = dataStorageService;
     }
 }
-//    String store(String fileName, String content);
-//
-//    String storeImage(String fileName, String sourceUrl) throws DataStorageException;
-//
-//    boolean remove(String path);
