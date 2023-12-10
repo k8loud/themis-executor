@@ -1,11 +1,5 @@
 package org.k8loud.executor.service;
 
-import org.k8loud.executor.db.DBService;
-import org.k8loud.executor.db.MongoService;
-import org.k8loud.executor.db.MySQLService;
-import org.k8loud.executor.mail.MailService;
-import org.k8loud.executor.model.ExecutionRQ;
-import org.k8loud.executor.model.Params;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -13,9 +7,16 @@ import org.k8loud.executor.actions.Action;
 import org.k8loud.executor.actions.ActionHelper;
 import org.k8loud.executor.cnapp.sockshop.SockShopService;
 import org.k8loud.executor.command.CommandExecutionService;
+import org.k8loud.executor.datastorage.DataStorageService;
+import org.k8loud.executor.db.DBService;
+import org.k8loud.executor.db.MongoService;
+import org.k8loud.executor.db.MySQLService;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.MapperException;
 import org.k8loud.executor.kubernetes.KubernetesService;
+import org.k8loud.executor.mail.MailService;
+import org.k8loud.executor.model.ExecutionRQ;
+import org.k8loud.executor.model.Params;
 import org.k8loud.executor.openstack.OpenstackService;
 import org.k8loud.executor.util.ClassHelper;
 import org.k8loud.executor.util.ClassParameter;
@@ -38,6 +39,7 @@ public class MapperServiceImpl implements MapperService {
     private final KubernetesService kubernetesService;
     private final SockShopService sockShopService;
     private final MailService mailService;
+    private final DataStorageService dataStorageService;
 
     private final DBService mySQLService = new MySQLService();
     private final DBService mongoService = new MongoService();
@@ -60,12 +62,11 @@ public class MapperServiceImpl implements MapperService {
                         classParameters.add(new ClassParameter(KubernetesService.class, kubernetesService));
                 case "cnapp.sockshop" ->
                         classParameters.add(new ClassParameter(SockShopService.class, sockShopService));
-                case "cnapp.db.mysql" ->
-                    classParameters.add(new ClassParameter(DBService.class, mySQLService));
-                case "cnapp.db.mongo" ->
-                    classParameters.add(new ClassParameter(DBService.class, mongoService));
-                case "cnapp.mail" ->
-                        classParameters.add(new ClassParameter(MailService.class, mailService));
+                case "cnapp.db.mysql" -> classParameters.add(new ClassParameter(DBService.class, mySQLService));
+                case "cnapp.db.mongo" -> classParameters.add(new ClassParameter(DBService.class, mongoService));
+                case "cnapp.mail" -> classParameters.add(new ClassParameter(MailService.class, mailService));
+                case "cnapp.themis.datastorage" ->
+                        classParameters.add(new ClassParameter(DataStorageService.class, dataStorageService));
             }
             return (Action) ClassHelper.getInstance(actionClass, classParameters.toArray(ClassParameter[]::new));
         } catch (NoSuchMethodException e) {
