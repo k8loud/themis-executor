@@ -1,9 +1,9 @@
 import io.github.hephaestusmetrics.model.metrics.Metric;
-import org.k8loud.executor.actions.kubernetes.*;
+import org.k8loud.executor.actions.kubernetes.HorizontalScalingAction;
 import java.util.List
 
-global org.k8loud.executor.model.ActionList actions;
 global org.k8loud.executor.drools.UsableServices usableServices;
+global org.k8loud.executor.drools.CronChecker cronChecker;
 
 dialect "mvel"
 
@@ -17,13 +17,14 @@ rule "carts_cpu"
         eval(cpu_time > 0.1)
     then
         System.out.println("carts scaled");
-        actions.add(org.k8loud.executor.actions.kubernetes.HorizontalScalingAction.builder()
-                        .namespace("sock-shop")
-                        .resourceName("carts")
-                        .resourceType("Deployment")
-                        .replicas(2)
-                        .kubernetesService(usableServices.getKubernetesService())
-                        .build());
+        HorizontalScalingAction.builder()
+            .namespace("sock-shop")
+            .resourceName("carts")
+            .resourceType("Deployment")
+            .replicas(2)
+            .kubernetesService(usableServices.getKubernetesService())
+            .build()
+            .execute();
 end
 
 rule "orders_cpu"
@@ -36,13 +37,14 @@ rule "orders_cpu"
         eval(cpu_time > 0.1)
     then
         System.out.println("carts scaled");
-        actions.add(HorizontalScalingAction.builder()
-                        .namespace("sock-shop")
-                        .resourceName("orders")
-                        .resourceType("Deployment")
-                        .replicas(2)
-                        .kubernetesService(usableServices.getKubernetesService())
-                        .build());
+        HorizontalScalingAction.builder()
+            .namespace("sock-shop")
+            .resourceName("orders")
+            .resourceType("Deployment")
+            .replicas(2)
+            .kubernetesService(usableServices.getKubernetesService())
+            .build()
+            .execute();
 end
 
 /**
@@ -65,11 +67,12 @@ rule "front-end_cpu_procentage"
         eval((cpu_time * 100000) / cpu_quota > 0.80)
     then
         System.out.println((cpu_time * 100000) / cpu_quota);
-        actions.add(HorizontalScalingAction.builder()
+        HorizontalScalingAction.builder()
                         .namespace("sock-shop")
                         .resourceName("front-end")
                         .resourceType("Deployment")
                         .replicas(2)
                         .kubernetesService(usableServices.getKubernetesService())
-                        .build());
+                        .build()
+                        .execute();
 end

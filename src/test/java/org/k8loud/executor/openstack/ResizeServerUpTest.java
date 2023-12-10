@@ -8,7 +8,6 @@ import org.openstack4j.model.compute.Flavor;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.openstack4j.model.compute.Server.Status.VERIFY_RESIZE;
@@ -41,7 +40,7 @@ public class ResizeServerUpTest extends OpenstackBaseTest {
         when(newFlavorMock.getVcpus()).thenReturn(CURRENT_FLAVOR_VCPUS + 1);
 
         // when
-        Map<String, String> res = openstackService.resizeServerUp(REGION, SERVER_ID, NEW_FLAVOR_ID);
+        Map<String, Object> res = openstackService.resizeServerUp(REGION, SERVER_ID, NEW_FLAVOR_ID);
 
         // then
         verify(clientV3Mock).useRegion(eq(REGION));

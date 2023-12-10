@@ -38,7 +38,7 @@ public class SockShopServiceImpl implements SockShopService {
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "CNAppException",
             exceptionCode = "SOCK_SHOP_REGISTER_USER_FAILED")
-    public Map<String, String> registerUser(String applicationUrl, String username, String password, String email)
+    public Map<String, Object> registerUser(String applicationUrl, String username, String password, String email)
             throws CNAppException, ValidationException, HTTPException {
         log.info("Registering user {} with email {}", username, email);
         HttpResponse response = httpService.createSession().doPost(applicationUrl,
@@ -51,7 +51,7 @@ public class SockShopServiceImpl implements SockShopService {
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "CNAppException",
             exceptionCode = "SOCK_SHOP_DELETE_USER_FAILED")
-    public Map<String, String> deleteUser(String applicationUrl, String userId) throws CNAppException,
+    public Map<String, Object> deleteUser(String applicationUrl, String userId) throws CNAppException,
             ValidationException, HTTPException {
         log.info("Deleting user with id {}", userId);
         HttpResponse response = httpService.createSession().doDelete(applicationUrl,
@@ -63,7 +63,7 @@ public class SockShopServiceImpl implements SockShopService {
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "CNAppException",
             exceptionCode = "SOCK_SHOP_CREATE_ADDRESS_FAILED")
-    public Map<String, String> createAddress(String applicationUrl, String username, String password, String userId,
+    public Map<String, Object> createAddress(String applicationUrl, String username, String password, String userId,
                                              String country, String city, String postcode, String street, String number)
             throws CNAppException, ValidationException, HTTPException {
         CreateAddressParams createAddressParams = CreateAddressParams.builder().id(userId).country(country)
@@ -81,7 +81,7 @@ public class SockShopServiceImpl implements SockShopService {
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "CNAppException",
             exceptionCode = "SOCK_SHOP_DELETE_ADDRESS_FAILED")
-    public Map<String, String> deleteAddress(String applicationUrl, String username, String password, String addressId)
+    public Map<String, Object> deleteAddress(String applicationUrl, String username, String password, String addressId)
             throws CNAppException, ValidationException, HTTPException {
         log.info("Deleting address with id {}", addressId);
         HTTPSession session = httpService.createSession();
@@ -98,7 +98,7 @@ public class SockShopServiceImpl implements SockShopService {
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "CNAppException",
             exceptionCode = "SOCK_SHOP_NOTIFY_CUSTOMERS_FAILED")
-    public Map<String, String> notifyCustomers(String applicationUrl, String senderDisplayName, String subject,
+    public Map<String, Object> notifyCustomers(String applicationUrl, String senderDisplayName, String subject,
                                                String content, List<String> imagesUrls)
             throws CNAppException, HTTPException {
         log.info("Notifying customers; senderDisplayName = '{}', subject = '{}', content = '{}', imageUrls = {}",
@@ -175,7 +175,7 @@ public class SockShopServiceImpl implements SockShopService {
         return headers;
     }
 
-    private Map<String, String> createResultMap(String result, String responseContent) throws ValidationException {
+    private Map<String, Object> createResultMap(String result, String responseContent) throws ValidationException {
         return resultMap(result, Map.of("responseContent", responseContent));
     }
 }

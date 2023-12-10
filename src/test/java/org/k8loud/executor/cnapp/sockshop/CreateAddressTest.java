@@ -41,7 +41,7 @@ public class CreateAddressTest extends SockShopBaseTest {
         when(httpSessionMock.doPost(anyString(), anyString(), any())).thenReturn(successfulResponseMock);
 
         // when
-        Map<String, String> resultMap = sockShopService.createAddress(APPLICATION_URL, USERNAME, PASSWORD, ID, COUNTRY,
+        Map<String, Object> resultMap = sockShopService.createAddress(APPLICATION_URL, USERNAME, PASSWORD, ID, COUNTRY,
                 CITY, POSTCODE, STREET, NUMBER);
 
         // then

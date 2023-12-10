@@ -1,0 +1,12 @@
+### store image from URL
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "cnapp.themis.datastorage",
+  "actionName": "StoreImageAction",
+  "params": {
+    "fileName": "test_img",
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/SMPTE_Color_Bars.svg/1280px-SMPTE_Color_Bars.svg.png"
+  }
+}

@@ -62,4 +62,12 @@ public class Params extends HashMap<String, String> {
                 .map(p -> Arrays.stream(p.split(",")).toList())
                 .orElse(defaultValue);
     }
+
+    public Map<String, String> getOptionalParamAsMap(String param, Map<String, String> defaultValue) {
+        Map<String, String> result = new HashMap<>();
+        getOptionalParamAsListOfStrings(param, new ArrayList<>()).stream()
+                .map(kvps -> List.of(kvps.split("=")))
+                .forEach(kvp -> result.put(kvp.get(0), kvp.get(1)));
+        return result.isEmpty() ? defaultValue : result;
+    }
 }

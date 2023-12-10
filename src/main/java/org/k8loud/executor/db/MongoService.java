@@ -34,13 +34,13 @@ public class MongoService implements DBService<MongoClient> {
     }
 
     @Override
-    public Map<String, String> runUpdate(String query, SuperConnection<MongoClient> connection) throws DBException {
+    public Map<String, Object> runUpdate(String query, SuperConnection<MongoClient> connection) throws DBException {
         return null;
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "DBException", exceptionCode = "QUERY_FAILED")
-    public Map<String, String> runQuery(String query, SuperConnection<MongoClient> connection) throws DBException {
+    public Map<String, Object> runQuery(String query, SuperConnection<MongoClient> connection) throws DBException {
         try {
             QueryConverter queryConverter = new QueryConverter
                     .Builder()

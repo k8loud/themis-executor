@@ -1,11 +1,11 @@
 package org.k8loud.executor.actions.cnapp.sockshop;
 
-import lombok.EqualsAndHashCode;
-import org.k8loud.executor.model.Params;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import org.k8loud.executor.cnapp.sockshop.SockShopService;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CustomException;
+import org.k8loud.executor.model.Params;
 
 import java.util.Map;
 
@@ -52,7 +52,7 @@ public class CreateAddressAction extends SockShopAction {
     }
 
     @Override
-    protected Map<String, String> executeBody() throws CustomException {
+    protected Map<String, Object> executeBody() throws CustomException {
         return sockShopService.createAddress(applicationUrl, username, password, userId, country, city, postcode,
                 street, number);
     }

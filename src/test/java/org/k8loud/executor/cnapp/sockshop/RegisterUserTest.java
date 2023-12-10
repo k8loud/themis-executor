@@ -37,7 +37,7 @@ public class RegisterUserTest extends SockShopBaseTest {
         mockSuccessfulResponse();
 
         // when
-        Map<String, String> resultMap = sockShopService.registerUser(APPLICATION_URL, USERNAME, PASSWORD, EMAIL);
+        Map<String, Object> resultMap = sockShopService.registerUser(APPLICATION_URL, USERNAME, PASSWORD, EMAIL);
 
         // then
         verify(httpSessionMock).doPost(eq(APPLICATION_URL), eq(REGISTER_USER_URL_SUPPLEMENT),

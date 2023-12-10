@@ -1,10 +1,10 @@
 package org.k8loud.executor.actions.openstack;
 
-import lombok.EqualsAndHashCode;
-import org.k8loud.executor.model.Params;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
+import org.k8loud.executor.model.Params;
 import org.k8loud.executor.openstack.OpenstackService;
 
 import java.util.Map;
@@ -52,7 +52,7 @@ public class IpThrottleAction extends OpenstackAction {
     }
 
     @Override
-    protected Map<String, String> executeBody() throws OpenstackException {
+    protected Map<String, Object> executeBody() throws OpenstackException {
         return openstackService.throttle(region, serverId, ethertype, remoteIpPrefix, protocol, portRangeMin,
                 portRangeMax, secDuration);
     }

@@ -70,7 +70,7 @@ public class SockShopBaseTest {
         // empty
     }
 
-    protected void assertResponseContent(Map<String, String> resultMap) {
+    protected void assertResponseContent(Map<String, Object> resultMap) {
         assertEquals(RESPONSE_CONTENT, resultMap.get("responseContent"));
     }
 

@@ -1,9 +1,9 @@
 package org.k8loud.executor.actions;
 
-import org.k8loud.executor.model.ExecutionExitCode;
-import org.k8loud.executor.model.ExecutionRS;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.k8loud.executor.exception.ActionException;
+import org.k8loud.executor.model.ExecutionExitCode;
+import org.k8loud.executor.model.ExecutionRS;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Map;
@@ -17,7 +17,7 @@ import static org.k8loud.executor.util.Util.resultMap;
 public abstract class ActionBaseTest {
     protected static final String RESULT = "example result";
 
-    protected final Map<String, String> resultMap = resultMap(RESULT);
+    protected final Map<String, Object> resultMap = resultMap(RESULT);
 
     protected void assertSuccessResponse(ExecutionRS response) {
         assertEquals(ExecutionExitCode.OK, response.getExitCode());

@@ -1,0 +1,23 @@
+### remove a file
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "cnapp.themis.datastorage",
+  "actionName": "RemoveAction",
+  "params": {
+    "path": "/tmp/test_123_2023-12-10_11-54-06"
+  }
+}
+
+### can't remove file outside of DATA_STORAGE_ROOT_PATH=/tmp
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "cnapp.themis.datastorage",
+  "actionName": "RemoveAction",
+  "params": {
+    "path": "/home/test/file123"
+  }
+}

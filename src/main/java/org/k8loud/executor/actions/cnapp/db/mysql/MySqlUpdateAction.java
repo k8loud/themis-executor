@@ -2,7 +2,6 @@ package org.k8loud.executor.actions.cnapp.db.mysql;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-
 import org.k8loud.executor.actions.cnapp.db.DBAction;
 import org.k8loud.executor.db.DBService;
 import org.k8loud.executor.db.SuperConnection;
@@ -30,7 +29,7 @@ public class MySqlUpdateAction extends DBAction<Connection> {
 
 
     @Override
-    protected Map<String, String> executeBody() throws CustomException {
+    protected Map<String, Object> executeBody() throws CustomException {
         try (SuperConnection<Connection> connection = dbService.getConnection(connString)) {
             return dbService.runUpdate(query, connection);
         } catch (Exception e) {

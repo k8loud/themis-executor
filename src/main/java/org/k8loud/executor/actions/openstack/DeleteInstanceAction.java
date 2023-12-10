@@ -41,7 +41,7 @@ public class DeleteInstanceAction extends OpenstackAction {
     }
 
     @Override
-    protected Map<String, String> executeBody() throws OpenstackException, ValidationException {
+    protected Map<String, Object> executeBody() throws OpenstackException, ValidationException {
         final boolean serverIdsIsEmpty = CollectionUtils.isEmpty(serverIds);
         if (namePattern == null && serverIdsIsEmpty) {
             throw new ParamNotFoundException("Either namePattern or serverIds should be provided");

@@ -29,7 +29,7 @@ public class DeleteAddressTest extends SockShopBaseTest {
         when(httpSessionMock.doDelete(anyString(), anyString())).thenReturn(successfulResponseMock);
 
         // when
-        Map<String, String> resultMap = sockShopService.deleteAddress(APPLICATION_URL, USERNAME, PASSWORD, ID);
+        Map<String, Object> resultMap = sockShopService.deleteAddress(APPLICATION_URL, USERNAME, PASSWORD, ID);
 
         // then
         verify(httpSessionMock).doDelete(eq(APPLICATION_URL), eq(SOCKSHOP_ADDRESSES_URL_SUPPLEMENT + "/" + ID));

@@ -29,7 +29,7 @@ public class DeleteUserTest extends SockShopBaseTest {
         mockSuccessfulResponse();
 
         // when
-        Map<String, String> resultMap = sockShopService.deleteUser(APPLICATION_URL, ID);
+        Map<String, Object> resultMap = sockShopService.deleteUser(APPLICATION_URL, ID);
 
         // then
         verify(httpSessionMock).doDelete(eq(APPLICATION_URL), eq(SOCKSHOP_CUSTOMERS_URL_SUPPLEMENT + "/" + ID));

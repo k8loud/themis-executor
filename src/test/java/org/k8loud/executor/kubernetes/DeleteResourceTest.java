@@ -14,7 +14,8 @@ import org.k8loud.executor.exception.KubernetesException;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class DeleteResourceTest extends KubernetesBaseTest {
     private static final Long GRACE_PERIOD_SECONDS = 5L;
@@ -37,7 +38,7 @@ class DeleteResourceTest extends KubernetesBaseTest {
         assertNotNull(client.pods().inNamespace(namespace).withName(resourceName).get());
 
         // when
-        Map<String, String> res = kubernetesService.deleteResource(namespace, resourceName, resourceType, gracePeriodSeconds);
+        Map<String, Object> res = kubernetesService.deleteResource(namespace, resourceName, resourceType, gracePeriodSeconds);
         Pod pod1 = client.pods().inNamespace(namespace).withName(resourceName).get();
 
         // then
@@ -69,7 +70,7 @@ class DeleteResourceTest extends KubernetesBaseTest {
         assertNotNull(client.apps().deployments().inNamespace(namespace).withName(resourceName).get());
 
         // when
-        Map<String, String> res = kubernetesService.deleteResource(namespace, resourceName, resourceType, gracePeriodSeconds);
+        Map<String, Object> res = kubernetesService.deleteResource(namespace, resourceName, resourceType, gracePeriodSeconds);
         Deployment deployment1 = client.apps().deployments().inNamespace(namespace).withName(resourceName).get();
 
         // then
@@ -91,7 +92,7 @@ class DeleteResourceTest extends KubernetesBaseTest {
         assertNotNull(client.configMaps().inNamespace(namespace).withName(resourceName).get());
 
         // when
-        Map<String, String> res = kubernetesService.deleteResource(namespace, resourceName, resourceType, gracePeriodSeconds);
+        Map<String, Object> res = kubernetesService.deleteResource(namespace, resourceName, resourceType, gracePeriodSeconds);
         ConfigMap cm1 = client.configMaps().inNamespace(namespace).withName(resourceName).get();
 
         // then

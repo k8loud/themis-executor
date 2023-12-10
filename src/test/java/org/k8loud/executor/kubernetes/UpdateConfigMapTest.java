@@ -31,7 +31,7 @@ public class UpdateConfigMapTest extends KubernetesBaseTest {
         client.resource(cm).create();
 
         // when
-        Map<String, String> res = kubernetesService.updateConfigMap(namespace, resourceName, replacements);
+        Map<String, Object> res = kubernetesService.updateConfigMap(namespace, resourceName, replacements);
         ConfigMap cm1 = client.configMaps().inNamespace(namespace).withName(resourceName).get();
 
         //then

@@ -1,0 +1,12 @@
+### store text in a file
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "cnapp.themis.datastorage",
+  "actionName": "StoreAction",
+  "params": {
+    "fileName": "test_123",
+    "content": "sample text"
+  }
+}

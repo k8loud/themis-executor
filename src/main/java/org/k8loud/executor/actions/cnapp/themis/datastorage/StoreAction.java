@@ -1,0 +1,40 @@
+package org.k8loud.executor.actions.cnapp.themis.datastorage;
+
+import lombok.Builder;
+import org.k8loud.executor.datastorage.DataStorageService;
+import org.k8loud.executor.exception.ActionException;
+import org.k8loud.executor.model.Params;
+
+import java.util.Map;
+
+import static org.k8loud.executor.util.Util.resultMap;
+
+public class StoreAction extends DataStorageAction {
+    private String fileName;
+    private String content;
+
+    public StoreAction(Params params, DataStorageService dataStorageService) throws ActionException {
+        super(params, dataStorageService);
+    }
+
+    @Builder
+    public StoreAction(Params params, DataStorageService dataStorageService,
+                       String fileName, String content) throws ActionException {
+        super(params, dataStorageService);
+        this.fileName = fileName;
+        this.content = content;
+    }
+
+    @Override
+    public void unpackParams(Params params) throws ActionException {
+        this.fileName = params.getRequiredParam("fileName");
+        this.content = params.getRequiredParam("content");
+    }
+
+    @Override
+    protected Map<String, Object> executeBody() {
+        String storedPath = dataStorageService.store(fileName, content);
+        String result = storedPath == null ? String.format("Failed to store '%s'", fileName) : storedPath;
+        return resultMap(result);
+    }
+}

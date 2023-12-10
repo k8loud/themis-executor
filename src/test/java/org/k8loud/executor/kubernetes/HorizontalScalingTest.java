@@ -33,7 +33,7 @@ public class HorizontalScalingTest extends KubernetesBaseTest {
         client.resource(sts).create();
 
         // when
-        Map<String, String> res = kubernetesService.scaleHorizontally(namespace, resourceName, resourceType, replicas);
+        Map<String, Object> res = kubernetesService.scaleHorizontally(namespace, resourceName, resourceType, replicas);
         StatefulSet sts1 = client.apps().statefulSets().inNamespace(namespace).withName(resourceName).get();
 
         // then
@@ -64,7 +64,7 @@ public class HorizontalScalingTest extends KubernetesBaseTest {
         client.resource(depl).create();
 
         // when
-        Map<String, String> res = kubernetesService.scaleHorizontally(namespace, resourceName, resourceType, replicas);
+        Map<String, Object> res = kubernetesService.scaleHorizontally(namespace, resourceName, resourceType, replicas);
         Deployment depl1 = client.apps().deployments().inNamespace(namespace).withName(resourceName).get();
 
         // then
@@ -96,7 +96,7 @@ public class HorizontalScalingTest extends KubernetesBaseTest {
         client.resource(rss).create();
 
         // when
-        Map<String, String> res = kubernetesService.scaleHorizontally(namespace, resourceName, resourceType, replicas);
+        Map<String, Object> res = kubernetesService.scaleHorizontally(namespace, resourceName, resourceType, replicas);
         ReplicaSet repl = client.apps().replicaSets().inNamespace(namespace).withName(resourceName).get();
 
         // then

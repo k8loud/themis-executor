@@ -1,11 +1,11 @@
 package org.k8loud.executor.actions.kubernetes;
 
-import lombok.EqualsAndHashCode;
-import org.k8loud.executor.model.Params;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CustomException;
 import org.k8loud.executor.kubernetes.KubernetesService;
+import org.k8loud.executor.model.Params;
 
 import java.util.Map;
 
@@ -47,7 +47,7 @@ public class ChangeResourcesOfContainerWithinDeploymentAction extends Kubernetes
     }
 
     @Override
-    protected Map<String, String> executeBody() throws CustomException {
+    protected Map<String, Object> executeBody() throws CustomException {
         return kubernetesService.changeResourcesOfContainerWithinDeploymentAction(namespace, deploymentName,
                 containerName, limitsCpu, limitsMemory, requestsCpu, requestsMemory);
     }

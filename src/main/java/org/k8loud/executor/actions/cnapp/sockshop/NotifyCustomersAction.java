@@ -39,7 +39,7 @@ public class NotifyCustomersAction extends SockShopAction {
     }
 
     @Override
-    protected Map<String, String> executeBody() throws CustomException {
+    protected Map<String, Object> executeBody() throws CustomException {
         return sockShopService.notifyCustomers(applicationUrl, senderDisplayName, subject, content, imagesUrls);
     }
 }
