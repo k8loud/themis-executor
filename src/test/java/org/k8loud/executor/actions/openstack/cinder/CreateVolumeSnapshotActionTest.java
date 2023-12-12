@@ -7,6 +7,7 @@ import org.k8loud.executor.actions.openstack.CreateVolumeSnapshotAction;
 import org.k8loud.executor.actions.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
+import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.model.ExecutionRS;
 import org.k8loud.executor.model.Params;
 
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.*;
 public class CreateVolumeSnapshotActionTest extends OpenstackActionBaseTest {
     @ParameterizedTest
     @MethodSource
-    void testCreateVolumeSnapshot(Params params) throws ActionException, OpenstackException {
+    void testCreateVolumeSnapshot(Params params) throws ActionException, OpenstackException, ValidationException {
         // given
         CreateVolumeSnapshotAction createVolumeSnapshotAction = new CreateVolumeSnapshotAction(
                 params, openstackServiceMock);

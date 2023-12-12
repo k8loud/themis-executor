@@ -5,6 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.exception.KubernetesException;
+import org.k8loud.executor.exception.ValidationException;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -16,7 +17,7 @@ public class HorizontalScalingTest extends KubernetesBaseTest {
     @ParameterizedTest
     @MethodSource
     void testScalingStatefulSet(String namespace, String resourceName, String resourceType, Integer replicas)
-            throws KubernetesException {
+            throws KubernetesException, ValidationException {
         // given
         StatefulSet sts = new StatefulSetBuilder().withNewMetadata()
                 .withName(resourceName)
@@ -47,7 +48,7 @@ public class HorizontalScalingTest extends KubernetesBaseTest {
     @ParameterizedTest
     @MethodSource
     void testScalingDeployment(String namespace, String resourceName, String resourceType, Integer replicas)
-            throws KubernetesException {
+            throws KubernetesException, ValidationException {
         // given
         Deployment depl = new DeploymentBuilder().withNewMetadata()
                 .withName(resourceName)
@@ -78,7 +79,7 @@ public class HorizontalScalingTest extends KubernetesBaseTest {
     @ParameterizedTest
     @MethodSource
     void testScalingReplicaSet(String namespace, String resourceName, String resourceType, Integer replicas)
-            throws KubernetesException {
+            throws KubernetesException, ValidationException {
 
         // given
         ReplicaSet rss = new ReplicaSetBuilder().withNewMetadata()

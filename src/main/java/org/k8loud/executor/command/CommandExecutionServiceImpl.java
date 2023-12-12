@@ -10,6 +10,7 @@ import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 import org.apache.commons.codec.binary.Base64;
 import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.exception.CommandException;
+import org.k8loud.executor.exception.ValidationException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -39,7 +40,8 @@ public class CommandExecutionServiceImpl implements CommandExecutionService {
 
     @Override
     public Map<String, Object> executeCommand(@NotNull String host, @NotNull Integer port, @NotNull String privateKey,
-                                              @NotNull String user, @NotNull String command) throws CommandException {
+                                              @NotNull String user,
+                                              @NotNull String command) throws CommandException, ValidationException {
         try (SSHClient client = initClient(host, port, privateKey, user);
              Session session = client.startSession()) {
             log.info("Executing `{}`", command);
@@ -50,7 +52,7 @@ public class CommandExecutionServiceImpl implements CommandExecutionService {
                 } catch (InterruptedException e) {
                     log.warn("Interrupted while waiting for command exit");
                 }
-            } while(!commandObj.isEOF());
+            } while (!commandObj.isEOF());
             String stdout = IOUtils.readFully(commandObj.getInputStream()).toString();
             String stderr = IOUtils.readFully(commandObj.getErrorStream()).toString();
             Integer exitStatus = commandObj.getExitStatus();
@@ -60,7 +62,8 @@ public class CommandExecutionServiceImpl implements CommandExecutionService {
             if (exitStatus != 0) {
                 throw new CommandException(result, NON_ZERO_EXIT_CODE);
             }
-            return resultMap(result);
+            return resultMap(String.format("Successfully executed '%s'", command),
+                    Map.of("exitStatus", exitStatus, "output", result));
         } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new CommandException(FAILED_TO_EXECUTE_COMMAND);
         }

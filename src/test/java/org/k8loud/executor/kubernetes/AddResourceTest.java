@@ -5,6 +5,7 @@ import io.fabric8.kubernetes.api.model.Pod;
 import org.junit.jupiter.api.Test;
 import org.k8loud.executor.common.testutil.DataStorageTestUtil;
 import org.k8loud.executor.exception.KubernetesException;
+import org.k8loud.executor.exception.ValidationException;
 
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class AddResourceTest extends KubernetesBaseTest {
     }
 
     @Test
-    void testAddingPod() throws KubernetesException {
+    void testAddingPod() throws KubernetesException, ValidationException {
         // given
         final String resourceName = "nginx";
         final String resourceType = POD.toString();
@@ -44,7 +45,7 @@ public class AddResourceTest extends KubernetesBaseTest {
     }
 
     @Test
-    void testAddingConfigMap() throws KubernetesException {
+    void testAddingConfigMap() throws KubernetesException, ValidationException {
         // given
         final String resourceName = "game-config";
         final String resourceType = CONFIG_MAP.toString();
@@ -59,7 +60,7 @@ public class AddResourceTest extends KubernetesBaseTest {
     }
 
     @Test
-    void testAddingStatefulSet() throws KubernetesException {
+    void testAddingStatefulSet() throws KubernetesException, ValidationException {
         // given
         final String resourceName = "nginx";
         final String resourceType = POD.toString();
@@ -74,7 +75,7 @@ public class AddResourceTest extends KubernetesBaseTest {
     }
 
     @Test
-    void testAddExistingResource() throws KubernetesException {
+    void testAddExistingResource() throws KubernetesException, ValidationException {
         // given
         final String resourceName = "nginx";
         final String resourceType = POD.toString();

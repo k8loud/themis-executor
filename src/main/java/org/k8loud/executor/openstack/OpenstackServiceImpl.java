@@ -14,6 +14,7 @@ import org.openstack4j.model.image.v2.Image;
 import org.openstack4j.model.network.SecurityGroup;
 import org.openstack4j.model.network.SecurityGroupRule;
 import org.openstack4j.model.storage.block.Volume;
+import org.openstack4j.model.storage.block.VolumeSnapshot;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
@@ -205,32 +206,35 @@ public class OpenstackServiceImpl implements OpenstackService {
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "DELETE_SERVER_SNAPSHOT_FAILED")
     public Map<String, Object> deleteTheOldestServerSnapshot(String region, String serverId,
-                                                             boolean keepOneSnapshot) throws OpenstackException {
+                                                             boolean keepOneSnapshot) throws OpenstackException, ValidationException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
-        openstackGlanceService.deleteTheOldestSnapshot(server, keepOneSnapshot, client);
-        return resultMap(String.format("Deleted the oldest snapshot from server %s", server.getName()));
+        Image deletedImage = openstackGlanceService.deleteTheOldestSnapshot(server, keepOneSnapshot, client);
+        return resultMap(String.format("Deleted the oldest snapshot from server %s", server.getName()),
+                Map.of("deletedSnapshot", deletedImage.getName()));
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "CREATE_VOLUME_SNAPSHOT_FAILED")
     public Map<String, Object> createVolumeSnapshot(String region, String volumeId,
-                                                    String snapshotName) throws OpenstackException {
+                                                    String snapshotName) throws OpenstackException, ValidationException {
         OSClientV3 client = openstackClientWithRegion(region);
         Volume volume = openstackCinderService.getVolume(volumeId, client);
         snapshotName = Optional.ofNullable(snapshotName).filter(s -> !s.isBlank()).orElse(generateSnapshotName(volume));
-        openstackCinderService.createVolumeSnapshot(volume, snapshotName, client);
-        return resultMap(String.format("Created snapshot with name %s for volume %s", snapshotName, volume.getName()));
+        VolumeSnapshot snapshot = openstackCinderService.createVolumeSnapshot(volume, snapshotName, client);
+        return resultMap(String.format("Created snapshot with name %s for volume %s", snapshotName, volume.getName()),
+                Map.of("snapshotId", snapshot.getId()));
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "DELETE_VOLUME_SNAPSHOT_FAILED")
     public Map<String, Object> deleteTheOldestVolumeSnapshot(String region, String volumeId,
-                                                             boolean keepOneSnapshot) throws OpenstackException {
+                                                             boolean keepOneSnapshot) throws OpenstackException, ValidationException {
         OSClientV3 client = openstackClientWithRegion(region);
         Volume volume = openstackCinderService.getVolume(volumeId, client);
-        openstackCinderService.deleteTheOldestVolumeSnapshot(volume, keepOneSnapshot, client);
-        return resultMap(String.format("Deleted the oldest snapshot from volume %s", volume.getName()));
+        VolumeSnapshot snapshot = openstackCinderService.deleteTheOldestVolumeSnapshot(volume, keepOneSnapshot, client);
+        return resultMap(String.format("Deleted the oldest snapshot from volume %s", volume.getName()),
+                Map.of("snapshotId", snapshot.getId()));
     }
 
     @Override
@@ -251,8 +255,7 @@ public class OpenstackServiceImpl implements OpenstackService {
         SecurityGroup securityGroup = openstackNeutronService.getSecurityGroup(securityGroupId, client);
         openstackNeutronService.removeSecurityGroup(securityGroup, client);
 
-        String result = String.format("Deleted security group named %s", securityGroup.getName());
-        return resultMap(result);
+        return resultMap(String.format("Deleted security group named %s", securityGroup.getName()));
     }
 
     @Override
@@ -309,7 +312,7 @@ public class OpenstackServiceImpl implements OpenstackService {
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "IP_THROTTLE_FAILED")
     public Map<String, Object> throttle(String region, String serverId, String ethertype,
                                         String remoteIpPrefix, String protocol, int portRangeMin, int portRangeMax,
-                                        long secDuration) throws OpenstackException {
+                                        long secDuration) throws OpenstackException, ValidationException {
         OSClientV3 client = openstackClientWithRegion(region);
         Server server = openstackNovaService.getServer(serverId, client);
         Map<SecurityGroup, Set<SecurityGroupRule>> rulesToModify = openstackNeutronService.getThrottlingRules(server,
@@ -321,7 +324,8 @@ public class OpenstackServiceImpl implements OpenstackService {
         scheduleIpThrottlingRemoval(region, throttlingRules, rulesToModify, secDuration);
         return resultMap(
                 String.format("Added throttling security group rules to server %s and scheduled revert in %d sec",
-                        server.getName(), secDuration));
+                        server.getName(), secDuration),
+                Map.of("affectedRules", rulesToModify, "createdRules", throttlingRules));
     }
 
     private void scheduleIpThrottlingRemoval(String region, Set<SecurityGroupRule> rulesToDelete,

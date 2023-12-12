@@ -1,5 +1,6 @@
 package org.k8loud.executor.actions.command;
 
+import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.model.ExecutionRS;
 import org.k8loud.executor.model.Params;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ class CommandActionTest extends CommandActionBaseTest {
     ));
 
     @Test
-    void testValidParams() throws CommandException, ActionException {
+    void testValidParams() throws CommandException, ActionException, ValidationException {
         // given
         CommandAction commandAction = new CommandAction(PARAMS, commandExecutionServiceMock) {
             @Override

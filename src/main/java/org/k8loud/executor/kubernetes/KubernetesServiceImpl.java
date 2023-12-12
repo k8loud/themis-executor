@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.datastorage.DataStorageService;
 import org.k8loud.executor.exception.KubernetesException;
+import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.util.Util;
 import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 import org.springframework.stereotype.Service;
@@ -38,17 +39,18 @@ public class KubernetesServiceImpl implements KubernetesService {
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException", exceptionCode = "SCALE_HORIZONTALLY_FAILED")
     public Map<String, Object> scaleHorizontally(String namespace, String resourceName, String resourceType,
-                                                 Integer replicas) throws KubernetesException {
+                                                 Integer replicas) throws KubernetesException, ValidationException {
         log.info("Scaling {} to {}", getFullResourceName(resourceType, resourceName), replicas);
         getResource(namespace, resourceType, resourceName)
                 .scale(replicas);
-        return resultMap(String.format("Scaled %s to %d", getFullResourceName(resourceType, resourceName), replicas));
+        return resultMap(String.format("Scaled %s to %d", getFullResourceName(resourceType, resourceName), replicas),
+                Map.of("fullResourceName", getFullResourceName(resourceType, resourceName), "replicas", replicas));
     }
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException", exceptionCode = "ADD_RESOURCE_FAILED")
     public <T extends HasMetadata> Map<String, Object> addResource(final String namespace, final String resourceType,
-                                                                   String resourceDescription) throws KubernetesException {
+                                                                   String resourceDescription) throws KubernetesException, ValidationException {
         log.info("Adding resource of type {} to namespace {} from description", resourceType, namespace);
         Resource<T> resource = loadResource(resourceType, resourceDescription);
         final String resourceName = ((HasMetadataOperation<T, ?, ?>) resource).getName();
@@ -70,7 +72,8 @@ public class KubernetesServiceImpl implements KubernetesService {
             throw new KubernetesException(String.format("Post add resource verification failed, the cause is '%s'", e),
                     POST_ADD_RESOURCE_VERIFICATION_FAILED);
         }
-        return resultMap(String.format("Added resource %s", getFullResourceName(resourceType, resourceName)));
+        return resultMap(String.format("Added resource %s", getFullResourceName(resourceType, resourceName)),
+                Map.of("fullResourceName", getFullResourceName(resourceType, resourceName)));
     }
 
     @Override
@@ -90,13 +93,14 @@ public class KubernetesServiceImpl implements KubernetesService {
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException", exceptionCode = "UPDATE_CONFIG_MAP_FAILED")
     public Map<String, Object> updateConfigMap(String namespace, String resourceName, Map<String, String> replacements)
-            throws KubernetesException {
+            throws KubernetesException, ValidationException {
         log.info("Updating {} with {}", getFullResourceName(CONFIG_MAP.toString(), resourceName), replacements);
         getResource(namespace, CONFIG_MAP.toString(), resourceName)
                 .edit(c -> new ConfigMapBuilder((ConfigMap) c)
                         .addToData(replacements).build());
         return resultMap(
-                String.format("Update of %s successful", getFullResourceName(CONFIG_MAP.toString(), resourceName)));
+                String.format("Update of %s successful", getFullResourceName(CONFIG_MAP.toString(), resourceName)),
+                Map.of("replacements", replacements));
     }
 
     // prepare a template of pod with updated resources -> delete pod -> recreate pod

@@ -4,6 +4,7 @@ import lombok.Builder;
 import org.k8loud.executor.datastorage.DataStorageService;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.DataStorageException;
+import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.model.Params;
 
 import java.util.Map;
@@ -33,7 +34,8 @@ public class StoreImageAction extends DataStorageAction {
     }
 
     @Override
-    protected Map<String, Object> executeBody() throws DataStorageException {
-        return resultMap(dataStorageService.storeImage(fileName, sourceUrl));
+    protected Map<String, Object> executeBody() throws DataStorageException, ValidationException {
+        return resultMap("Successfully stored image",
+                Map.of("path", dataStorageService.storeImage(fileName, sourceUrl)));
     }
 }

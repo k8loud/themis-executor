@@ -1,5 +1,6 @@
 package org.k8loud.executor.actions.kubernetes;
 
+import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.model.ExecutionRS;
 import org.k8loud.executor.model.Params;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ class HorizontalScalingActionTest extends KubernetesActionBaseTest {
     private static final String REPLICAS_KEY = "replicas";
 
     @Test
-    void testValidParams() throws ActionException, KubernetesException {
+    void testValidParams() throws ActionException, KubernetesException, ValidationException {
         // given
         Params params = new Params(Map.of(NAMESPACE_KEY, NAMESPACE, RESOURCE_NAME_KEY, RESOURCE_NAME, RESOURCE_TYPE_KEY,
                 RESOURCE_TYPE, REPLICAS_KEY, "3"));

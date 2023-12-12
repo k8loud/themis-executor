@@ -1,5 +1,6 @@
 package org.k8loud.executor.actions.openstack.neutron;
 
+import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.model.ExecutionRS;
 import org.k8loud.executor.model.Params;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ public class IpThrottleActionTest extends OpenstackActionBaseTest {
                     "portRangeMax", PORT_RANGE_MAX));
 
     @Test
-    void testSuccess() throws ActionException, OpenstackException {
+    void testSuccess() throws ActionException, OpenstackException, ValidationException {
         // given
         IpThrottleAction ipThrottleAction = new IpThrottleAction(VALID_PARAMS, openstackServiceMock);
         when(openstackServiceMock.throttle(anyString(), anyString(), anyString(),

@@ -9,7 +9,7 @@ import org.springframework.retry.annotation.Retryable;
 
 @Retryable(retryFor = ConnectionException.class)
 public interface OpenstackGlanceService {
-    void deleteTheOldestSnapshot(Server server, boolean keepOneSnapshot, OSClient.OSClientV3 client) throws OpenstackException;
+    Image deleteTheOldestSnapshot(Server server, boolean keepOneSnapshot, OSClient.OSClientV3 client) throws OpenstackException;
 
     Image getImage(String imageId, OSClient.OSClientV3 client) throws OpenstackException;
 }

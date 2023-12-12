@@ -2,6 +2,7 @@ package org.k8loud.executor.controller;
 
 
 import org.k8loud.executor.model.ExecutionRQ;
+import org.k8loud.executor.model.ExecutionRS;
 import org.k8loud.executor.service.ExecutionWrapperService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ public class ExecutionController {
     }
 
     @PostMapping(value = "/execute", consumes = "application/json")
-    public ResponseEntity<String> execute(@RequestBody ExecutionRQ executionRQ) {
+    public ResponseEntity<ExecutionRS> execute(@RequestBody ExecutionRQ executionRQ) {
         return executionWrapperService.execute(executionRQ);
     }
 }

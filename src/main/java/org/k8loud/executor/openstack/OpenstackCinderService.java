@@ -5,6 +5,7 @@ import org.openstack4j.api.OSClient;
 import org.openstack4j.api.exceptions.ConnectionException;
 import org.openstack4j.model.compute.Server;
 import org.openstack4j.model.storage.block.Volume;
+import org.openstack4j.model.storage.block.VolumeSnapshot;
 import org.springframework.retry.annotation.Retryable;
 
 @Retryable(retryFor = ConnectionException.class)
@@ -15,7 +16,7 @@ public interface OpenstackCinderService {
 
     Volume getVolume(String flavourId, OSClient.OSClientV3 client) throws OpenstackException;
 
-    void createVolumeSnapshot(Volume volume, String snapshotName, OSClient.OSClientV3 client) throws OpenstackException;
+    VolumeSnapshot createVolumeSnapshot(Volume volume, String snapshotName, OSClient.OSClientV3 client) throws OpenstackException;
 
-    void deleteTheOldestVolumeSnapshot(Volume volume, boolean keepOneSnapshot, OSClient.OSClientV3 client) throws OpenstackException;
+    VolumeSnapshot deleteTheOldestVolumeSnapshot(Volume volume, boolean keepOneSnapshot, OSClient.OSClientV3 client) throws OpenstackException;
 }

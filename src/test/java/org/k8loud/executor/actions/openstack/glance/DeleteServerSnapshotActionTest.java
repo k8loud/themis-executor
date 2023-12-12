@@ -7,6 +7,7 @@ import org.k8loud.executor.actions.openstack.DeleteServerSnapshotAction;
 import org.k8loud.executor.actions.openstack.OpenstackActionBaseTest;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
+import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.model.ExecutionRS;
 import org.k8loud.executor.model.Params;
 
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.*;
 public class DeleteServerSnapshotActionTest extends OpenstackActionBaseTest {
     @ParameterizedTest
     @MethodSource
-    void testDeleteServerSnapshotSuccess(Params params) throws ActionException, OpenstackException {
+    void testDeleteServerSnapshotSuccess(Params params) throws ActionException, OpenstackException, ValidationException {
         // given
         DeleteServerSnapshotAction deleteServerSnapshotAction = new DeleteServerSnapshotAction(
                 params, openstackServiceMock);

@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.KubernetesException;
 import org.k8loud.executor.exception.ParamNotFoundException;
+import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.kubernetes.KubernetesService;
 import org.k8loud.executor.model.Params;
 
@@ -48,7 +49,7 @@ public class AddResourceAction extends KubernetesAction {
     }
 
     @Override
-    public Map<String, Object> executeBody() throws KubernetesException {
+    public Map<String, Object> executeBody() throws KubernetesException, ValidationException {
         return kubernetesService.addResource(namespace, resourceType, resourceDescription);
     }
 
