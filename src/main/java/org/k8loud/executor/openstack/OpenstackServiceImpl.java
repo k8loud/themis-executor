@@ -99,7 +99,7 @@ public class OpenstackServiceImpl implements OpenstackService {
         List<String> serverIds = openstackNovaService.createServers(name, image, flavor, keypairName, securityGroup,
                 userData, count, waitActiveSec, clientSupplier(region));
         String result = String.format("Creating %d instances named '%s' finished with success", count, name);
-        return resultMap(result, Map.of("serverIds", serverIds.toString()));
+        return resultMap(result, Map.of("serverIds", serverIds));
     }
 
     @Override
@@ -112,7 +112,7 @@ public class OpenstackServiceImpl implements OpenstackService {
 
         String result = String.format("Deleting instances named with pattern %s finished with success.",
                 namePattern);
-        return resultMap(result, Map.of("deletedServers", deletedServers.toString()));
+        return resultMap(result, Map.of("deletedServers", deletedServers));
     }
 
     @Override
@@ -132,7 +132,7 @@ public class OpenstackServiceImpl implements OpenstackService {
         List<String> deletedServers = openstackNovaService.deleteServers(servers, clientSupplier(region));
 
         String result = "Deleting instances from serverList finished with success";
-        return resultMap(result, Map.of("deletedServers", deletedServers.toString()));
+        return resultMap(result, Map.of("deletedServers", deletedServers));
     }
 
     @Override
