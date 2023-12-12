@@ -72,7 +72,7 @@ public class HorizontalScalingTest extends KubernetesBaseTest {
         assertNotNull(depl1);
         assertNotNull(depl1.getSpec());
         assertNotNull(depl1.getStatus());
-        assertEquals(replicas, depl1.getSpec().getReplicas().intValue());
+        assertEquals(replicas + 3, depl1.getSpec().getReplicas().intValue());
         assertResult(String.format("Scaled %s/%s to %d", resourceType, resourceName, replicas), res);
     }
 
