@@ -1,9 +1,9 @@
 package org.k8loud.executor.actions.cnapp.mail;
 
 import lombok.Builder;
+import org.k8loud.executor.cnapp.mail.MailService;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.MailException;
-import org.k8loud.executor.mail.MailService;
 import org.k8loud.executor.model.Params;
 
 import java.util.HashMap;

@@ -2,8 +2,8 @@ package org.k8loud.executor.actions.cnapp.http;
 
 import lombok.AllArgsConstructor;
 import org.k8loud.executor.actions.cnapp.CNAppAction;
+import org.k8loud.executor.cnapp.http.HTTPService;
 import org.k8loud.executor.exception.ActionException;
-import org.k8loud.executor.http.HTTPService;
 import org.k8loud.executor.model.Params;
 
 @AllArgsConstructor

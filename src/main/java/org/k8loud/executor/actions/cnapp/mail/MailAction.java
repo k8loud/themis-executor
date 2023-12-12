@@ -2,8 +2,8 @@ package org.k8loud.executor.actions.cnapp.mail;
 
 import lombok.AllArgsConstructor;
 import org.k8loud.executor.actions.cnapp.CNAppAction;
+import org.k8loud.executor.cnapp.mail.MailService;
 import org.k8loud.executor.exception.ActionException;
-import org.k8loud.executor.mail.MailService;
 import org.k8loud.executor.model.Params;
 
 @AllArgsConstructor

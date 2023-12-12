@@ -1,4 +1,4 @@
-package org.k8loud.executor.db;
+package org.k8loud.executor.cnapp.db;
 
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.exception.DBException;

@@ -1,10 +1,10 @@
 package org.k8loud.executor.actions.cnapp.http;
 
 import lombok.Builder;
+import org.k8loud.executor.cnapp.http.HTTPService;
+import org.k8loud.executor.cnapp.http.HTTPSession;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CustomException;
-import org.k8loud.executor.http.HTTPService;
-import org.k8loud.executor.http.HTTPSession;
 import org.k8loud.executor.model.Params;
 
 import java.util.Map;

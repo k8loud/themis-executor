@@ -1,4 +1,4 @@
-package org.k8loud.executor.db;
+package org.k8loud.executor.cnapp.db;
 
 import com.github.vincentrussell.query.mongodb.sql.converter.MongoDBQueryHolder;
 import com.github.vincentrussell.query.mongodb.sql.converter.ParseException;

@@ -1,4 +1,4 @@
-package org.k8loud.executor.db;
+package org.k8loud.executor.cnapp.db;
 
 import com.mongodb.client.MongoClient;
 import lombok.AllArgsConstructor;

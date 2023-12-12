@@ -1,4 +1,4 @@
-package org.k8loud.executor.db;
+package org.k8loud.executor.cnapp.db;
 
 import org.k8loud.executor.exception.DBException;
 import org.k8loud.executor.exception.ValidationException;

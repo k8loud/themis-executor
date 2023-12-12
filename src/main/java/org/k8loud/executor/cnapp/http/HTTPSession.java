@@ -1,4 +1,4 @@
-package org.k8loud.executor.http;
+package org.k8loud.executor.cnapp.http;
 
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
