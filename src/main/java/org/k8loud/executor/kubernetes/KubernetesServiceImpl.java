@@ -42,7 +42,7 @@ public class KubernetesServiceImpl implements KubernetesService {
                                                  Integer replicas) throws KubernetesException, ValidationException {
         log.info("Scaling {} to {}", getFullResourceName(resourceType, resourceName), replicas);
         int currentReplicas = 0;
-        if ("Deploymnet".equals(resourceType)) {
+        if ("Deployment".equals(resourceType)) {
             currentReplicas = getDeploymentReplicasNumber(namespace, resourceName);
         }
         getResource(namespace, resourceType, resourceName)
