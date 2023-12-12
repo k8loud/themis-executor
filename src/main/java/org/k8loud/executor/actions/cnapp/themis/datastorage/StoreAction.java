@@ -3,6 +3,7 @@ package org.k8loud.executor.actions.cnapp.themis.datastorage;
 import lombok.Builder;
 import org.k8loud.executor.datastorage.DataStorageService;
 import org.k8loud.executor.exception.ActionException;
+import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.model.Params;
 
 import java.util.Map;
@@ -32,9 +33,11 @@ public class StoreAction extends DataStorageAction {
     }
 
     @Override
-    protected Map<String, Object> executeBody() {
+    protected Map<String, Object> executeBody() throws ValidationException {
         String storedPath = dataStorageService.store(fileName, content);
-        String result = storedPath == null ? String.format("Failed to store '%s'", fileName) : storedPath;
-        return resultMap(result);
+        if (storedPath != null){
+            return resultMap(String.format("Successfully stored '%s'", fileName), Map.of("path", storedPath));
+        }
+        return resultMap( String.format("Failed to store '%s'", fileName));
     }
 }

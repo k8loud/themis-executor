@@ -1,4 +1,4 @@
-package org.k8loud.executor.http;
+package org.k8loud.executor.cnapp.http;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;

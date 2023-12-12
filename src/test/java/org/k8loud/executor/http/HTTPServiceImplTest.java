@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.k8loud.executor.http.HTTPServiceImpl;
+import org.k8loud.executor.cnapp.http.HTTPServiceImpl;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.stream.Stream;

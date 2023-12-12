@@ -1,4 +1,4 @@
-package org.k8loud.executor.mail;
+package org.k8loud.executor.cnapp.mail;
 
 import lombok.RequiredArgsConstructor;
 import org.simplejavamail.api.mailer.Mailer;

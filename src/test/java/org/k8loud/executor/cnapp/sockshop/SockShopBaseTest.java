@@ -6,11 +6,11 @@ import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.k8loud.executor.cnapp.http.HTTPService;
+import org.k8loud.executor.cnapp.http.HTTPSession;
+import org.k8loud.executor.cnapp.mail.MailService;
 import org.k8loud.executor.datastorage.DataStorageService;
 import org.k8loud.executor.exception.HTTPException;
-import org.k8loud.executor.http.HTTPService;
-import org.k8loud.executor.http.HTTPSession;
-import org.k8loud.executor.mail.MailService;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.k8loud.executor.actions.ActionBaseTest;
 import org.k8loud.executor.command.CommandExecutionService;
 import org.k8loud.executor.exception.CommandException;
+import org.k8loud.executor.exception.ValidationException;
 import org.mockito.Mock;
 
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -24,7 +25,7 @@ public abstract class CommandActionBaseTest extends ActionBaseTest {
     protected CommandExecutionService commandExecutionServiceMock;
 
     @BeforeEach
-    protected void setUp() throws CommandException {
+    protected void setUp() throws CommandException, ValidationException {
         when(commandExecutionServiceMock.executeCommand(anyString(), anyInt(), anyString(), anyString(), anyString()))
                 .thenReturn(resultMap);
     }

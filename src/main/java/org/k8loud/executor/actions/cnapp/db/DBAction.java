@@ -1,7 +1,7 @@
 package org.k8loud.executor.actions.cnapp.db;
 
 import org.k8loud.executor.actions.cnapp.CNAppAction;
-import org.k8loud.executor.db.DBService;
+import org.k8loud.executor.cnapp.db.DBService;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.model.Params;
 

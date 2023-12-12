@@ -1,7 +1,8 @@
-package org.k8loud.executor.db;
+package org.k8loud.executor.cnapp.db;
 
 import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.exception.DBException;
+import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.exception.code.DBExceptionCode;
 import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 import org.springframework.stereotype.Service;
@@ -29,30 +30,32 @@ public class MySQLService implements DBService<Connection> {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "DBException", exceptionCode = "QUERY_FAILED")
-    public Map<String, Object> runUpdate(String query, SuperConnection<Connection> connection) throws DBException {
+    public Map<String, Object> runUpdate(String query,
+                                         SuperConnection<Connection> connection) throws DBException, ValidationException {
 
         int rowsAffected;
-        try(Statement statement = connection.getConnection().createStatement()) {
+        try (Statement statement = connection.getConnection().createStatement()) {
             rowsAffected = statement.executeUpdate(query);
         } catch (SQLException e) {
             throw new DBException(e, DBExceptionCode.QUERY_FAILED);
         }
 
-        return resultMap(String.format("Rows affected: %d", rowsAffected));
+        return resultMap(String.format("Successfully executed '%s'", query), Map.of("rowsAffected", rowsAffected));
     }
 
     @Override
-    public Map<String, Object> runQuery(String query, SuperConnection<Connection> connection) throws DBException {
+    public Map<String, Object> runQuery(String query,
+                                        SuperConnection<Connection> connection) throws DBException, ValidationException {
 
         List<String> result;
-        try(Statement statement = connection.getConnection().createStatement()) {
+        try (Statement statement = connection.getConnection().createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
             result = parseResult(resultSet);
         } catch (SQLException e) {
             throw new DBException(e, DBExceptionCode.QUERY_FAILED);
         }
-        
-        return resultMap(String.format("Query result: %s", result));
+
+        return resultMap(String.format("Successfully executed '%s'", query), Map.of("output", result));
     }
 
     private List<String> parseResult(ResultSet resultSet) throws SQLException {

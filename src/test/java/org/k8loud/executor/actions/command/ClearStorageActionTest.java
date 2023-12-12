@@ -1,5 +1,6 @@
 package org.k8loud.executor.actions.command;
 
+import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.model.ExecutionRS;
 import org.k8loud.executor.model.Params;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ class ClearStorageActionTest extends CommandActionBaseTest {
     ));
 
     @Test
-    void testValidParams() throws CommandException, ActionException {
+    void testValidParams() throws CommandException, ActionException, ValidationException {
         // given
         ClearStorageAction clearStorageAction = new ClearStorageAction(PARAMS, commandExecutionServiceMock);
         final String command = String.format("find %s -name '%s' -newermt %s ! -newermt %s -depth -exec rm -rf {} \\;",

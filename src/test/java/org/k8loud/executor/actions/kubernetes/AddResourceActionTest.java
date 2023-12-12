@@ -1,5 +1,6 @@
 package org.k8loud.executor.actions.kubernetes;
 
+import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.model.ExecutionRS;
 import org.k8loud.executor.model.Params;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ public class AddResourceActionTest extends KubernetesActionBaseTest {
     private static final String RESOURCE_DESCRIPTION_KEY = "resourceDescription";
 
     @Test
-    void testResourceDescriptionWithNamespace() throws ActionException, KubernetesException {
+    void testResourceDescriptionWithNamespace() throws ActionException, KubernetesException, ValidationException {
         // given
         Params params = new Params(Map.of(RESOURCE_DESCRIPTION_KEY, RESOURCE_DESCRIPTION_WITH_NAMESPACE));
         when(kubernetesServiceMock.addResource(anyString(), anyString(), anyString())).thenReturn(resultMap);
@@ -59,7 +60,7 @@ public class AddResourceActionTest extends KubernetesActionBaseTest {
     }
 
     @Test
-    void testNamespaceInParamsShouldHavePriorityOverResourceDescription() throws KubernetesException, ActionException {
+    void testNamespaceInParamsShouldHavePriorityOverResourceDescription() throws KubernetesException, ActionException, ValidationException {
         // given
         Params params = new Params(Map.of(RESOURCE_DESCRIPTION_KEY, RESOURCE_DESCRIPTION_WITH_NAMESPACE,
                 NAMESPACE_KEY, NAMESPACE));
@@ -93,7 +94,7 @@ public class AddResourceActionTest extends KubernetesActionBaseTest {
     @ParameterizedTest
     @MethodSource
     void testValidParams(Params params, String expectedNamespace, String expectedResourceType,
-                         String expectedResourceDescription) throws ActionException, KubernetesException {
+                         String expectedResourceDescription) throws ActionException, KubernetesException, ValidationException {
         // given
         when(kubernetesServiceMock.addResource(anyString(), anyString(), anyString())).thenReturn(resultMap);
 

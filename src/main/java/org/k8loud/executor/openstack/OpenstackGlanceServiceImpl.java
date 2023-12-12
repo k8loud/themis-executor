@@ -18,7 +18,7 @@ import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
 @Slf4j
 public class OpenstackGlanceServiceImpl implements OpenstackGlanceService {
     @Override
-    public void deleteTheOldestSnapshot(Server server, boolean keepOneSnapshot,
+    public Image deleteTheOldestSnapshot(Server server, boolean keepOneSnapshot,
                                         OSClient.OSClientV3 client) throws OpenstackException {
         log.debug("Deleting the oldest snapshot from server {}", server.getName());
         Image imageToDelete = getTheOldestSnapshot(server, keepOneSnapshot, client);
@@ -28,6 +28,8 @@ public class OpenstackGlanceServiceImpl implements OpenstackGlanceService {
                     "Failed to delete server %s snapshot %s. Reason: %s",
                     server.getName(), imageToDelete.getName(), response.getFault());
         }
+
+        return imageToDelete;
     }
 
     @Override

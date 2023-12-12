@@ -6,6 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.exception.KubernetesException;
+import org.k8loud.executor.exception.ValidationException;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -18,7 +19,7 @@ public class UpdateConfigMapTest extends KubernetesBaseTest {
     @MethodSource
     void testUpdateValuesConfigMap(String namespace, String resourceName, Map<String, String> replacements,
                                    Map<String, String> data, Map<String, String> newData, int finalLength)
-            throws KubernetesException {
+            throws KubernetesException, ValidationException {
         // given
         ConfigMap cm = new ConfigMapBuilder().withNewMetadata()
                 .withName(resourceName)

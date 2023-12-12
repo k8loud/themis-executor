@@ -1,4 +1,4 @@
-package org.k8loud.executor.db;
+package org.k8loud.executor.cnapp.db;
 
 import com.github.vincentrussell.query.mongodb.sql.converter.MongoDBQueryHolder;
 import com.github.vincentrussell.query.mongodb.sql.converter.ParseException;
@@ -8,6 +8,7 @@ import com.mongodb.client.MongoClients;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.k8loud.executor.exception.DBException;
+import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.exception.code.DBExceptionCode;
 import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,8 @@ public class MongoService implements DBService<MongoClient> {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "DBException", exceptionCode = "QUERY_FAILED")
-    public Map<String, Object> runQuery(String query, SuperConnection<MongoClient> connection) throws DBException {
+    public Map<String, Object> runQuery(String query,
+                                        SuperConnection<MongoClient> connection) throws DBException, ValidationException {
         try {
             QueryConverter queryConverter = new QueryConverter
                     .Builder()
@@ -57,7 +59,7 @@ public class MongoService implements DBService<MongoClient> {
                     .find(mongoQuery)
                     .forEach(res::add);
 
-            return resultMap(String.format("Result: %s", res));
+            return resultMap(String.format("Successfully executed %s", query), Map.of("output", res));
         } catch (ParseException e) {
             throw new DBException(e, DBExceptionCode.QUERY_NOT_VALID);
         }

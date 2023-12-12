@@ -59,7 +59,7 @@ public class OpenstackCinderServiceImpl implements OpenstackCinderService {
     }
 
     @Override
-    public void createVolumeSnapshot(Volume volume, String snapshotName,
+    public VolumeSnapshot createVolumeSnapshot(Volume volume, String snapshotName,
                                      OSClient.OSClientV3 client) throws OpenstackException {
         log.debug("Creating snapshot with name {} for volume {}", snapshotName, volume.getName());
         VolumeSnapshot snapshot = client.blockStorage().snapshots()
@@ -74,10 +74,12 @@ public class OpenstackCinderServiceImpl implements OpenstackCinderService {
             throw new OpenstackException(CREATE_VOLUME_SNAPSHOT_FAILED,
                     "Failed to create snapshot %s of a volume %s", snapshotName, volume.getName());
         }
+
+        return snapshot;
     }
 
     @Override
-    public void deleteTheOldestVolumeSnapshot(Volume volume, boolean keepOneSnapshot,
+    public VolumeSnapshot deleteTheOldestVolumeSnapshot(Volume volume, boolean keepOneSnapshot,
                                               OSClient.OSClientV3 client) throws OpenstackException {
         log.debug("Deleting the oldest snapshot from volume {}", volume.getName());
         VolumeSnapshot snapshotToDelete = getTheOldestSnapshot(volume, keepOneSnapshot, client);
@@ -87,6 +89,8 @@ public class OpenstackCinderServiceImpl implements OpenstackCinderService {
                     volume.getName(), snapshotToDelete.getName(), response.getFault());
             throw new OpenstackException(response.getFault(), DELETE_VOLUME_SNAPSHOT_FAILED);
         }
+
+        return snapshotToDelete;
     }
 
     private VolumeSnapshot getTheOldestSnapshot(Volume volume, boolean keepOneSnapshot,

@@ -33,12 +33,12 @@ public interface OpenstackService {
                                 boolean stopInstance) throws OpenstackException, ValidationException;
 
     Map<String, Object> deleteTheOldestServerSnapshot(String region, String serverId,
-                                         boolean keepOneSnapshot) throws OpenstackException;
+                                         boolean keepOneSnapshot) throws OpenstackException, ValidationException;
 
-    Map<String, Object> createVolumeSnapshot(String region, String volumeId, String snapshotName) throws OpenstackException;
+    Map<String, Object> createVolumeSnapshot(String region, String volumeId, String snapshotName) throws OpenstackException, ValidationException;
 
     Map<String, Object> deleteTheOldestVolumeSnapshot(String region, String volumeId,
-                                         boolean keepOneSnapshot) throws OpenstackException;
+                                         boolean keepOneSnapshot) throws OpenstackException, ValidationException;
 
     Map<String, Object> createSecurityGroup(String region, String name, String description) throws OpenstackException, ValidationException;
     Map<String, Object> removeSecurityGroup(String region, String securityGroupId) throws OpenstackException;
@@ -55,5 +55,5 @@ public interface OpenstackService {
 
     Map<String, Object> throttle(String region, String serverId, String ethertype,
                                  String remoteIpPrefix, String protocol, int portRangeMin,
-                                 int portRangeMax, long secDuration) throws OpenstackException;
+                                 int portRangeMax, long secDuration) throws OpenstackException, ValidationException;
 }

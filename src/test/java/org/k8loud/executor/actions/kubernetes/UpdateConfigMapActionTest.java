@@ -1,5 +1,6 @@
 package org.k8loud.executor.actions.kubernetes;
 
+import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.model.ExecutionRS;
 import org.k8loud.executor.model.Params;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,7 +21,7 @@ class UpdateConfigMapActionTest extends KubernetesActionBaseTest {
     @ParameterizedTest
     @MethodSource
     void testValidParams(Params params, Map<String, String> replacements)
-            throws ActionException, KubernetesException {
+            throws ActionException, KubernetesException, ValidationException {
         // given
         when(kubernetesServiceMock.updateConfigMap(anyString(), anyString(), anyMap())).thenReturn(resultMap);
 
