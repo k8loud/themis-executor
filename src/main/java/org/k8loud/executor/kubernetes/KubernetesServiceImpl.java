@@ -41,10 +41,26 @@ public class KubernetesServiceImpl implements KubernetesService {
     public Map<String, Object> scaleHorizontally(String namespace, String resourceName, String resourceType,
                                                  Integer replicas) throws KubernetesException, ValidationException {
         log.info("Scaling {} to {}", getFullResourceName(resourceType, resourceName), replicas);
+        int currentReplicas = 0;
+        if ("Deploymnet".equals(resourceType)) {
+            currentReplicas = getDeploymentReplicasNumber(namespace, resourceName);
+        }
         getResource(namespace, resourceType, resourceName)
-                .scale(replicas);
+                .scale(replicas + currentReplicas > 0 ? replicas + currentReplicas: 1);
+
         return resultMap(String.format("Scaled %s to %d", getFullResourceName(resourceType, resourceName), replicas),
                 Map.of("fullResourceName", getFullResourceName(resourceType, resourceName), "replicas", replicas));
+    }
+
+    private int getDeploymentReplicasNumber(String namespace, String resourceName) {
+        return clientProvider.getKubernetesClient()
+                .apps()
+                .deployments()
+                .inNamespace(namespace)
+                .withName(resourceName)
+                .get()
+                .getSpec()
+                .getReplicas();
     }
 
     @Override
