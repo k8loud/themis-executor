@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: deepakputhraya/action-branch-name@master
         with:
-          regex: '([a-z])+\/([a-z]+-*[a-z]+)+' # Regex the branch should match.
+          regex: '([a-z])+\/([a-z0-9]+-*[a-z0-9]+)+' # Regex the branch should match.
           allowed_prefixes: 'feature,bugfix,refactor' # All branches should start with the given prefix
           ignore: main # Ignore exactly matching branch names from convention
           min_length: 3 # Min length of the branch name
