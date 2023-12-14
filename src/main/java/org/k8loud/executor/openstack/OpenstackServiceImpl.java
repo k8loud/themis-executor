@@ -23,7 +23,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static org.k8loud.executor.exception.code.OpenstackExceptionCode.*;
 import static org.k8loud.executor.util.Util.resultMap;
@@ -78,9 +77,9 @@ public class OpenstackServiceImpl implements OpenstackService {
         log.info("Getting servers in region '{}' with namePattern '{}'", region, namePattern);
         OSClientV3 client = openstackClientWithRegion(region);
 
-        String serverNames = openstackNovaService.getServers(client, Pattern.compile(namePattern)).stream()
+        List<String> serverNames = openstackNovaService.getServers(client, Pattern.compile(namePattern)).stream()
                 .map(Server::getName)
-                .collect(Collectors.joining(","));
+                .toList();
 
         String result = String.format("Getting servers in region '%s' with namePattern '%s' finished with success",
                 region, namePattern);
