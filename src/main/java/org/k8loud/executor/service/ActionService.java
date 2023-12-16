@@ -82,7 +82,7 @@ public class ActionService {
         return null;
     }
     private String getFullPackageName(String subPackageName) {
-        return "org.k8loud.executor.actions" + "." + subPackageName;
+        return "org.k8loud.executor.actions." + subPackageName;
     }
 
     private String getFullClassName(String packageName, String className) {
