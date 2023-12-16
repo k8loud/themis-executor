@@ -2,6 +2,7 @@ package org.k8loud.executor.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.k8loud.executor.actions.Action;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.util.ClassHelper;
 
@@ -12,7 +13,7 @@ public class ActionHelper {
     @NotNull
     public Class<?> getActionClass(String collectionName, String actionName) throws ActionException {
         String fullActionName = String.format("%s.%s", collectionName, actionName);
-        String fullClassName = String.format("%s.%s", this.getClass().getPackageName(), fullActionName);
+        String fullClassName = String.format("%s.%s", Action.class.getPackageName(), fullActionName);
         try {
             return ClassHelper.getClassFromName(fullClassName);
         } catch (ClassNotFoundException e) {
