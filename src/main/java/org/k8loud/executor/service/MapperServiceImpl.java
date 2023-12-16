@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.actions.Action;
-import org.k8loud.executor.actions.ActionHelper;
+import org.k8loud.executor.util.ActionHelper;
 import org.k8loud.executor.cnapp.db.DBService;
 import org.k8loud.executor.cnapp.db.MongoService;
 import org.k8loud.executor.cnapp.db.MySQLService;
