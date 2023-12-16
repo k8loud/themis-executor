@@ -35,5 +35,4 @@ public class RulesController {
     public ResponseEntity<String> getPackage(@PathVariable String rulePackage) {
         return droolsService.getPackage(rulePackage);
     }
-
 }
