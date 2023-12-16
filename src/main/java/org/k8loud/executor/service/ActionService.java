@@ -42,7 +42,7 @@ public class ActionService {
 
                     nonAbstractClasses.add(new ClassElement(
                             clazz.getSimpleName(),
-                            clazz.getPackageName().substring(28),
+                            clazz.getPackageName().substring(28), //org.k8loud.executor.actions. needs to be cut
                             getFieldsInfo(clazz)
                     ));
                 }
