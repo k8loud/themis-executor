@@ -22,7 +22,6 @@ import java.security.spec.RSAPublicKeySpec;
 import java.util.Map;
 
 import static org.k8loud.executor.exception.code.CommandExceptionCode.FAILED_TO_EXECUTE_COMMAND;
-import static org.k8loud.executor.exception.code.CommandExceptionCode.NON_ZERO_EXIT_CODE;
 import static org.k8loud.executor.util.Util.resultMap;
 
 @Slf4j
@@ -57,13 +56,9 @@ public class CommandExecutionServiceImpl implements CommandExecutionService {
             String stderr = IOUtils.readFully(commandObj.getErrorStream()).toString();
             Integer exitStatus = commandObj.getExitStatus();
             commandObj.close();
-            String result = String.format("exit status: %s, stdout: `%s`, stderr: `%s`", exitStatus, stdout, stderr);
-            log.info(result);
-            if (exitStatus != 0) {
-                throw new CommandException(result, NON_ZERO_EXIT_CODE);
-            }
+            log.info("exit status: {}, stdout: `{}`, stderr: `{}`", exitStatus, stdout, stderr);
             return resultMap(String.format("Successfully executed '%s'", command),
-                    Map.of("exitStatus", exitStatus, "output", result));
+                    Map.of("exitStatus", exitStatus, "stdout", stdout, "stderr", stderr));
         } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new CommandException(FAILED_TO_EXECUTE_COMMAND);
         }
