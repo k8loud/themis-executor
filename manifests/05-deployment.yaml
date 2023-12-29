@@ -19,9 +19,9 @@ spec:
       serviceAccountName: themis-executor
       containers:
         - name: executor
-          image: k8loud/themis-executor:0.0.4.2-command-separate-outputs
-#          imagePullPolicy: "IfNotPresent"
-          imagePullPolicy: "Always"
+          image: k8loud/themis-executor:0.0.4.3
+          imagePullPolicy: "IfNotPresent"
+#          imagePullPolicy: "Always"
           env:
             - name: DATA_STORAGE_ROOT_PATH
               value: /tmp
