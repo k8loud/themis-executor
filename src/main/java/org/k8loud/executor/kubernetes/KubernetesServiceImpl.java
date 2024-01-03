@@ -45,11 +45,12 @@ public class KubernetesServiceImpl implements KubernetesService {
         if ("Deployment".equals(resourceType)) {
             currentReplicas = getDeploymentReplicasNumber(namespace, resourceName);
         }
+        int newReplicasCount = replicas + currentReplicas > 0 ? replicas + currentReplicas: 1;
         getResource(namespace, resourceType, resourceName)
-                .scale(replicas + currentReplicas > 0 ? replicas + currentReplicas: 1);
+                .scale(newReplicasCount);
 
         return resultMap(String.format("Scaled %s to %d", getFullResourceName(resourceType, resourceName), replicas),
-                Map.of("fullResourceName", getFullResourceName(resourceType, resourceName), "replicas", replicas));
+                Map.of("fullResourceName", getFullResourceName(resourceType, resourceName), "replicas", newReplicasCount));
     }
 
     private int getDeploymentReplicasNumber(String namespace, String resourceName) {
