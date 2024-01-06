@@ -34,3 +34,4 @@ build/
 
 ### Openstack credentials ###
 src/main/resources/openstack-config.properties
+secrets/**
