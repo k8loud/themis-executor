@@ -126,6 +126,16 @@
             <version>1.0</version>
         </dependency>
 
+        <!-- Prometheus -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+        </dependency>
+
         <!-- SSH -->
         <dependency>
             <groupId>com.hierynomus</groupId>
