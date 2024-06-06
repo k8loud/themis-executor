@@ -12,7 +12,7 @@ public class RuleTimeService {
 
     public RuleTimeService(CollectorRegistry registry) {
         this.histogram = Histogram.build()
-                .buckets(0.5, 1, 2, 3, 5, Double.POSITIVE_INFINITY)
+                .buckets(1, 2, 3, 5, 8, 13, 21, 34, 55, Double.POSITIVE_INFINITY)
                 .help("rule_processing_time_metric")
                 .name("rule_processing_time_metric")
                 .labelNames("Rule")
