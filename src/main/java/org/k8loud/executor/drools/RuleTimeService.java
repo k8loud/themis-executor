@@ -2,11 +2,11 @@ package org.k8loud.executor.drools;
 
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Histogram;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
-@Component
+@Service
 public class RuleTimeService {
     private final Histogram histogram;
 

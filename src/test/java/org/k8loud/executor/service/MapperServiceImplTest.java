@@ -13,6 +13,7 @@ import org.k8loud.executor.exception.code.ActionExceptionCode;
 import org.k8loud.executor.model.ExecutionRQ;
 import org.k8loud.executor.model.Params;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.lang.reflect.Field;
@@ -25,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.k8loud.executor.model.ExecutionRQ.createExecutionRQ;
 
 @SpringBootTest
+@AutoConfigureObservability
 class MapperServiceImplTest {
     private static final String INVALID = "invalidName";
     private static final Params VALID_PARAMS = new Params(Map.of("param1", "val1"));
