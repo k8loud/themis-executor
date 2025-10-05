@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.exception.code.ValidationExceptionCode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Collections;
@@ -19,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 
 @SpringBootTest
+@AutoConfigureObservability
 public class ValidationServiceTest {
     private static final Params VALID_PARAMS = new Params(Map.of("param1", "val1"));
     private static final Params EMPTY_PARAMS = new Params(Collections.emptyMap());

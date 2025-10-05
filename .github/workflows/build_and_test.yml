@@ -21,7 +21,7 @@ jobs:
           distribution: 'zulu'
           cache: maven
       - name: Build and Run Tests
-        run: mvn test --batch-mode --fail-at-end
+        run: mvn test --batch-mode --fail-at-end -DthemisExecutorVersion=1.0.0-SNAPSHOT
       - name: Publish Test Report
         if: success() || failure()
         uses: scacap/action-surefire-report@v1

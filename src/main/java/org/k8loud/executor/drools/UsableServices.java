@@ -25,4 +25,6 @@ public class UsableServices {
 
     private final HTTPService httpService;
     private final MailService mailService;
+
+    private final RuleTimeService ruleTimeService;
 }
