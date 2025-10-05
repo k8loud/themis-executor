@@ -68,7 +68,10 @@ spec:
                   name: themis-secrets
                   key: MAIL_PASSWORD
             - name: OPENSTACK_USERNAME
-              value: plgpgorgolew
+              valueFrom:
+                secretKeyRef:
+                  name: themis-secrets
+                  key: OPENSTACK_USERNAME
             - name: OPENSTACK_PASSWORD
               valueFrom:
                 secretKeyRef:
